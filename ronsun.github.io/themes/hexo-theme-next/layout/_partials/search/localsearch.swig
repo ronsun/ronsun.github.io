@@ -9,7 +9,7 @@
     <div class="local-search-input-wrapper">
       <input autocomplete="off"
              placeholder="{{ __('search.placeholder') }}" spellcheck="false"
-             type="text" id="local-search-input">
+             type="text" id="local-search-input" />
     </div>
   </div>
   <div id="local-search-result"></div>

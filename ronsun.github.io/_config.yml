@@ -83,3 +83,9 @@ deploy:
   type: git
   repo: https://github.com/ronsun/ronsun.github.io.git
   
+
+# Local search for hexo-theme-next dependent on hexo-generator-search
+## Resource: https://github.com/PaicHyperionDev/hexo-generator-search
+search:
+  path: search.xml
+  field: all
