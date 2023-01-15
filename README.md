@@ -1,13 +1,17 @@
 # ronsun.github.io
 
-### Branches
+## Branches
 
 + **master**  
 透過hexo將靜態頁面發布到master。  
 + **hexo**  
 hexo的工作環境。
 
-**專案結構**  
+## 現有插件
++ [hexo-theme-next](https://github.com/iissnan/hexo-theme-next)
++ [hexo-generator-search](https://github.com/PaicHyperionDev/hexo-generator-search) : 基於hexo-theme-next
+
+## 專案結構  
 + 為了方便作業, 另外加了visual studio的方案與專案檔, 可用visual studio開啟。
 + 另外新增了ronsun.github.io.lab專案, 拿來確認文章所需的程式碼正確的。
 + 搭配支援Visual Studio的markdown工具。
