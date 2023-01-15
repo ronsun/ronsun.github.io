@@ -4,8 +4,8 @@
 
 # Site
 title: Ron 2.0
-subtitle: 讓我想想
-description: default description
+subtitle: Simple Is Not Easy
+description: Simple Is Not Easy
 author: Ron Sun
 language: en
 timezone:
@@ -25,7 +25,7 @@ archive_dir: archives
 category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
-skip_render:
+skip_render: _posts/*/*/**
 
 # Writing
 new_post_name: :year-:month/:title.md # File name of new posts
@@ -83,7 +83,6 @@ deploy:
   type: git
   repo: https://github.com/ronsun/ronsun.github.io.git
   
-
 # Local search for hexo-theme-next dependent on hexo-generator-search
 ## Resource: https://github.com/PaicHyperionDev/hexo-generator-search
 search:
