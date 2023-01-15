@@ -77,10 +77,10 @@ menu_icons:
 # ---------------------------------------------------------------
 
 # Schemes
-#scheme: Muse
+###scheme: Muse
 #scheme: Mist
-#scheme: Pisces
-scheme: Gemini
+scheme: Pisces
+###scheme: Gemini
 
 
 # ---------------------------------------------------------------
@@ -123,10 +123,10 @@ links_title: Resources
 #links_layout: block
 #links_layout: inline
 links:
-  REST & RESTful (1): https://blog.toright.com/posts/725
-  REST & RESTful (2): https://blog.toright.com/posts/1399
-  WebClient vs HttpClient vs HttpWebRequest: http://www.diogonunes.com/blog/webclient-vs-httpclient-vs-httpwebrequest/
-  Jason Puzzle 中勝拼圖: https://blog.jason.party/
+  .Net Source Code: https://referencesource.microsoft.com/  
+  .Net Core Source Code: https://source.dot.net/  
+  Jason Puzzle 中勝拼圖: https://blog.jason.party/  
+  放零碎筆記的 Gist: https://gist.github.com/ronsun
 
 # Sidebar Avatar
 # in theme directory(source/images): /images/avatar.jpg
