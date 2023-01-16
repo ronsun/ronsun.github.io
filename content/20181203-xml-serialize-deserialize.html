@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA" />
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://github.com/identicons/ronsun.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="XmlSerializer 提供許多序列化和反序列化相關的多載, 都有各自的優缺點, 例如有些方式在某些編碼下會因為 BOM(byte order mark) 出現在開頭而導致反序列化出現 Exception 或是序列化出含有 BOM 的字串導致接收端無法成功解析, 而各種方式的彈性與易用性都略有不同, 所以稍微記錄幾種序列化和反序列化的方式與特徵.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XmlSerializer 的序列化&#x2F;反序列化 與 BOM">
+<meta property="og:url" content="https://ronsun.github.io/content/20181203-xml-serialize-deserialize.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="XmlSerializer 提供許多序列化和反序列化相關的多載, 都有各自的優缺點, 例如有些方式在某些編碼下會因為 BOM(byte order mark) 出現在開頭而導致反序列化出現 Exception 或是序列化出含有 BOM 的字串導致接收端無法成功解析, 而各種方式的彈性與易用性都略有不同, 所以稍微記錄幾種序列化和反序列化的方式與特徵.">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2023-11-26T16:36:29.839Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="XmlSerializer 的序列化&#x2F;反序列化 與 BOM">
+<meta name="twitter:description" content="XmlSerializer 提供許多序列化和反序列化相關的多載, 都有各自的優缺點, 例如有些方式在某些編碼下會因為 BOM(byte order mark) 出現在開頭而導致反序列化出現 Exception 或是序列化出含有 BOM 的字串導致接收端無法成功解析, 而各種方式的彈性與易用性都略有不同, 所以稍微記錄幾種序列化和反序列化的方式與特徵.">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://ronsun.github.io/content/20181203-xml-serialize-deserialize.html"/>
+
+
+
+
+
+  <title>XmlSerializer 的序列化/反序列化 與 BOM | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ron 2.0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">Simple Is Not Easy</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Searching..." spellcheck="false"
+             type="text" id="local-search-input" />
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20181203-xml-serialize-deserialize.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ron Sun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">XmlSerializer 的序列化/反序列化 與 BOM</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-03T16:02:39+08:00">
+                2018-12-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C#</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/NET/" itemprop="url" rel="index">
+                    <span itemprop="name">.NET</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>XmlSerializer 提供許多序列化和反序列化相關的多載, 都有各自的優缺點, 例如有些方式在某些編碼下會因為 BOM(byte order mark) 出現在開頭而導致反序列化出現 Exception 或是序列化出含有 BOM 的字串導致接收端無法成功解析, 而各種方式的彈性與易用性都略有不同, 所以稍微記錄幾種序列化和反序列化的方式與特徵.</p>
+<a id="more"></a>
+<h3 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h3><h4 id="XmlWriter"><a href="#XmlWriter" class="headerlink" title="XmlWriter"></a>XmlWriter</h4><p>這種做法最有彈性, 可以靠著改變 XmlWriterSettings 以及 XmlSerializerNamespaces 的設定去控制序列化出來的 XML 字串的格式與內容, 但要特別注意的是 XmlWriterSettings 預設是有 BOM 的 UTF-8 編碼, 如果接收資料的一方無法處理這種格式的話, 需要特別將 XmlWriterSettings.Encoding 設成無 BOM 的編碼格式, 例如: <code>var ws = new XmlWriterSettings() { Encoding = new UTF8Encoding() }</code>, 比較適合用在需要跟許多不同外部系統介接的模組上</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">Serialize</span>(<span class="params">Encoding encoding</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">var</span> serializer = <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(MyModel));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> ws = <span class="keyword">new</span> XmlWriterSettings()</span><br><span class="line">	&#123;</span><br><span class="line">		Encoding = encoding</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> ns = <span class="keyword">new</span> XmlSerializerNamespaces(<span class="keyword">new</span> XmlQualifiedName[] &#123; XmlQualifiedName.Empty &#125;);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">using</span> (<span class="keyword">var</span> ms = <span class="keyword">new</span> MemoryStream())</span><br><span class="line">	<span class="keyword">using</span> (<span class="keyword">var</span> xw = XmlWriter.Create(ms, ws))</span><br><span class="line">	&#123;</span><br><span class="line">		serializer.Serialize(xw, <span class="keyword">new</span> MyModel(), ns);</span><br><span class="line">		<span class="keyword">return</span> ws.Encoding.GetString(ms.ToArray());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="StreamWriter"><a href="#StreamWriter" class="headerlink" title="StreamWriter"></a>StreamWriter</h4><p>這種做法彈性小了一點, 只能用 XmlSerializerNamespaces 來控制 namespace, 比較難透過設定參數來改變輸出格式和內容, 但本例還是可以透過改變參數 encoding 自己決定編碼格式, 且另外一個建構子多載 <code>StreamWriter(Stream)</code> 預設就是無 BOM 的 UTF-8, 比起使用 XmlWriter 能更直覺的避免序列化時產生 BOM.</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">Serialize</span>(<span class="params">Encoding encoding</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">var</span> serializer = <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(MyModel));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> ns = <span class="keyword">new</span> XmlSerializerNamespaces(<span class="keyword">new</span> XmlQualifiedName[] &#123; XmlQualifiedName.Empty &#125;);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">using</span> (<span class="keyword">var</span> ms = <span class="keyword">new</span> MemoryStream())</span><br><span class="line">	<span class="keyword">using</span> (<span class="keyword">var</span> sw = <span class="keyword">new</span> StreamWriter(ms, encoding)) <span class="comment">// 2nd arg default to utf-8 no BOM</span></span><br><span class="line">	&#123;</span><br><span class="line">		serializer.Serialize(sw, <span class="keyword">new</span> MyModel(), ns);</span><br><span class="line">		<span class="keyword">return</span> encoding.GetString(ms.ToArray());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h4><p>這種做法彈性就更小了, 只能用 XmlSerializerNamespaces 來控制 namespace, 除了比較難透過設定參數來改變輸出格式和內容外, 參數 <code>ecoding</code> 也只能是 UTF-8, 但另一方面, 程式碼比較簡短且序列化出來的 XML 字串不會有 BOM, 用在不需要跟外部系統介接的模組上非常適合.</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">Serialize</span>(<span class="params">Encoding encoding</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">var</span> serializer = <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(MyModel));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> ns = <span class="keyword">new</span> XmlSerializerNamespaces(<span class="keyword">new</span> XmlQualifiedName[] &#123; XmlQualifiedName.Empty &#125;);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">using</span> (<span class="keyword">var</span> ms = <span class="keyword">new</span> MemoryStream())</span><br><span class="line">	&#123;</span><br><span class="line">		serializer.Serialize(ms, <span class="keyword">new</span> MyModel(), ns);</span><br><span class="line">		<span class="keyword">return</span> encoding.GetString(ms.ToArray());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="StringWriter"><a href="#StringWriter" class="headerlink" title="StringWriter"></a>StringWriter</h4><p>這種跟直接使用 Stream 的做法差不多都不容易改輸出格式和內容, 優點也一樣是簡短清晰且不用考慮 BOM 的問題, 而用 StringBuilder 比上面用 Stream 多了一個特性是連編碼格式都不用考慮, 同樣適合用在不需要跟外部系統介接的模組上. </p>
+<blockquote>
+<p>StringBuilder 預設的編碼格式是 UTF-16</p>
+</blockquote>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">Serialize</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">var</span> serializer = <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(MyModel));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> ns = <span class="keyword">new</span> XmlSerializerNamespaces(<span class="keyword">new</span> XmlQualifiedName[] &#123; XmlQualifiedName.Empty &#125;);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	<span class="keyword">using</span> (<span class="keyword">var</span> sw = <span class="keyword">new</span> StringWriter(sb))</span><br><span class="line">	&#123;</span><br><span class="line">		serializer.Serialize(sw, <span class="keyword">new</span> MyModel(), ns);</span><br><span class="line">		<span class="keyword">return</span> sb.ToString();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h4><p>每種做法都有各自的優缺點, 需要在輸出格式上滿足各種情境的話, 用 XmlWriter 操作是最適合的, 如果編碼與輸出格式單一且幾乎不會改變的話, 用 Stream 或 StringWriter 處理會更好懂. 如果使用 XmlWriter 或是 SreamWriter 兩個範例操作的話要注意序列化出來的內容是否有 BOM, 尤其是需要跟外部系統介接時.</p>
+<h3 id="反序列化"><a href="#反序列化" class="headerlink" title="反序列化"></a>反序列化</h3><h4 id="XmlReader"><a href="#XmlReader" class="headerlink" title="XmlReader"></a>XmlReader</h4><p>XmlReader 是提供最多參數的方式, <code>XmlReader.Create(Stream, XmlReaderSettings)</code> 和 XmlReader.Create(TextReader, XmlReaderSettings) 的第二個參數有很多選項可以調整, 從方法定義可以看得出來 XmlReader.Create(…) 有很多多載可以用, 如果是從 Stream 讀取資料的話, 即使 XML 字串有 BOM 也不會出錯, 但如果從 StringReader 讀取, 在 XML 字串有 BOM 的情境下會拋出 Exception.  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> T DeSerialize_FromStream&lt;T&gt;(<span class="keyword">string</span> xml, Encoding encoding)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">var</span> serializer = <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(T));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> xmlBytes = encoding.GetBytes(xml);</span><br><span class="line">	<span class="keyword">using</span> (<span class="keyword">var</span> ms = <span class="keyword">new</span> MemoryStream(xmlBytes))</span><br><span class="line">	<span class="keyword">using</span> (<span class="keyword">var</span> xr = XmlReader.Create(ms))</span><br><span class="line">	&#123;</span><br><span class="line">		xr.Read();</span><br><span class="line">		<span class="keyword">var</span> result = serializer.Deserialize(xr);</span><br><span class="line">		<span class="keyword">if</span> (result != <span class="literal">null</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> (T)result;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">default</span>(T);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> T DeSerialize_FromStringReader&lt;T&gt;(<span class="keyword">string</span> xml)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">var</span> serializer = <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(T));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">using</span> (<span class="keyword">var</span> sr = <span class="keyword">new</span> StringReader(xml))</span><br><span class="line">	<span class="keyword">using</span> (<span class="keyword">var</span> xr = XmlReader.Create(sr))</span><br><span class="line">	&#123;</span><br><span class="line">		xr.Read();</span><br><span class="line">		<span class="keyword">var</span> result = serializer.Deserialize(xr);</span><br><span class="line">		<span class="keyword">if</span> (result != <span class="literal">null</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> (T)result;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">default</span>(T);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="StreamReader-Stream"><a href="#StreamReader-Stream" class="headerlink" title="StreamReader / Stream"></a>StreamReader / Stream</h4><p>這兩種方式差不多, 即使 XML 字串有 BOM 也都不會出錯, 只差在 StreamReader 建構子的參數比較多, 如果對編碼格式沒特別的需求的話, 直接操作 Stream 比較單純.</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> T DeSerialize_StreamReader&lt;T&gt;(<span class="keyword">string</span> xml, Encoding encoding)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">var</span> serializer = <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(T));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> xmlBytes = encoding.GetBytes(xml);</span><br><span class="line">	<span class="keyword">using</span> (<span class="keyword">var</span> ms = <span class="keyword">new</span> MemoryStream(xmlBytes))</span><br><span class="line">	<span class="keyword">using</span> (<span class="keyword">var</span> tr = <span class="keyword">new</span> StreamReader(ms, encoding))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">var</span> result = serializer.Deserialize(tr);</span><br><span class="line">		<span class="keyword">if</span> (result != <span class="literal">null</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> (T)result;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">default</span>(T);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> T DeSerialize_Stream&lt;T&gt;(<span class="keyword">string</span> xml, Encoding encoding)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">var</span> serializer = <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(T));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> xmlBytes = encoding.GetBytes(xml);</span><br><span class="line">	<span class="keyword">using</span> (<span class="keyword">var</span> ms = <span class="keyword">new</span> MemoryStream(xmlBytes))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">var</span> result = serializer.Deserialize(ms);</span><br><span class="line">		<span class="keyword">if</span> (result != <span class="literal">null</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> (T)result;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">default</span>(T);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="StringReader"><a href="#StringReader" class="headerlink" title="StringReader"></a>StringReader</h4><p>這種方法在 XML 字串有 DOM 的時候會出 Exception, 優點是不用考慮編碼格式, 只需要知道 XML 字串就可以了. </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> T DeSerialize&lt;T&gt;(<span class="keyword">string</span> xml)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">var</span> serializer = <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(T));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">using</span> (<span class="keyword">var</span> sr = <span class="keyword">new</span> StringReader(xml))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">var</span> result = serializer.Deserialize(sr);</span><br><span class="line">		<span class="keyword">if</span> (result != <span class="literal">null</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> (T)result;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">default</span>(T);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="小結-1"><a href="#小結-1" class="headerlink" title="小結"></a>小結</h4><p>反序列化大部分的做法都很簡單, 以目前實驗看來, 把 XML 字串先轉成 Stream 再處理都可以相容有 BOM 的資料來源, 需要考量的點似乎也比序列化時少很多.</p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>這篇只是要實驗各種序列化與反序列化的方式遇到 BOM 時候的結果, 所以沒有特別實驗各種不同方式在其他複雜的 XML 資料下的轉換結果, 如果之後有遇到其他問題的話再回來補.  </p>
+<p>範例程式碼可參考 <a href="https://github.com/ronsun/Demo/tree/master/XmlSerializerAndBOM" target="_blank" rel="noopener">Demo</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/content/20181118-webapi-get-request-body-safety.html" rel="next" title="WebAPI 安全的取得 Request Body">
+                <i class="fa fa-chevron-left"></i> WebAPI 安全的取得 Request Body
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/content/20181208-custom-stylecop-rules-and-testing.html" rel="prev" title="自訂 StyleCop 規則與測試方式">
+                自訂 StyleCop 規則與測試方式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+        <div id="container" class="gitment_container"></div>
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+        <script>
+          const myTheme = {
+            render(state, instance) {
+              const container = document.createElement('div');
+              container.lang = "en-US";
+              container.className = 'gitment-container gitment-root-container';
+              container.appendChild(instance.renderHeader(state, instance));
+              container.appendChild(instance.renderEditor(state, instance));
+              container.appendChild(instance.renderComments(state, instance));
+              container.appendChild(instance.renderFooter(state, instance));
+              return container;
+            }
+          }
+          function showGitment() {
+            var gitment = new Gitment({
+              id: '1543824159000',
+              theme: myTheme,
+              owner: 'ronsun',
+              repo: 'ronsun.github.io.gitment',
+              oauth: {
+                client_id: '749fee720f2039efbbde',
+                client_secret: '3104dc228340ec2814ce1a11a7457d4f2d1effa6'
+              }
+            });
+            gitment.render('container');
+          }
+          showGitment();
+        </script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ron Sun" />
+          <p class="site-author-name" itemprop="name">Ron Sun</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">71</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ronsun" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.linkedin.com/in/ronsun/" target="_blank" title="Linkedin">
+                  
+                    <i class="fa fa-fw fa-linkedin"></i>
+                  
+                    
+                      Linkedin
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Resources
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://referencesource.microsoft.com/" title=".Net Source Code" target="_blank">.Net Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://source.dot.net/" title=".Net Core Source Code" target="_blank">.Net Core Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notfalse.net/" title="NotFalse 技術客" target="_blank">NotFalse 技術客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gist.github.com/ronsun" title="放零碎筆記的 Gist" target="_blank">放零碎筆記的 Gist</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#序列化"><span class="nav-number">1.</span> <span class="nav-text">序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#XmlWriter"><span class="nav-number">1.1.</span> <span class="nav-text">XmlWriter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#StreamWriter"><span class="nav-number">1.2.</span> <span class="nav-text">StreamWriter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Stream"><span class="nav-number">1.3.</span> <span class="nav-text">Stream</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#StringWriter"><span class="nav-number">1.4.</span> <span class="nav-text">StringWriter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小結"><span class="nav-number">1.5.</span> <span class="nav-text">小結</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反序列化"><span class="nav-number">2.</span> <span class="nav-text">反序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#XmlReader"><span class="nav-number">2.1.</span> <span class="nav-text">XmlReader</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#StreamReader-Stream"><span class="nav-number">2.2.</span> <span class="nav-text">StreamReader / Stream</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#StringReader"><span class="nav-number">2.3.</span> <span class="nav-text">StringReader</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小結-1"><span class="nav-number">2.4.</span> <span class="nav-text">小結</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

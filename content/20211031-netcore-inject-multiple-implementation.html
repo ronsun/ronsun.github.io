@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA" />
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://github.com/identicons/ronsun.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="在 .NET Core 中注入多個實作有幾種方式，各自有不同的優缺點與試用情境，相關範例程式碼會放在 這個 GitHub 專案 上。">
+<meta property="og:type" content="article">
+<meta property="og:title" content=".NET Core 中單一介面多實作搭配依賴注入的幾種方式">
+<meta property="og:url" content="https://ronsun.github.io/content/20211031-netcore-inject-multiple-implementation.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="在 .NET Core 中注入多個實作有幾種方式，各自有不同的優缺點與試用情境，相關範例程式碼會放在 這個 GitHub 專案 上。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2023-11-26T16:36:29.894Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content=".NET Core 中單一介面多實作搭配依賴注入的幾種方式">
+<meta name="twitter:description" content="在 .NET Core 中注入多個實作有幾種方式，各自有不同的優缺點與試用情境，相關範例程式碼會放在 這個 GitHub 專案 上。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://ronsun.github.io/content/20211031-netcore-inject-multiple-implementation.html"/>
+
+
+
+
+
+  <title>.NET Core 中單一介面多實作搭配依賴注入的幾種方式 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ron 2.0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">Simple Is Not Easy</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Searching..." spellcheck="false"
+             type="text" id="local-search-input" />
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20211031-netcore-inject-multiple-implementation.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ron Sun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">.NET Core 中單一介面多實作搭配依賴注入的幾種方式</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-10-31T21:16:36+08:00">
+                2021-10-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C#</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/NET-Core/" itemprop="url" rel="index">
+                    <span itemprop="name">.NET Core</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在 .NET Core 中注入多個實作有幾種方式，各自有不同的優缺點與試用情境，相關範例程式碼會放在 <a href="https://github.com/ronsun/Demo/tree/master/MultipleImplementation" target="_blank" rel="noopener">這個 GitHub 專案</a> 上。  </p>
+<a id="more"></a>
+<h3 id="Implementation-Factory"><a href="#Implementation-Factory" class="headerlink" title="Implementation Factory"></a>Implementation Factory</h3><p>Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions 提供的多載，以 AddScoped 為例：<br><code>public static IServiceCollection AddScoped&lt;TService&gt;(this IServiceCollection services, Func&lt;IServiceProvider, TService&gt; implementationFactory) where TService : class</code>  </p>
+<p>第二個參數提供一個工廠方法來決定要使用哪種實作。  </p>
+<p><strong>優點</strong>  </p>
+<ul>
+<li>非常簡單。</li>
+</ul>
+<p><strong>缺點與限制</strong></p>
+<ul>
+<li>只適用於在注入時就知道要用什麼規則決定使用哪個實作。</li>
+<li>彈性低，雖然簡單但是適用情境狹窄。</li>
+</ul>
+<h3 id="注入-IEnumerable"><a href="#注入-IEnumerable" class="headerlink" title="注入 IEnumerable"></a>注入 IEnumerable<t></t></h3><p>註冊多個實作，使用時注入 <code>IEnumerable&lt;I&gt;</code> 後再決定要使用哪個實作，可以搭配一個欄位用來標示該實作的名字 (要用類別名稱來標示也可以)。  </p>
+<p>註冊服務：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ConfigureServices</span>(<span class="params">IServiceCollection services</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	services.AddControllers();</span><br><span class="line"></span><br><span class="line">	services.AddSingleton&lt;IFoo, Foo1&gt;();</span><br><span class="line">	services.AddSingleton&lt;IFoo, Foo2&gt;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注入與使用：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">ApiController</span>]</span><br><span class="line">[<span class="meta">Route(<span class="meta-string">"[controller]"</span>)</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoController</span> : <span class="title">ControllerBase</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">private</span> IEnumerable&lt;IFoo&gt; _allFoo;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">DemoController</span>(<span class="params">IEnumerable&lt;IFoo&gt; allFoo</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		_allFoo = allFoo;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	[<span class="meta">HttpGet</span>]</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ActionResult&lt;<span class="keyword">string</span>&gt; <span class="title">Get</span>(<span class="params"><span class="keyword">string</span> name</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">var</span> sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">var</span> foo = _allFoo.FirstOrDefault(r =&gt; r.Name == name);</span><br><span class="line">		sb.Append(foo?.Hi());</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> Ok(sb.ToString());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>優點</strong>  </p>
+<ul>
+<li>簡單。</li>
+<li>彈性高。</li>
+</ul>
+<p><strong>缺點與限制</strong></p>
+<ul>
+<li>因為是注入所有的實作後再挑出要使用的那一個，其他的都用不到，會有浪費資源的疑慮，所以通常搭配 AddSingleton 使用。</li>
+<li>每次搜尋 ( <code>_allFoo.FirstOrDefault(r =&gt; r.Name == name)</code> )的時間複雜度都是 O(n)，需要多次搜尋時這個缺點會更明顯。</li>
+</ul>
+<h3 id="Dictionary"><a href="#Dictionary" class="headerlink" title="Dictionary"></a>Dictionary</h3><p>註冊成一個 Dictionary 或類似的物件。  </p>
+<p>註冊服務：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ConfigureServices</span>(<span class="params">IServiceCollection services</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	services.AddControllers();</span><br><span class="line"></span><br><span class="line">	services.AddScoped&lt;IBar, Bar1&gt;();</span><br><span class="line">	services.AddScoped&lt;IBar, Bar2&gt;();</span><br><span class="line">	services.AddScoped&lt;IReadOnlyDictionary&lt;<span class="keyword">string</span>, IBar&gt;&gt;(provider =&gt;</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">var</span> allBar = provider.GetService&lt;IEnumerable&lt;IBar&gt;&gt;();</span><br><span class="line">		<span class="keyword">return</span> allBar.ToDictionary(bar =&gt; bar.Name, bar =&gt; bar);</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注入與使用：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">ApiController</span>]</span><br><span class="line">[<span class="meta">Route(<span class="meta-string">"[controller]"</span>)</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoController</span> : <span class="title">ControllerBase</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">private</span> IReadOnlyDictionary&lt;<span class="keyword">string</span>, IBar&gt; _allBar;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">DemoController</span>(<span class="params">IReadOnlyDictionary&lt;<span class="keyword">string</span>, IBar&gt; allBar</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		_allBar = allBar;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	[<span class="meta">HttpGet</span>]</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ActionResult&lt;<span class="keyword">string</span>&gt; <span class="title">Get</span>(<span class="params"><span class="keyword">string</span> name</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">var</span> sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// bar</span></span><br><span class="line">		_allBar.TryGetValue(name, <span class="keyword">out</span> IBar bar);</span><br><span class="line">		sb.Append(bar?.Hello());</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> Ok(sb.ToString());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>優點</strong>  </p>
+<ul>
+<li>簡單。</li>
+<li>彈性高。</li>
+<li>可擴充性高，如果是作為一個套件，即使沒提供適合的實作，使用者仍然可以自己實作 <code>IBar</code> 後注入。</li>
+<li>只有第一次初始化的時候將 <code>IEnumerable&lt;T&gt;</code> 轉成 Dictionary 時比較耗時，之後每次取用的時間複雜度都是 O(1)，在生命週期範圍內多次取用的效能優於 <code>IEnumerable&lt;T&gt;</code>。</li>
+</ul>
+<p><strong>缺點與限制</strong></p>
+<ul>
+<li>沒有那麼直覺，對於使用者來說要記得注入時要注入為 <code>IReadOnlyDictionary&lt;string, IBar&gt;</code>。</li>
+</ul>
+<h3 id="透過另一個類別來轉接-橋接模式"><a href="#透過另一個類別來轉接-橋接模式" class="headerlink" title="透過另一個類別來轉接 (橋接模式)"></a>透過另一個類別來轉接 (橋接模式)</h3><p>這種做法的概念在於提供一個橋接用的類別來使用那些實作。  </p>
+<p>註冊服務：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ConfigureServices</span>(<span class="params">IServiceCollection services</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	services.AddControllers();</span><br><span class="line"></span><br><span class="line">	services.AddScoped&lt;IBaz, Baz1&gt;();</span><br><span class="line">	services.AddScoped&lt;IBaz, Baz2&gt;();</span><br><span class="line">	services.AddScoped&lt;IBazBridge, BazBridge&gt;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注入與使用：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">ApiController</span>]</span><br><span class="line">[<span class="meta">Route(<span class="meta-string">"[controller]"</span>)</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoController</span> : <span class="title">ControllerBase</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">private</span> IBazBridge _bazBridge;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">DemoController</span>(<span class="params">IBazBridge bazBridge</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		_bazBridge = bazBridge;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	[<span class="meta">HttpGet</span>]</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ActionResult&lt;<span class="keyword">string</span>&gt; <span class="title">Get</span>(<span class="params"><span class="keyword">string</span> name</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">var</span> sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// baz</span></span><br><span class="line">		sb.Append(_bazBridge.Hey(name));</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> Ok(sb.ToString());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Bridge 相關類別：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IBazBridge</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">string</span> <span class="title">Hey</span>(<span class="params"><span class="keyword">string</span> name</span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">class</span> <span class="title">BazBridge</span> : <span class="title">IBazBridge</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> IReadOnlyDictionary&lt;<span class="keyword">string</span>, IBaz&gt; _allBazDictionary;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BazBridge</span>(<span class="params">IEnumerable&lt;IBaz&gt; allBaz</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        _allBazDictionary = allBaz.ToDictionary(baz =&gt; baz.Name, baz =&gt; baz);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">Hey</span>(<span class="params"><span class="keyword">string</span> name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        _allBazDictionary.TryGetValue(name, <span class="keyword">out</span> IBaz baz);</span><br><span class="line">        <span class="keyword">return</span> baz?.Hey();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>如果有多個情境要使用 Bridge，可以將建構子中轉換 <code>IEnumerable&lt;T&gt;</code> 為 Dictionary 的部分抽成 <code>BridgeBase</code>，提供給所有 Bridge 繼承。</p>
+</blockquote>
+<p><strong>優點</strong>  </p>
+<ul>
+<li>彈性極高，Brige 中甚至可以做各種轉接與變化。  </li>
+<li>可擴充性高，如果是作為一個套件，即使沒提供適合的實作，使用者仍然可以自己實作 <code>IBaz</code> 後注入。</li>
+<li>只有第一次初始化的時候將 <code>IEnumerable&lt;T&gt;</code> 轉成 Dictionary 時比較耗時，之後每次取用的時間複雜度都是 O(1)，在生命週期範圍內多次取用的效能優於 <code>IEnumerable&lt;T&gt;</code>。</li>
+<li>相較於之前的注入 Dictionary 的解法，這種高彈性/擴充性的作法更適合放在套件中，這種設計相似於 <code>HttpClient</code> 與 <code>IHttpClientFactory</code> 之間的關係，所以相對於之前 Dictionary 的解法來說，使用上不直覺的問題相對低了一些。  </li>
+</ul>
+<p><strong>缺點與限制</strong></p>
+<ul>
+<li>複雜很多。</li>
+<li>多個介面需要套用時會需要很多組 Bridge。</li>
+<li>註冊較不友善，<code>services.AddScoped&lt;IBazBridge, BazBridge&gt;();</code> 這邊使用者要認識具體實作 <code>BazBridge</code>。</li>
+</ul>
+<h3 id="透過另一個類別來管理-Provider"><a href="#透過另一個類別來管理-Provider" class="headerlink" title="透過另一個類別來管理 (Provider)"></a>透過另一個類別來管理 (Provider)</h3><p>這種做法的概念在於提供一個管理用的類別來提供那些實作。  </p>
+<p>註冊服務：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ConfigureServices</span>(<span class="params">IServiceCollection services</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	services.AddControllers();</span><br><span class="line"></span><br><span class="line">	services.AddScoped&lt;IQux, Qux1&gt;();</span><br><span class="line">	services.AddScoped&lt;IQux, Qux2&gt;();</span><br><span class="line">	services.AddScoped&lt;IProvider&lt;IQux&gt;, Provider&lt;IQux&gt;&gt;();</span><br><span class="line">&#125;</span><br><span class="line">, ``</span><br><span class="line"></span><br><span class="line">注入與使用：  </span><br><span class="line">``` csharp</span><br><span class="line">[<span class="meta">ApiController</span>]</span><br><span class="line">[<span class="meta">Route(<span class="meta-string">"[controller]"</span>)</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoController</span> : <span class="title">ControllerBase</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">private</span> IProvider&lt;IQux&gt; _quxProvider;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">DemoController</span>(<span class="params">IProvider&lt;IQux&gt; quxProvider</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		_quxProvider = quxProvider;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	[<span class="meta">HttpGet</span>]</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ActionResult&lt;<span class="keyword">string</span>&gt; <span class="title">Get</span>(<span class="params"><span class="keyword">string</span> name</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">var</span> sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// baz</span></span><br><span class="line">		sb.Append(_quxProvider.Get(name).Yo());</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> Ok(sb.ToString());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Provider 相關類別：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public interface IProvider&lt;T&gt;</span><br><span class="line">    <span class="keyword">where</span> T : INameable</span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">T <span class="title">Get</span>(<span class="params"><span class="keyword">string</span> name</span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Provider&lt;T&gt; : IProvider&lt;T&gt;</span><br><span class="line">    <span class="keyword">where</span> T : INameable</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> IReadOnlyDictionary&lt;<span class="keyword">string</span>, T&gt; _dictionary;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Provider</span>(<span class="params">IEnumerable&lt;T&gt; nameable</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        _dictionary = nameable.ToDictionary(n =&gt; n.Name, n =&gt; n);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">Get</span>(<span class="params"><span class="keyword">string</span> name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        _dictionary.TryGetValue(name, <span class="keyword">out</span> T imp);</span><br><span class="line">        <span class="keyword">return</span> imp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>優點</strong>  </p>
+<ul>
+<li>有幾乎等同 <code>Bridge</code> 解法的優點 (除了彈性略低)。 </li>
+<li>泛用性極高，可重複套用在任何單介面多實作的情境。</li>
+</ul>
+<p><strong>缺點與限制</strong></p>
+<ul>
+<li>因為不需要實作各種 <code>Bridge</code>，彈性較 <code>Bridge</code> 解法低一點。  </li>
+<li>註冊較不友善，<code>services.AddScoped&lt;IProvider&lt;IQux&gt;, Provider&lt;IQux&gt;&gt;();</code> 這邊使用者要認識具體實作 <code>Provider&lt;T&gt;</code>，且兩層泛型參數比較不好閱讀。  </li>
+</ul>
+<h3 id="綜合以上最佳化使用者體驗"><a href="#綜合以上最佳化使用者體驗" class="headerlink" title="綜合以上最佳化使用者體驗"></a>綜合以上最佳化使用者體驗</h3><p>這是我用在一個套件 - <a href="https://github.com/ronsun/MoreNet.DependencyInjection" target="_blank" rel="noopener">MoreNet.DependencyInjection</a> 上的作法，介紹直接看 GitHub。 </p>
+<p><strong>優點</strong>  </p>
+<ul>
+<li>泛用性極高，可重複套用在任何單介面多實作的情境。</li>
+<li>註冊簡易，對使用者比較友善。</li>
+</ul>
+<p><strong>缺點與限制</strong></p>
+<ul>
+<li>實作很複雜。</li>
+</ul>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>方法很多種，大致可以分為兩個面向</p>
+<ol>
+<li>注入全部後再挑選。</li>
+<li>提供管理用的類別 (不論是工廠/橋接或是其他模式)。</li>
+</ol>
+<p>上面的範例只是為了展示這兩個大方向，實際運用時需要視情境變化調整，例如<a href="https://medium.com/geekculture/net6-dependency-injection-one-interface-multiple-implementations-983d490e5014" target="_blank" rel="noopener">這篇文章提到幾種做法</a>，都和上面範例不太一樣但大方向是一致的。  </p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-5.0#service-registration-methods-1" target="_blank" rel="noopener">Service registration methods</a>  </p>
+<p><a href="https://medium.com/geekculture/net6-dependency-injection-one-interface-multiple-implementations-983d490e5014" target="_blank" rel="noopener">.NET6 Dependency Injection — One Interface, Multiple Implementations</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/content/20210626-aspnetcore-webapi-read-body.html" rel="next" title="基於 ASP.NET Core WebAPI 讀取 Request / Response Body">
+                <i class="fa fa-chevron-left"></i> 基於 ASP.NET Core WebAPI 讀取 Request / Response Body
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/content/20211114-flatten-json.html" rel="prev" title="Flatten JSON">
+                Flatten JSON <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+        <div id="container" class="gitment_container"></div>
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+        <script>
+          const myTheme = {
+            render(state, instance) {
+              const container = document.createElement('div');
+              container.lang = "en-US";
+              container.className = 'gitment-container gitment-root-container';
+              container.appendChild(instance.renderHeader(state, instance));
+              container.appendChild(instance.renderEditor(state, instance));
+              container.appendChild(instance.renderComments(state, instance));
+              container.appendChild(instance.renderFooter(state, instance));
+              return container;
+            }
+          }
+          function showGitment() {
+            var gitment = new Gitment({
+              id: '1635686196000',
+              theme: myTheme,
+              owner: 'ronsun',
+              repo: 'ronsun.github.io.gitment',
+              oauth: {
+                client_id: '749fee720f2039efbbde',
+                client_secret: '3104dc228340ec2814ce1a11a7457d4f2d1effa6'
+              }
+            });
+            gitment.render('container');
+          }
+          showGitment();
+        </script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ron Sun" />
+          <p class="site-author-name" itemprop="name">Ron Sun</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">71</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ronsun" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.linkedin.com/in/ronsun/" target="_blank" title="Linkedin">
+                  
+                    <i class="fa fa-fw fa-linkedin"></i>
+                  
+                    
+                      Linkedin
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Resources
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://referencesource.microsoft.com/" title=".Net Source Code" target="_blank">.Net Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://source.dot.net/" title=".Net Core Source Code" target="_blank">.Net Core Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notfalse.net/" title="NotFalse 技術客" target="_blank">NotFalse 技術客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gist.github.com/ronsun" title="放零碎筆記的 Gist" target="_blank">放零碎筆記的 Gist</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Implementation-Factory"><span class="nav-number">1.</span> <span class="nav-text">Implementation Factory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注入-IEnumerable"><span class="nav-number">2.</span> <span class="nav-text">注入 IEnumerable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dictionary"><span class="nav-number">3.</span> <span class="nav-text">Dictionary</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#透過另一個類別來轉接-橋接模式"><span class="nav-number">4.</span> <span class="nav-text">透過另一個類別來轉接 (橋接模式)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#透過另一個類別來管理-Provider"><span class="nav-number">5.</span> <span class="nav-text">透過另一個類別來管理 (Provider)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#綜合以上最佳化使用者體驗"><span class="nav-number">6.</span> <span class="nav-text">綜合以上最佳化使用者體驗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">7.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">8.</span> <span class="nav-text">參考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

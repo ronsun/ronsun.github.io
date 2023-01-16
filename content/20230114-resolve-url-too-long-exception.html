@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA" />
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://github.com/identicons/ronsun.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="很多時候我們需要從客戶端從透過 HTTP GET 發送 Reqeust 給服務端，但在之前的一個 ASP.NET Core 的專案中卻因為 Uri 過長而出現了 Invalid URI: The uri string is too long 這樣的錯誤訊息。   這個問題網路上幾乎都是改 Web Service (例如: IIS) 的設定來解決，這是最簡單方便的方法，但如果伺服器很多或是需要經常擴">
+<meta property="og:type" content="article">
+<meta property="og:title" content="透過 GET 發送 HTTP Request 的時候 Uri 過長的問題">
+<meta property="og:url" content="https://ronsun.github.io/content/20230114-resolve-url-too-long-exception.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="很多時候我們需要從客戶端從透過 HTTP GET 發送 Reqeust 給服務端，但在之前的一個 ASP.NET Core 的專案中卻因為 Uri 過長而出現了 Invalid URI: The uri string is too long 這樣的錯誤訊息。   這個問題網路上幾乎都是改 Web Service (例如: IIS) 的設定來解決，這是最簡單方便的方法，但如果伺服器很多或是需要經常擴">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2023-11-26T16:36:29.903Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="透過 GET 發送 HTTP Request 的時候 Uri 過長的問題">
+<meta name="twitter:description" content="很多時候我們需要從客戶端從透過 HTTP GET 發送 Reqeust 給服務端，但在之前的一個 ASP.NET Core 的專案中卻因為 Uri 過長而出現了 Invalid URI: The uri string is too long 這樣的錯誤訊息。   這個問題網路上幾乎都是改 Web Service (例如: IIS) 的設定來解決，這是最簡單方便的方法，但如果伺服器很多或是需要經常擴">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://ronsun.github.io/content/20230114-resolve-url-too-long-exception.html"/>
+
+
+
+
+
+  <title>透過 GET 發送 HTTP Request 的時候 Uri 過長的問題 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ron 2.0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">Simple Is Not Easy</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Searching..." spellcheck="false"
+             type="text" id="local-search-input" />
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20230114-resolve-url-too-long-exception.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ron Sun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">透過 GET 發送 HTTP Request 的時候 Uri 過長的問題</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2023-01-14T02:07:23+08:00">
+                2023-01-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C#</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/NET-Core/" itemprop="url" rel="index">
+                    <span itemprop="name">.NET Core</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>很多時候我們需要從客戶端從透過 HTTP GET 發送 Reqeust 給服務端，但在之前的一個 ASP.NET Core 的專案中卻因為 Uri 過長而出現了 <code>Invalid URI: The uri string is too long</code> 這樣的錯誤訊息。  </p>
+<p>這個問題網路上幾乎都是改 Web Service (例如: IIS) 的設定來解決，這是最簡單方便的方法，但如果伺服器很多或是需要經常擴充伺服器時就會造成不小的困擾，即使伺服器不多也可能因為這些瑣碎的設定造成維護上的不方便，所以這邊提供另外一種解決方案。</p>
+<a id="more"></a>
+<h3 id="X-Http-Method-Override"><a href="#X-Http-Method-Override" class="headerlink" title="X-Http-Method-Override"></a>X-Http-Method-Override</h3><h4 id="緣起"><a href="#緣起" class="headerlink" title="緣起"></a>緣起</h4><p>X-Http-Method-Override 這個 Header 典型的用法是用於用戶端因為各種限制而無法配合服務端的要求使用特定 HTTP Method 時，以<a href="https://www.hanselman.com/blog/http-put-or-delete-not-allowed-use-xhttpmethodoverride-for-your-rest-service-with-aspnet-web-api" target="_blank" rel="noopener">這篇文章</a>為例， 服務端要求的是 <code>PUT /api/Person/4</code>，但客戶端無法配合時，就可以改用 <code>POST /api/Person/4</code> 搭配 X-Http-Method-Override 這個 Header (值為 PUT) 來改變實際上的 HTTP Method，這可以不需要遷就客戶端而讓服務端的設計保持一致且合理。  </p>
+<p>利用這個特性，我們可以試著讓呼叫端改用 HTTP POST 來發送以避開 Web Server 對 Uri 的長度限制。</p>
+<blockquote>
+<p>同理，對 QueryString 的長度限制也適用。</p>
+</blockquote>
+<h4 id="實做"><a href="#實做" class="headerlink" title="實做"></a>實做</h4><p>首先，從<a href="https://vnextcoder.wordpress.com/2018/06/05/how-to-allow-http-method-override-dotnet-core/" target="_blank" rel="noopener">這篇文章</a>我們可以知道 ASP.NET Core 有提供相關的功能來支援 X-Http-Method-Override，但仔細看 <a href="https://github.com/dotnet/aspnetcore/blob/main/src/Middleware/HttpOverrides/src/HttpMethodOverrideExtensions.cs#L20" target="_blank" rel="noopener">UseHttpMethodOverride</a> 和 <a href="https://github.com/dotnet/aspnetcore/blob/main/src/Middleware/HttpOverrides/src/HttpMethodOverrideMiddleware.cs#L13" target="_blank" rel="noopener">HttpMethodOverrideMiddleware</a> 的實做可以發現這並不足以滿足我們的需求，HttpMethodOverrideMiddleware 的實做只包含改變 HTTP Method 但不包含處理 Body 或 QueryString。</p>
+<p>但至少我們知道 ASP.NET Core 對於 X-Http-Method-Override 的支援是透過 Middleware 來完成的，這樣我們就可以自己寫 Middleware 來達到想要的效果。</p>
+<p><strong>建立另外一個 Middleware 來處理 Body 的部分: </strong><br>框架內建的部份我們就沿用就好，所以自製的 Middleware 只需要處理 Body。<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">HttpGetOverrideMiddleware</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">string</span> XHttpMethodOverride = <span class="string">"X-Http-Method-Override"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> RequestDelegate _next;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HttpGetOverrideMiddleware</span>(<span class="params">RequestDelegate next</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        _next = next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Task <span class="title">Invoke</span>(<span class="params">HttpContext context</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> xHttpMethodOverrideValue = context.Request.Headers[XHttpMethodOverride];</span><br><span class="line">        <span class="keyword">if</span> (HttpMethods.IsGet(xHttpMethodOverrideValue))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">/* pseudo code</span></span><br><span class="line"><span class="comment">            var body = ReadFromRequestBody();</span></span><br><span class="line"><span class="comment">            </span></span><br><span class="line"><span class="comment">            string anotherQueryString = string.Empty();</span></span><br><span class="line"><span class="comment">            if (isJson)</span></span><br><span class="line"><span class="comment">            &#123;</span></span><br><span class="line"><span class="comment">                anotherQueryString = ParseBodyFromJsonToQueryString();</span></span><br><span class="line"><span class="comment">            &#125;</span></span><br><span class="line"><span class="comment">            else if (isXml)</span></span><br><span class="line"><span class="comment">            &#123;</span></span><br><span class="line"><span class="comment">                anotherQueryString = ParseBodyFromXmlToQueryString();</span></span><br><span class="line"><span class="comment">            &#125;</span></span><br><span class="line"><span class="comment">            else if (whatever)</span></span><br><span class="line"><span class="comment">            &#123;</span></span><br><span class="line"><span class="comment">                anotherQueryString = ParseBodyFromWhateverToQueryString();</span></span><br><span class="line"><span class="comment">            &#125;</span></span><br><span class="line"><span class="comment">            </span></span><br><span class="line"><span class="comment">            context.Request.QueryString += anotherQueryString;</span></span><br><span class="line"><span class="comment">            </span></span><br><span class="line"><span class="comment">            ClearBody(); // if possible</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> _next(context);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>註冊並使用: </strong><br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Startup</span></span><br><span class="line">&#123;        </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Configure</span>(<span class="params">IApplicationBuilder app</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        app.UseHttpMethodOverride();</span><br><span class="line">        app.UseMiddleware&lt;HttpGetOverrideMiddleware&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如上所示，在 Middleware 那一層將 Body 轉換成 QueryString 再繼續，這樣一來 Web API 的規格仍然是合理的 HTTP GET， 呼叫端也可以透過 HTTP POST 加上 X-Http-Method-Override 來呼叫到只支援 HTTP GET 的 API。</p>
+<p><strong>注意事項: </strong>  </p>
+<ul>
+<li>將 Body 轉換為 QueryString 的過程有很多瑣碎的細節要考慮<ul>
+<li>如果原本的 Uri 就包含 QueryString 的話(不合理，但技術上可能發生)不能覆蓋掉</li>
+<li>Body 讀取後要不要把內容清空?</li>
+<li>不清空 Body 的話要不要允許後面的程式能重複讀取 Body? 這會影響 Body 讀取後要不要回捲</li>
+<li>Body 資料無法用 QueryString</li>
+</ul>
+</li>
+<li>將 Body 轉換為 QueryString 後整個 Uri 會很長，後面的程式直接操作時要小心避免因過長拋出例外，例如:<br><code>new Uri(string)</code> 就有機會因為長度太長而拋出例外。</li>
+<li>Startup 中呼叫 <code>UseHttpMethodOverride()</code> 和註冊 <code>HttpGetOverrideMiddleware</code> 的順序，誰先誰後比較合理?</li>
+</ul>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>這個做法看起來有點暴力，但因為 ASP.NET Core 也是用這樣的方式支援 X-Http-Method-Override 的，所以就跟隨原有的做法下去擴充了。  </p>
+<p>另外值得一提的是， ASP.NET Core 的很多功能 (例如: Health checks) 背後其實都是封裝 Middleware 後提供一個較易用或可讀性較高的 API，知道這點後也能了解很多類似的功能都可以用 Middleware 來實現，只要小心不要弄錯執行順序的話是很好用的。</p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://www.hanselman.com/blog/http-put-or-delete-not-allowed-use-xhttpmethodoverride-for-your-rest-service-with-aspnet-web-api" target="_blank" rel="noopener">HTTP PUT or DELETE not allowed? Use X-HTTP-Method-Override for your REST Service with ASP.NET Web API</a>  </p>
+<p><a href="https://github.com/dotnet/aspnetcore/blob/main/src/Middleware/HttpOverrides/src/HttpMethodOverrideMiddleware.cs#L13" target="_blank" rel="noopener">HttpMethodOverrideMiddleware.cs</a>  </p>
+<p><a href="https://github.com/dotnet/aspnetcore/blob/main/src/Middleware/HttpOverrides/src/HttpMethodOverrideExtensions.cs#L20" target="_blank" rel="noopener">HttpMethodOverrideExtensions.cs</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/content/20221115-do-not-let-extension-methods-of-generic-ienumerable-work-with-efcore.html" rel="next" title="避免在需要使用 EF Core 的環境擴充 IEnumerable< T >">
+                <i class="fa fa-chevron-left"></i> 避免在需要使用 EF Core 的環境擴充 IEnumerable< T >
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/content/20230114-auto-delete-jobs-for-hangfire-with-redis.html" rel="prev" title="Hangfire 搭配 Redis 時的資料清理機制">
+                Hangfire 搭配 Redis 時的資料清理機制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+        <div id="container" class="gitment_container"></div>
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+        <script>
+          const myTheme = {
+            render(state, instance) {
+              const container = document.createElement('div');
+              container.lang = "en-US";
+              container.className = 'gitment-container gitment-root-container';
+              container.appendChild(instance.renderHeader(state, instance));
+              container.appendChild(instance.renderEditor(state, instance));
+              container.appendChild(instance.renderComments(state, instance));
+              container.appendChild(instance.renderFooter(state, instance));
+              return container;
+            }
+          }
+          function showGitment() {
+            var gitment = new Gitment({
+              id: '1673633243000',
+              theme: myTheme,
+              owner: 'ronsun',
+              repo: 'ronsun.github.io.gitment',
+              oauth: {
+                client_id: '749fee720f2039efbbde',
+                client_secret: '3104dc228340ec2814ce1a11a7457d4f2d1effa6'
+              }
+            });
+            gitment.render('container');
+          }
+          showGitment();
+        </script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ron Sun" />
+          <p class="site-author-name" itemprop="name">Ron Sun</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">71</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ronsun" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.linkedin.com/in/ronsun/" target="_blank" title="Linkedin">
+                  
+                    <i class="fa fa-fw fa-linkedin"></i>
+                  
+                    
+                      Linkedin
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Resources
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://referencesource.microsoft.com/" title=".Net Source Code" target="_blank">.Net Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://source.dot.net/" title=".Net Core Source Code" target="_blank">.Net Core Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notfalse.net/" title="NotFalse 技術客" target="_blank">NotFalse 技術客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gist.github.com/ronsun" title="放零碎筆記的 Gist" target="_blank">放零碎筆記的 Gist</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#X-Http-Method-Override"><span class="nav-number">1.</span> <span class="nav-text">X-Http-Method-Override</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#緣起"><span class="nav-number">1.1.</span> <span class="nav-text">緣起</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#實做"><span class="nav-number">1.2.</span> <span class="nav-text">實做</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">2.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">3.</span> <span class="nav-text">參考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

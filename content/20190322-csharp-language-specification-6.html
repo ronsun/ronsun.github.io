@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA" />
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://github.com/identicons/ronsun.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="C# 的版本最近幾年更新的越來越頻繁, 雖然官方有提供版本歷程以及各版本的新特性, 但是還是想整理起來, 在官方提供的語言特性說明外多一點思考並紀錄自己使用上的想法.   本篇是 C# 6.0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# 語言特性更新 - C# 6">
+<meta property="og:url" content="https://ronsun.github.io/content/20190322-csharp-language-specification-6.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="C# 的版本最近幾年更新的越來越頻繁, 雖然官方有提供版本歷程以及各版本的新特性, 但是還是想整理起來, 在官方提供的語言特性說明外多一點思考並紀錄自己使用上的想法.   本篇是 C# 6.0">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2023-11-26T16:36:29.852Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C# 語言特性更新 - C# 6">
+<meta name="twitter:description" content="C# 的版本最近幾年更新的越來越頻繁, 雖然官方有提供版本歷程以及各版本的新特性, 但是還是想整理起來, 在官方提供的語言特性說明外多一點思考並紀錄自己使用上的想法.   本篇是 C# 6.0">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://ronsun.github.io/content/20190322-csharp-language-specification-6.html"/>
+
+
+
+
+
+  <title>C# 語言特性更新 - C# 6 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ron 2.0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">Simple Is Not Easy</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Searching..." spellcheck="false"
+             type="text" id="local-search-input" />
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20190322-csharp-language-specification-6.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ron Sun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">C# 語言特性更新 - C# 6</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-22T23:26:12+08:00">
+                2019-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C#</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/Language-Spec/" itemprop="url" rel="index">
+                    <span itemprop="name">Language Spec</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>C# 的版本最近幾年更新的越來越頻繁, 雖然官方有提供<a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history" target="_blank" rel="noopener">版本歷程</a>以及各版本的新特性, 但是還是想整理起來, 在官方提供的語言特性說明外多一點思考並紀錄自己使用上的想法.  </p>
+<p>本篇是 C# 6.0</p>
+<a id="more"></a>
+<h3 id="C-6"><a href="#C-6" class="headerlink" title="C# 6"></a>C# 6</h3><h4 id="唯讀屬性-Read-only-auto-properties"><a href="#唯讀屬性-Read-only-auto-properties" class="headerlink" title="唯讀屬性 (Read-only auto-properties)"></a>唯讀屬性 (Read-only auto-properties)</h4><p><a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-6#read-only-auto-properties" target="_blank" rel="noopener">Read-only auto-properties</a>  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">string</span> Name &#123; <span class="keyword">get</span>; &#125;</span><br></pre></td></tr></table></figure>
+<p>雖然舊版可以用 <code>public string Name { get; private set; }</code> 最大限度的限縮寫入權, 但仍然不是唯讀(只允許在建構子中改變屬性值), 硬要拆成私有唯讀欄位 (<code>private readonly fieldName</code>) 和 getter 方法的組合又失去了自動實作屬性的優點, 難免可惜.  </p>
+<p>這個特性讓我們能更精細的控制屬性的存取範圍, 用在需要嚴謹的控制屬性的存取範圍的時候很好用.  </p>
+<h4 id="屬性初始化器-Auto-property-initializers"><a href="#屬性初始化器-Auto-property-initializers" class="headerlink" title="屬性初始化器 (Auto-property initializers)"></a>屬性初始化器 (Auto-property initializers)</h4><p><a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-6#auto-property-initializers" target="_blank" rel="noopener">Auto-property initializers</a>  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125; = <span class="string">"Ron"</span>;</span><br></pre></td></tr></table></figure>
+<p>極相似於舊版在建構子中初始化屬性的做法, 舊版做法在建構子中初始化屬性的做法在屬性很多時, 排版上會影響可讀性.<br>這個特性能讓屬性初始化更為簡潔, 更容易避免舊的做法的潛在問題.  </p>
+<blockquote>
+<p>會說”極相似”從建構子初始化屬性代表還是有一點差異的  </p>
+<ul>
+<li>舊的做法: 從建構子初始化屬性其實是預設呼叫 setter 方法, 如果沒有 setter 方法則直接操作自動產生的欄位 (但舊版不支援唯讀屬性)</li>
+<li>新特性: 直接操作自動產生的欄位, 不管有沒有 setter 方法</li>
+</ul>
+<p>以上結論是透過 Msiler 套件產生 IL 碼後觀察的結果</p>
+</blockquote>
+<h4 id="具有運算式主體的函式成員-Expression-bodied-function-members"><a href="#具有運算式主體的函式成員-Expression-bodied-function-members" class="headerlink" title="具有運算式主體的函式成員 (Expression-bodied function members)"></a>具有運算式主體的函式成員 (Expression-bodied function members)</h4><p><a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-6#expression-bodied-function-members" target="_blank" rel="noopener">Expression-bodied function members</a>  </p>
+<p>讓只有單一運算式的方法或唯讀屬性可以用較短的程式碼完成.  </p>
+<p>這個特性我平常其實不太用, 因為下面這三行的長相太相似了, 在閱讀上比較容易造成混淆, 且如果不小心用錯雖然不會造成編譯錯誤, 但含意卻會完全不同, 而增加的方便性給我的感受不是很強烈.<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">string</span> FirstName =&gt; <span class="string">"Ron"</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">string</span> _lastName = <span class="string">"Sun"</span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">GetFullName</span>(<span class="params"></span>) </span>=&gt; <span class="string">$"<span class="subst">&#123;FirstName&#125;</span> <span class="subst">&#123;_lastName&#125;</span>"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>不小心手滑用錯的範例如下, 看起來很詭異, 但依然能正常運作:<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// "=&gt;" 變成 "=" 從唯讀屬性變成欄位</span></span><br><span class="line"><span class="comment">// FirstName 現在看起來像公開欄位, 是私有欄位寫錯變公開了?  </span></span><br><span class="line"><span class="comment">// 還是應該是唯讀屬性, 只是不小心少了一個 "&gt;"?</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">string</span> FirstName = <span class="string">"Ron"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// "=" 變成 "=&gt;" 從欄位變成唯讀屬性</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">string</span> _lastName =&gt; <span class="string">"Sun"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 少了 "()" 從方法變成唯讀屬性</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">string</span> GetFullName =&gt; <span class="string">$"<span class="subst">&#123;FirstName&#125;</span> <span class="subst">&#123;_lastName&#125;</span>"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>其實如果專案有良好的程式碼規範, 從命名基本上就可以分辨出這個成員應該要是欄位, 屬性還是方法, 加上工程師如果夠謹慎, 上面的失誤應該不會發生, 但假設專案沒有良好的規範又加上手滑打錯的狀況, 後面維護的人就可能會很混亂.</p>
+<p>這不是說這個特性不好, 如果對團隊成員的嚴謹度與基礎有信心, 用這個特性也是很不錯的.  </p>
+<h4 id="using-static"><a href="#using-static" class="headerlink" title="using static"></a>using static</h4><p><a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-6#using-static" target="_blank" rel="noopener">using static</a>  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> <span class="keyword">static</span> ConsoleApp1.Person;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="keyword">string</span>[] args</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> nestedPerson = <span class="keyword">new</span> NestedPerson();</span><br><span class="line">        <span class="keyword">var</span> fullName = GetFullName();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">string</span> <span class="title">GetFullName</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Ron Sun"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">NestedPerson</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125; = <span class="string">"Ron"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上面的例子來說, 舊的做法如果要初始化 <code>NestedModel</code> 要寫成 <code>new Model.NestedModel</code>, 呼叫靜態方法 <code>GetFullName()</code> 要寫成 <code>Model.GetFullName()</code></p>
+<p>這個特性我比較不喜歡, 主要是巢狀類別跟靜態方法這樣使用或呼叫的話, 外觀上跟一般類別或該類別內的方法呼叫一樣, 閱讀時如果沒有進去類別或方法中看, 難以分辨他究竟是不是該類別內部的方法.  </p>
+<h4 id="Null-條件運算子-Null-conditional-operators"><a href="#Null-條件運算子-Null-conditional-operators" class="headerlink" title="Null 條件運算子 (Null-conditional operators)"></a>Null 條件運算子 (Null-conditional operators)</h4><p><a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-6#null-conditional-operators" target="_blank" rel="noopener">Null-conditional operators</a>  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">string</span> name = person?.Name;</span><br><span class="line"><span class="keyword">string</span> nameWithDefault = person?.Name ?? <span class="string">"John"</span>;</span><br><span class="line"><span class="keyword">var</span> company = person?.Team?.Company;</span><br><span class="line"><span class="keyword">int</span>? age = dictionary?[<span class="string">"Ron"</span>];</span><br><span class="line"><span class="keyword">int</span> ageWithDefault = dictionary?[<span class="string">"Ron"</span>] ?? <span class="number">-1</span>;</span><br></pre></td></tr></table></figure>
+<p>用來省下空值判斷, 要取得物件中的屬性值的時候很好用, 也可以用在需要存取陣列或是索引子(indexer) 的情境.  </p>
+<p><strong>這個特性神好用, 搭配 <code>??</code> 更神</strong>, 可以縮短非常多空值判斷的程式碼, 尤其是像 <code>model.Nested.Property</code> 這種巢狀的存取更明顯, 就上面的範例來說, 舊的做法就明顯冗長, 如下面比較:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// string name = person?.Name;</span></span><br><span class="line"><span class="keyword">string</span> name = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">if</span>(person != <span class="literal">null</span>)</span><br><span class="line">&#123;</span><br><span class="line">    name = person.Name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// string nameWithDefault = person?.Name ?? "John";</span></span><br><span class="line"><span class="keyword">string</span> nameWithDefault = <span class="string">"John"</span>;</span><br><span class="line"><span class="keyword">if</span>(person != <span class="literal">null</span>)</span><br><span class="line">&#123;</span><br><span class="line">    nameWithDefault = person.Name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Company company = person?.Team?.Company;</span></span><br><span class="line">Company company = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">if</span>(person != <span class="literal">null</span> &amp;&amp; person.Team != <span class="literal">null</span>)</span><br><span class="line">&#123;</span><br><span class="line">    company = person.Team.Company;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// int? age = dictionary?["Ron"];</span></span><br><span class="line"><span class="comment">// int ageWithDefault = dictionary?["Ron"] ?? -1;</span></span><br><span class="line"><span class="comment">// ...依此類推</span></span><br></pre></td></tr></table></figure>
+<p>舊的做法的範例還是為了避免巢狀 if-else 而簡化過的, 如果是直覺式的 if-else 一層層科下去, 差異就更明顯了.  </p>
+<h4 id="字串插補-String-interpolation"><a href="#字串插補-String-interpolation" class="headerlink" title="字串插補 (String interpolation)"></a>字串插補 (String interpolation)</h4><p><a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-6#string-interpolation" target="_blank" rel="noopener">String interpolation</a>  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">string</span> FullName =&gt; <span class="string">$"<span class="subst">&#123;FirstName&#125;</span> <span class="subst">&#123;LastName&#125;</span>"</span>;</span><br></pre></td></tr></table></figure>
+<p><strong>神好用, 真心不騙</strong>, 這個範例看起來可能沒有感覺, 會覺得用 <code>string.Format()</code> 做也不錯啊, 但情境夠複雜的話無疑是海放最古典的字串相加, 也避免了 <code>string.Format()</code> 遇到大量參數的時候容易排錯順序的問題, 如果有用過組過 SOAP 用的 XML 內容的話, 就能明顯感受到它的威力了.  </p>
+<p>另外, 搭配 <code>@</code> 使用, 效果更好.  </p>
+<p>這個特性還有有很多進階用法, 官方資源如下:</p>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/csharp/tutorials/intro-to-csharp/interpolated-strings" target="_blank" rel="noopener">Use string interpolation to construct formatted strings</a>  </li>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/tokens/interpolated" target="_blank" rel="noopener">$ - string interpolation (C# Reference)</a></li>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/csharp/tutorials/string-interpolation#how-to-specify-a-format-string-for-an-interpolated-expression" target="_blank" rel="noopener">String interpolation in C#</a></li>
+</ul>
+<h4 id="例外狀況篩選條件-Exception-filters"><a href="#例外狀況篩選條件-Exception-filters" class="headerlink" title="例外狀況篩選條件 (Exception filters)"></a>例外狀況篩選條件 (Exception filters)</h4><p><a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-6#exception-filters" target="_blank" rel="noopener">Exception filters</a>  </p>
+<p>這個特性還沒機會用到, 不過目前看起來有兩個好處:  </p>
+<ul>
+<li>讓 Catch 區塊的情境更精細, 減少 Catch 區塊內的條件判斷.  </li>
+<li>攔截例外前多了一個機制可以判斷真的要攔截這個例外或是讓他繼續往外拋, 可以<strong>避免掉有條件重拋例外所造成的 StackTrace 被改變的問題</strong>, 重拋例外產生的問題之前寫過一篇 <a href="/content/20180131-correctly-re-throw-exception.html" title="正確重拋例外">正確重拋例外</a>.  </li>
+</ul>
+<h4 id="nameof-運算式-The-nameof-expression"><a href="#nameof-運算式-The-nameof-expression" class="headerlink" title="nameof 運算式 (The nameof expression)"></a>nameof 運算式 (The nameof expression)</h4><p><a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-6#the-nameof-expression" target="_blank" rel="noopener">The nameof expression</a>  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// output: Method</span></span><br><span class="line">Console.WriteLine(<span class="keyword">nameof</span>(Class1.Method));</span><br><span class="line"></span><br><span class="line"><span class="comment">// output: Property</span></span><br><span class="line">Console.WriteLine(<span class="keyword">nameof</span>(Class1.Property));</span><br><span class="line"></span><br><span class="line"><span class="comment">// output: Property</span></span><br><span class="line">Console.WriteLine(<span class="keyword">nameof</span>(Class1.NestedClass.Property));</span><br></pre></td></tr></table></figure>
+<p>好東西, 這個特性比較偏可維護性的優化, 很在意可維護性的工程師會很愛用.  </p>
+<p>需要在字串中放型別名稱, 方法名稱, 欄位名稱, 屬性名稱等等的情境時, 舊方法都是直接寫死字串, 這樣會導致重新命名的時候 visual studio 會將這些字串忽略掉, 老舊專案的 log 中就很常出現與實際不吻合的方法名稱.  </p>
+<p>另外一個情境是反射, 如果專案中有用反射存取特定成員或呼叫方法, 在重新命名的時候往往會被忽略, 偏偏這種情境只能等到執行階段才會被發現, 導致重新命名風險提高, 但使用 <code>nameof</code> 之後, 可以避免這類問題, 重新命名時也可以更安心.  </p>
+<h4 id="Catch-和-Finally-區塊中的-Await"><a href="#Catch-和-Finally-區塊中的-Await" class="headerlink" title="Catch 和 Finally 區塊中的 Await"></a>Catch 和 Finally 區塊中的 Await</h4><p><a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-6#await-in-catch-and-finally-blocks" target="_blank" rel="noopener">Await in Catch and Finally blocks</a>  </p>
+<h4 id="Initialize-associative-collections-using-indexers"><a href="#Initialize-associative-collections-using-indexers" class="headerlink" title="Initialize associative collections using indexers"></a>Initialize associative collections using indexers</h4><p><a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-6#initialize-associative-collections-using-indexers" target="_blank" rel="noopener">Initialize associative collections using indexers</a>  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> dic = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">string</span>&gt;()</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta"><span class="meta-string">"key1"</span></span>] = <span class="string">"value1"</span>,</span><br><span class="line">    [<span class="meta"><span class="meta-string">"key2"</span></span>] = <span class="string">"value2"</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>舊的寫法是如下面這樣.<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> dic = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">string</span>&gt;()</span><br><span class="line">&#123;</span><br><span class="line">    &#123; <span class="string">"key1"</span>, <span class="string">"value1"</span> &#125;,</span><br><span class="line">    &#123; <span class="string">"key2"</span>, <span class="string">"value2"</span> &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>恩…乍看之下就是用換個初始化的語法, 但內部運作卻是不一樣的, 讓我們繼續看下去…  </p>
+<p>透過工具看了一下編譯出來的 IL 碼發現兩者實際的運作並不同, 舊的做法呼叫的是 <code>Add(System.String,System.String)</code> 方法, 而 C# 6 的語法呼叫的是 <code>set_Item(System.String,System.String)</code>, 而這樣的差別會在某些情境下使得運作結果不同.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// var dic = new Dictionary&lt;string, string&gt;()</span><br><span class="line">// &#123;</span><br><span class="line">// &#123; &quot;key1&quot;, &quot;value1&quot; &#125;</span><br><span class="line">// &#125;;</span><br><span class="line">IL_002B newobj    System.Void System.Collections.Generic.Dictionary`2&lt;System.String,System.String&gt;::.ctor()</span><br><span class="line">IL_0030 dup</span><br><span class="line">IL_0031 ldstr     &quot;key1&quot;</span><br><span class="line">IL_0036 ldstr     &quot;value1&quot;</span><br><span class="line">IL_003B callvirt  System.Void System.Collections.Generic.Dictionary`2&lt;System.String,System.String&gt;::Add(System.String,System.String)</span><br><span class="line">IL_0040 nop</span><br><span class="line">IL_0041 stloc.0</span><br><span class="line">// var dic2 = new Dictionary&lt;string, string&gt;()</span><br><span class="line">// &#123;</span><br><span class="line">// [&quot;key1&quot;] = &quot;value1&quot;</span><br><span class="line">// &#125;;</span><br><span class="line">IL_0042 newobj    System.Void System.Collections.Generic.Dictionary`2&lt;System.String,System.String&gt;::.ctor()</span><br><span class="line">IL_0047 dup</span><br><span class="line">IL_0048 ldstr     &quot;key1&quot;</span><br><span class="line">IL_004D ldstr     &quot;value1&quot;</span><br><span class="line">IL_0052 callvirt  System.Void System.Collections.Generic.Dictionary`2&lt;System.String,System.String&gt;::set_Item(System.String,System.String)</span><br><span class="line">IL_0057 nop</span><br><span class="line">IL_0058 stloc.1</span><br></pre></td></tr></table></figure></p>
+<p>根據官方說明, 新的語法是個 “Index Initializers”, 搭配 <a href="http://www.informit.com/articles/article.aspx?p=2424333" target="_blank" rel="noopener">New Ways to Initialize Collections in C# 6</a> 這篇大神文章中的描述:</p>
+<blockquote>
+<p>There is one caution. The new initializer syntax calls the indexer method to add items to the collection. That same indexer method replaces items as well as adding items.  </p>
+</blockquote>
+<p>可以發現新的寫法由於是直接操作 indexer, 所以<strong>當索引 (key) 重複的時候會直接將值覆蓋, 不同於舊版做法的拋出例外</strong>, 可以由下面兩段程式碼來比較兩者差異<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// throw an exception because of duplicate key</span></span><br><span class="line"><span class="keyword">var</span> dic = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">string</span>&gt;()</span><br><span class="line">&#123;</span><br><span class="line">    &#123; <span class="string">"k"</span>, <span class="string">"v1"</span> &#125;,</span><br><span class="line">    &#123; <span class="string">"k"</span>, <span class="string">"v2"</span> &#125;</span><br><span class="line">&#125;;</span><br><span class="line">Console.WriteLine(dic[<span class="string">"k"</span>]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> dic2 = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">string</span>&gt;()</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta"><span class="meta-string">"k"</span></span>] = <span class="string">"v1"</span>,</span><br><span class="line">    [<span class="meta"><span class="meta-string">"k"</span></span>] = <span class="string">"v2"</span>,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// the value should be "v2" because the second value of key "k" replace first one</span></span><br><span class="line">Console.WriteLine(dic2[<span class="string">"k"</span>]);</span><br></pre></td></tr></table></figure></p>
+<h4 id="Extension-Add-methods-in-collection-initializers"><a href="#Extension-Add-methods-in-collection-initializers" class="headerlink" title="Extension Add methods in collection initializers"></a>Extension Add methods in collection initializers</h4><p><a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-6#extension-add-methods-in-collection-initializers" target="_blank" rel="noopener">Extension Add methods in collection initializers</a>  </p>
+<p>這個又需要<a href="http://www.informit.com/articles/article.aspx?p=2424333" target="_blank" rel="noopener">大神文章</a>救援了.  </p>
+<p>總之就是讓下方語法預設呼叫另外寫的擴充方法 <code>Add</code> 使得初始化能在語意上更為順暢.<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myCollection = <span class="keyword">new</span> MyStringCollection()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"Ron"</span>,</span><br><span class="line">    <span class="string">"Sun"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="Improved-overload-resolution"><a href="#Improved-overload-resolution" class="headerlink" title="Improved overload resolution"></a>Improved overload resolution</h4><p><a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-6#improved-overload-resolution" target="_blank" rel="noopener">Improved overload resolution</a>  </p>
+<h4 id="Deterministic-compiler-output"><a href="#Deterministic-compiler-output" class="headerlink" title="Deterministic compiler output"></a>Deterministic compiler output</h4><p><a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-6#deterministic-compiler-output" target="_blank" rel="noopener">Deterministic compiler output</a></p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>本來以為對 C# 特性已經算熟了, 沒想到還是有不少平常沒用到就以為他不存或是一直有錯誤理解的特性, 看來要找個時間一個一個仔細看看了.  </p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="http://www.informit.com/articles/article.aspx?p=2424333" target="_blank" rel="noopener">New Ways to Initialize Collections in C# 6</a><br><a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-6" target="_blank" rel="noopener">What’s New in C# 6</a></p>
+<hr>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/content/20190317-webapi-response-data-format.html" rel="next" title="Web API 回傳資料的方式">
+                <i class="fa fa-chevron-left"></i> Web API 回傳資料的方式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/content/20190518-rsa-by-dotnet.html" rel="prev" title="RSA 加解密與簽名">
+                RSA 加解密與簽名 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+        <div id="container" class="gitment_container"></div>
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+        <script>
+          const myTheme = {
+            render(state, instance) {
+              const container = document.createElement('div');
+              container.lang = "en-US";
+              container.className = 'gitment-container gitment-root-container';
+              container.appendChild(instance.renderHeader(state, instance));
+              container.appendChild(instance.renderEditor(state, instance));
+              container.appendChild(instance.renderComments(state, instance));
+              container.appendChild(instance.renderFooter(state, instance));
+              return container;
+            }
+          }
+          function showGitment() {
+            var gitment = new Gitment({
+              id: '1553268372000',
+              theme: myTheme,
+              owner: 'ronsun',
+              repo: 'ronsun.github.io.gitment',
+              oauth: {
+                client_id: '749fee720f2039efbbde',
+                client_secret: '3104dc228340ec2814ce1a11a7457d4f2d1effa6'
+              }
+            });
+            gitment.render('container');
+          }
+          showGitment();
+        </script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ron Sun" />
+          <p class="site-author-name" itemprop="name">Ron Sun</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">71</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ronsun" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.linkedin.com/in/ronsun/" target="_blank" title="Linkedin">
+                  
+                    <i class="fa fa-fw fa-linkedin"></i>
+                  
+                    
+                      Linkedin
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Resources
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://referencesource.microsoft.com/" title=".Net Source Code" target="_blank">.Net Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://source.dot.net/" title=".Net Core Source Code" target="_blank">.Net Core Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notfalse.net/" title="NotFalse 技術客" target="_blank">NotFalse 技術客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gist.github.com/ronsun" title="放零碎筆記的 Gist" target="_blank">放零碎筆記的 Gist</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#C-6"><span class="nav-number">1.</span> <span class="nav-text">C# 6</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#唯讀屬性-Read-only-auto-properties"><span class="nav-number">1.1.</span> <span class="nav-text">唯讀屬性 (Read-only auto-properties)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#屬性初始化器-Auto-property-initializers"><span class="nav-number">1.2.</span> <span class="nav-text">屬性初始化器 (Auto-property initializers)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具有運算式主體的函式成員-Expression-bodied-function-members"><span class="nav-number">1.3.</span> <span class="nav-text">具有運算式主體的函式成員 (Expression-bodied function members)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#using-static"><span class="nav-number">1.4.</span> <span class="nav-text">using static</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Null-條件運算子-Null-conditional-operators"><span class="nav-number">1.5.</span> <span class="nav-text">Null 條件運算子 (Null-conditional operators)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#字串插補-String-interpolation"><span class="nav-number">1.6.</span> <span class="nav-text">字串插補 (String interpolation)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例外狀況篩選條件-Exception-filters"><span class="nav-number">1.7.</span> <span class="nav-text">例外狀況篩選條件 (Exception filters)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nameof-運算式-The-nameof-expression"><span class="nav-number">1.8.</span> <span class="nav-text">nameof 運算式 (The nameof expression)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Catch-和-Finally-區塊中的-Await"><span class="nav-number">1.9.</span> <span class="nav-text">Catch 和 Finally 區塊中的 Await</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Initialize-associative-collections-using-indexers"><span class="nav-number">1.10.</span> <span class="nav-text">Initialize associative collections using indexers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Extension-Add-methods-in-collection-initializers"><span class="nav-number">1.11.</span> <span class="nav-text">Extension Add methods in collection initializers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Improved-overload-resolution"><span class="nav-number">1.12.</span> <span class="nav-text">Improved overload resolution</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Deterministic-compiler-output"><span class="nav-number">1.13.</span> <span class="nav-text">Deterministic compiler output</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">2.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">3.</span> <span class="nav-text">參考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

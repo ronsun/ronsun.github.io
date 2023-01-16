@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA" />
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://github.com/identicons/ronsun.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="很多 .NET 開發人員對於 StyleCop 應該是不陌生, 它能有效地協助我們讓程式碼的風格保持一致, 預設的規則其實已經足夠了, 但有些團隊可能有自已的特殊編碼規範, 這些編碼規範甚至是跟預設的規則是衝突的, 這時候就需要自己寫規則來套用.   這篇主要是針對自訂規則可能會面臨的問題所記錄的, 尤其是要怎麼測試這些規則沒寫錯, 所以對於一些 google 就可以很容易找到的部分只會簡單帶過,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自訂 StyleCop 規則與測試方式">
+<meta property="og:url" content="https://ronsun.github.io/content/20181208-custom-stylecop-rules-and-testing.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="很多 .NET 開發人員對於 StyleCop 應該是不陌生, 它能有效地協助我們讓程式碼的風格保持一致, 預設的規則其實已經足夠了, 但有些團隊可能有自已的特殊編碼規範, 這些編碼規範甚至是跟預設的規則是衝突的, 這時候就需要自己寫規則來套用.   這篇主要是針對自訂規則可能會面臨的問題所記錄的, 尤其是要怎麼測試這些規則沒寫錯, 所以對於一些 google 就可以很容易找到的部分只會簡單帶過,">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://ronsun.github.io/content/20181208-custom-stylecop-rules-and-testing/customer-rules-setting.png">
+<meta property="og:updated_time" content="2023-11-26T16:36:29.803Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="自訂 StyleCop 規則與測試方式">
+<meta name="twitter:description" content="很多 .NET 開發人員對於 StyleCop 應該是不陌生, 它能有效地協助我們讓程式碼的風格保持一致, 預設的規則其實已經足夠了, 但有些團隊可能有自已的特殊編碼規範, 這些編碼規範甚至是跟預設的規則是衝突的, 這時候就需要自己寫規則來套用.   這篇主要是針對自訂規則可能會面臨的問題所記錄的, 尤其是要怎麼測試這些規則沒寫錯, 所以對於一些 google 就可以很容易找到的部分只會簡單帶過,">
+<meta name="twitter:image" content="https://ronsun.github.io/content/20181208-custom-stylecop-rules-and-testing/customer-rules-setting.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://ronsun.github.io/content/20181208-custom-stylecop-rules-and-testing.html"/>
+
+
+
+
+
+  <title>自訂 StyleCop 規則與測試方式 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ron 2.0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">Simple Is Not Easy</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Searching..." spellcheck="false"
+             type="text" id="local-search-input" />
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20181208-custom-stylecop-rules-and-testing.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ron Sun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">自訂 StyleCop 規則與測試方式</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-08T18:08:42+08:00">
+                2018-12-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Tools/" itemprop="url" rel="index">
+                    <span itemprop="name">Tools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>很多 .NET 開發人員對於 StyleCop 應該是不陌生, 它能有效地協助我們讓程式碼的風格保持一致, 預設的規則其實已經足夠了, 但有些團隊可能有自已的特殊編碼規範, 這些編碼規範甚至是跟預設的規則是衝突的, 這時候就需要自己寫規則來套用.  </p>
+<p>這篇主要是針對自訂規則可能會面臨的問題所記錄的, 尤其是要怎麼測試這些規則沒寫錯, 所以對於一些 google 就可以很容易找到的部分只會簡單帶過, 另外由於 StyleCop 也滿大的, 所以有些太細的設定或是內部運作這篇也不打算深入探索, 等之後有需要或是有興趣再根據各個主題或面向來專題探討.  </p>
+<a id="more"></a>
+<h3 id="安裝-StyleCop"><a href="#安裝-StyleCop" class="headerlink" title="安裝 StyleCop"></a>安裝 StyleCop</h3><p>安裝 StyleCop 的方式隨便問一下 google 大師就有很多教學了, 可以從 NuGet 找到 StyleCop.Analyzers 裝在各自專案上也可以從 Tools &gt; Extensions and Updates 找到 StyleCop 裝到本機電腦上, 我會比較推薦從 Extensions and Updates 裡面裝, 因為只有需要裝一個 StyleCop 擴充元件就能夠套用到所有的專案上, 各專案只需要編輯各自的設定檔就可以了, 非常方便.  </p>
+<p>安裝後的目錄在 <code>C:\Users\{username}\AppData\Local\Microsoft\VisualStudio\{version}\Extensions\{key}</code> 中, 其中 username 是本機使用者登入的名稱, version 是 visual studio 的版本號, key 是隨機產生的, 如果安裝很多擴充元件的話要一個個點進去找一下才知道哪個是 StyleCop 的.  </p>
+<h3 id="使用-StyleCop"><a href="#使用-StyleCop" class="headerlink" title="使用 StyleCop"></a>使用 StyleCop</h3><p>都是 visual studio 上面點一點就好的, 教學資源也極多, 基本的使用就不多說了.  </p>
+<h4 id="編輯-StyleCop-設定檔"><a href="#編輯-StyleCop-設定檔" class="headerlink" title="編輯 StyleCop 設定檔"></a>編輯 StyleCop 設定檔</h4><p>編輯 StyleCop 設定檔的方式一般只要從 visual studio 上開啟圖形介面就可以編輯專案要用的設定了, 另外一種方式是使用 StyleCop 的安裝目錄 (如上一段所說的位置) 中的 StyleCop.SettingsEditor.exe 來編輯, 雙擊設定檔或是用命令提示字元下 <code>StyleCop.SettingsEditor.exe Settings.StyleCop</code> 指令就可以, 其中 Settings.StyleCop 是設定檔的路徑, 這個工具是用來編輯設定檔的, 所以不能建立一個新的設定檔, 要編輯的設定檔也必須是符合規定的格式, 不然讀取會錯誤.  </p>
+<p>比起在 visual studio 中開啟圖形介面編輯設定檔, 用工具編輯雖然看起來不實用, 但是在需要製作很多份不同設定檔的時候卻很適合 (例如要測試自訂規則的驗證結果時), 這部分後面會說.  </p>
+<blockquote>
+<p>如果覺得 StyleCop.SettingsEditor.exe 不能建立一個新的設定檔很不方便, 可以把原始碼 fork 出來, 自己改造成適用的小工具.  </p>
+</blockquote>
+<h3 id="自訂規則"><a href="#自訂規則" class="headerlink" title="自訂規則"></a>自訂規則</h3><p>自訂規則的部分步驟還不少, 而且很多情況下做錯也不會跳錯誤訊息, 所以花了不少時間在 try and error 上, <a href="https://github.com/ronsun/ExtendedStyleCopRules" target="_blank" rel="noopener">我在 GitHub 上面有放了一個簡單的自訂規則的專案 - ExtendedStyleCopRules</a>, 這一段的說明會以這個專案的內容當作範例.  </p>
+<h4 id="依賴組件"><a href="#依賴組件" class="headerlink" title="依賴組件"></a>依賴組件</h4><p>有幾個需要依賴的組件</p>
+<ul>
+<li>StyleCop</li>
+<li>StyleCop.CSharp</li>
+</ul>
+<p>依賴的組件可以選擇從 NuGet 裝, 也可以直接依賴到前面從 Extensions and Updates 裝好的 StyleCop 的安裝目錄下, <strong>這邊是建議直接從 NuGet 裝</strong>, 因為 StyleCop 擴充元件的安裝資料夾名稱是隨機的, 換台電腦就找不到引用了, 很難管理.  </p>
+<p>另外這邊要注意一下, 依賴的組件如果是從 NuGet 抓的, 必須跟從 Extensions and Updates 上安裝的 StyleCop 版號一致, 例如: 如果我從 Extensions 上安裝 StyleCop 6.0, 開發自訂規則時依賴的是從 NuGet 上面安裝的 StyleCop, 這樣編譯出來的組件無法讓 StyleCop 正確載入.  </p>
+<h4 id="規則設定檔"><a href="#規則設定檔" class="headerlink" title="規則設定檔"></a>規則設定檔</h4><p>要讓 StyleCop 能夠將自定規則的相關設定放在設定頁面, 需要一個 xml 格式的設定檔, 並將這個檔案屬性設定為編譯成 Embedded Resource, 這邊以 ExtendedNamingRules.xml 以及一張設定截圖為例.  </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8" ?&gt; </span><br><span class="line"><span class="tag">&lt;<span class="name">SourceAnalyzer</span> <span class="attr">Name</span>=<span class="string">"Extend Naming Rules"</span> <span class="attr">xmlns</span>=<span class="string">"https://github.com/ronsun/ExtendedStyleCopRules"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">Description</span>&gt;</span></span><br><span class="line">    Extended naming rules.</span><br><span class="line">  <span class="tag">&lt;/<span class="name">Description</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">Rules</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Rule</span> <span class="attr">Name</span>=<span class="string">"PrivateFieldNamesMustStartWithUnderscore"</span> <span class="attr">CheckId</span>=<span class="string">"EA1301"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">Context</span>&gt;</span>Private filed name must start with Underscore<span class="tag">&lt;/<span class="name">Context</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">Description</span>&gt;</span>Validates that names of private field must start with an underscore.<span class="tag">&lt;/<span class="name">Description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">Rule</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">Rules</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">SourceAnalyzer</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<img src="/content/20181208-custom-stylecop-rules-and-testing/customer-rules-setting.png"> 
+<ul>
+<li><code>xmlns=&quot;....&quot;</code> : 非必要, 只是沒有自動提示 (IntelliSense) 要寫這些 XML 太難過了, 所以自己刻了一個 <a href="https://github.com/ronsun/ExtendedStyleCopRules/blob/master/src/ExtendedStyleCopRules/SourceAnalyzer.xsd" target="_blank" rel="noopener">SourceAnalyzer.xsd</a> 來引用.  </li>
+<li><code>Name=&quot;Extend Naming Rules&quot;</code> : 這個 SourceAnalyzer 的名字, 會顯示在圖中 A 點.  </li>
+<li><code>&lt;Description&gt;Extended naming rules.&lt;/Description&gt;</code> : 這個 SourceAnalyzer 的描述, 點擊圖中 A 點時會顯示在圖中 C 點的位置.  </li>
+<li><code>Name=&quot;PrivateFieldNamesMustStartWithUnderscore&quot;</code> : 規則名字, 顯示在圖中 B 點, 必須是大寫字母開頭.  </li>
+<li><code>CheckId=&quot;EA1301&quot;</code> : 規則代號, 圖中 B 點, 也是違反規則時顯示在結果視窗中的代號, 必須是兩個大寫字母加四個數字.  </li>
+<li><code>&lt;Context&gt;.....&lt;/Context&gt;</code> : 提示訊息, 違反規則時顯示在結果視窗中的訊息之一.  </li>
+<li><code>&lt;Description&gt;Validates that names...&lt;/Description&gt;</code> : 規則描述, 點擊圖中 B 點時會顯示在圖中 C 點的位置.  </li>
+</ul>
+<blockquote>
+<p>其實這個 XML 可以很複雜, 這個範例只是最簡單的情境, StyleCop 的官方文件區也有一些簡易說明, 不過如果要完整的內容的話, 可能需要去整合 StyleCop 所有規則的設定檔, 或是直接爬程式碼分析 XML 的完整結構了.  </p>
+</blockquote>
+<h4 id="程式碼"><a href="#程式碼" class="headerlink" title="程式碼"></a>程式碼</h4><p>先上程式碼再來慢慢說明.<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">SourceAnalyzer(typeof(CsParser))</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExtendedNamingRules</span> : <span class="title">SourceAnalyzer</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">AnalyzeDocument</span>(<span class="params">CodeDocument document</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        CsDocument csdocument = (CsDocument)document;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (csdocument.RootElement != <span class="literal">null</span> &amp;&amp; !csdocument.RootElement.Generated)</span><br><span class="line">        &#123;</span><br><span class="line">            csdocument.WalkDocument(<span class="keyword">new</span> CodeWalkerElementVisitor&lt;<span class="keyword">object</span>&gt;(VisitElement));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">bool</span> <span class="title">VisitElement</span>(<span class="params">CsElement element, CsElement parentElement, <span class="keyword">object</span> context</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// not target element</span></span><br><span class="line">        <span class="keyword">if</span> (element.Generated ||</span><br><span class="line">            element.ElementType != ElementType.Field ||</span><br><span class="line">            element.AccessModifier != AccessModifierType.Private)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!element.Declaration.Name.StartsWith(<span class="string">"_"</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            AddViolation(element, Rules.PrivateFieldNamesMustStartWithUnderscore);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>StyleCop 是把原始碼拆解成 Element, Statement 和 Expression, 然後走訪所有節點並根據委派方法決定驗證邏輯與行為.  </p>
+<p>這個類別需要使用 SourceAnalyzer 這個 Attribute 並繼承 SourceAnalyzer 後覆寫相關的分析方法 <code>void AnalyzeDocument(CodeDocument document)</code>, 接著 <code>WalkDocument(...)</code> 這邊會開始走訪所有程式碼, 然後根據委派方法 <code>VisitElement(...)</code> 來判定違規與否以及添加違規訊息等, 另外 WalkDocument 方法還有其他多載能另外多帶兩個參數, 是用來驗證 Statement 和 Expression 的委派方法.  </p>
+<blockquote>
+<p>後來在 Element, Statement 和 Expression 外又多了一個 QueryClause, 看起來是針對 LINQ 語句做的, 例如 <code>var q = from prod in db.Prodcut where prod.Category == &quot;shoes&quot;</code>, WalkDocument 方法有一個多載提供委派方法 queryClauseCallback, 用途和其他委派應該差不多.  </p>
+</blockquote>
+<p>在刻這些規則時發現, 對於複雜一點的規則很難下手, 其中一個原因是不知道 StyleCop 是把程式碼拆解成什麼樣子, 驗證時需要用的拆解後的程式碼片段也不知道從哪裡得到, 這時候一個方法是去看 StyleCop 的原始碼, 或是偷懶一點, 利用測試在 debug 模式下看 CsDocument 的完整結構與相對應的值, 測試的方式後面會提到.  </p>
+<h4 id="測試自訂規則"><a href="#測試自訂規則" class="headerlink" title="測試自訂規則"></a>測試自訂規則</h4><p>這個測試的目的是測試自訂規則是不是能正確驗證程式碼, 比較像整合測試.  </p>
+<p>這邊的範例需要依賴一些組件, 從 NuGet 安裝即可</p>
+<ul>
+<li>StyleCop (必要)</li>
+<li>NUnit (測試框架)</li>
+<li>FluentAssertions (Assert 用的套件)</li>
+</ul>
+<p>下面是主要的程式碼片段與說明<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">TestFixture()</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExtendedStyleCopRulesTests</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestCaseSource(nameof(TestCase_RuleTest))</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">RuleTest</span>(<span class="params"><span class="keyword">string</span> checkId, StyleCopViolations expectedValidationResult</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// arrange</span></span><br><span class="line">        Directory.CreateDirectory(Locations.ValidationResultDirectory);</span><br><span class="line">        <span class="keyword">string</span> validationResultPath = Path.Combine(Locations.ValidationResultDirectory, <span class="string">$"<span class="subst">&#123;checkId&#125;</span>.xml"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">string</span> ruleSettingPath = Path.Combine(Locations.TestDataDirectory, checkId, <span class="string">$"<span class="subst">&#123;checkId&#125;</span>.StyleCop"</span>);</span><br><span class="line">        <span class="keyword">string</span> codePath = Path.Combine(Locations.TestDataDirectory, checkId, <span class="string">$"<span class="subst">&#123;checkId&#125;</span>.cs"</span>);</span><br><span class="line"></span><br><span class="line">        CodeProject project = <span class="keyword">new</span> CodeProject(</span><br><span class="line">            checkId.GetHashCode(),</span><br><span class="line">            Locations.BaseDirectory,</span><br><span class="line">            <span class="keyword">new</span> Configuration(<span class="literal">null</span>),</span><br><span class="line">            <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        StyleCopConsole console = <span class="keyword">new</span> StyleCopConsole(</span><br><span class="line">            ruleSettingPath,</span><br><span class="line">            <span class="literal">false</span>,</span><br><span class="line">            validationResultPath,</span><br><span class="line">            Locations.AddInDirectory,</span><br><span class="line">            <span class="literal">false</span>,</span><br><span class="line">            Locations.BaseDirectory);</span><br><span class="line"></span><br><span class="line">        console.Core.Environment.AddSourceCode(project, codePath, <span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// act</span></span><br><span class="line">        console.Start(<span class="keyword">new</span> CodeProject[] &#123; project &#125;, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">        StyleCopViolations actualValidationResult;</span><br><span class="line">        <span class="keyword">using</span> (Stream s = <span class="keyword">new</span> FileStream(validationResultPath, FileMode.Open))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> serializer = <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(StyleCopViolations));</span><br><span class="line">            actualValidationResult = (StyleCopViolations)serializer.Deserialize(s);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// assert</span></span><br><span class="line">        <span class="keyword">bool</span> testDataExist = File.Exists(ruleSettingPath) &amp;&amp; File.Exists(codePath);</span><br><span class="line">        testDataExist.Should().BeTrue();</span><br><span class="line">        actualValidationResult.ViolationItems.Should().BeEquivalentTo(expectedValidationResult.ViolationItems);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> List&lt;<span class="keyword">object</span>[]&gt; TestCase_RuleTest()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> expectedValidationResult = <span class="keyword">new</span> StyleCopViolations() &#123; &#125;;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> List&lt;<span class="keyword">object</span>[]&gt;()</span><br><span class="line">        &#123;</span><br><span class="line">            EA1301TestResource()</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">object</span>[] <span class="title">EA1301TestResource</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">string</span> checkId = <span class="string">"EA1301"</span>;</span><br><span class="line">        <span class="keyword">var</span> expectedValidationResult = <span class="keyword">new</span> StyleCopViolations()</span><br><span class="line">        &#123;</span><br><span class="line">            ViolationItems = <span class="keyword">new</span> List&lt;StyleCopViolations.Violation&gt;()</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">new</span> StyleCopViolations.Violation()</span><br><span class="line">                &#123;</span><br><span class="line">                    LineNumber = <span class="string">"7"</span>,</span><br><span class="line">                    RuleNamespace = <span class="string">"ExtendedStyleCopRules.NamingRules.ExtendedNamingRules"</span>,</span><br><span class="line">                    Rule = Rules.PrivateFieldNamesMustStartWithUnderscore.ToString(),</span><br><span class="line">                    RuleId = checkId</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">object</span>[] &#123; checkId, expectedValidationResult &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>測試的部分是參考 StyleCope 原始碼中的測試專案, 其實主要功能 StyleCop 都有提供, 也就是上面程式碼中的 CodeProject 和 StyleCopConsole, 這一句 <code>console.Start(new CodeProject[] { project }, true)</code> 執行後會根據指定的程式碼檔案 (<code>codePath</code>) 以及套用的 StyleCop 規則 (<code>ruleSettingPath</code>) 健行驗證, 並將檢查結果輸出成 XML 存檔到指定位置 (<code>validationResultPath</code>), 接著我們再讀取檢查結果驗證是否符合預期.  </p>
+<p>完整測試程式碼可以看 <a href="https://github.com/ronsun/ExtendedStyleCopRules/tree/master/src/ExtendedStyleCopRules.Tests" target="_blank" rel="noopener">GitHub</a>  </p>
+<blockquote>
+<p>其實 StyleCop 的測試專案是連預期驗證結果都寫成 XML 了, 比這個複雜多了, 不過以自己的小專案來說, 還是先簡單就好, 等規則多到像 StyleCop 那樣再說 (應該不可能).  </p>
+</blockquote>
+<h4 id="套用規則"><a href="#套用規則" class="headerlink" title="套用規則"></a>套用規則</h4><p>編譯好, 把 dll 放到 StyleCop 擴充元件的安裝目錄下, 然後重開 visual studio 就可以了.  </p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>StyleCop 教學資源多集中在說明怎麼使用, 自訂規則的文章也不少, 但有提到測試的很少了, 所以乾脆直接跳進去看 StyleCop 內建的規則和測試是怎麼寫的, 順便整理了一下相關的 XML 規格刻個 XSD 來輔助使用, 而且測試的部分能協助我們在偵錯模式下去看被 StyleCop 拆解後的程式碼, 也更容易知道怎麼判斷程式碼是否違規.  </p>
+<p>以往沒看套件原始碼的習慣, 雖然剛開始看覺得很有障礙, 不過當作觀摩練習也是不錯.  </p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://www.tenlong.com.tw/products/9781782169543?list_name=srh" target="_blank" rel="noopener">Instant Stylecop Code Analysis How-to (書)</a><br><a href="https://github.com/StyleCop/StyleCop" target="_blank" rel="noopener">StyleCop</a><br><a href="https://sites.google.com/a/rees.biz/main/Home/customstylecoprules" target="_blank" rel="noopener">How to Implement a Custom StyleCop Rule</a><br><a href="https://www.codeproject.com/Articles/30762/C-Code-Reviews-using-StyleCop-Detailed-Article?msg=2803242#StyleCopCodeparsinglogic" target="_blank" rel="noopener">C# Code Reviews using StyleCop – Detailed Article</a><br><a href="http://www.lovethedot.net/2008/05/creating-custom-rules-for-microsoft.html" target="_blank" rel="noopener">Part I: Creating Custom Rules for Microsoft Source Analyzer</a><br><a href="http://www.lovethedot.net/2008/05/creating-custom-rules-for-microsoft_27.html" target="_blank" rel="noopener">Part II: Creating Custom Rules for Microsoft Source Analyzer</a><br><a href="http://www.lovethedot.net/2008/05/creating-custom-rules-for-microsoft_6976.html" target="_blank" rel="noopener">Part III: Creating Custom Rules for Microsoft Source Analyzer</a>  </p>
+<blockquote>
+<p>有些資料比較久了, 小細節和現在不一定相同, 不過說明很詳細, 對於了解 StyleCop 是很有幫助的</p>
+</blockquote>
+<hr>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/content/20181203-xml-serialize-deserialize.html" rel="next" title="XmlSerializer 的序列化/反序列化 與 BOM">
+                <i class="fa fa-chevron-left"></i> XmlSerializer 的序列化/反序列化 與 BOM
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/content/20181213-use-task-list-in-visual-studio.html" rel="prev" title="Vsual Studio 中的工作清單(Task List)">
+                Vsual Studio 中的工作清單(Task List) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+        <div id="container" class="gitment_container"></div>
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+        <script>
+          const myTheme = {
+            render(state, instance) {
+              const container = document.createElement('div');
+              container.lang = "en-US";
+              container.className = 'gitment-container gitment-root-container';
+              container.appendChild(instance.renderHeader(state, instance));
+              container.appendChild(instance.renderEditor(state, instance));
+              container.appendChild(instance.renderComments(state, instance));
+              container.appendChild(instance.renderFooter(state, instance));
+              return container;
+            }
+          }
+          function showGitment() {
+            var gitment = new Gitment({
+              id: '1544263722000',
+              theme: myTheme,
+              owner: 'ronsun',
+              repo: 'ronsun.github.io.gitment',
+              oauth: {
+                client_id: '749fee720f2039efbbde',
+                client_secret: '3104dc228340ec2814ce1a11a7457d4f2d1effa6'
+              }
+            });
+            gitment.render('container');
+          }
+          showGitment();
+        </script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ron Sun" />
+          <p class="site-author-name" itemprop="name">Ron Sun</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">71</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ronsun" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.linkedin.com/in/ronsun/" target="_blank" title="Linkedin">
+                  
+                    <i class="fa fa-fw fa-linkedin"></i>
+                  
+                    
+                      Linkedin
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Resources
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://referencesource.microsoft.com/" title=".Net Source Code" target="_blank">.Net Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://source.dot.net/" title=".Net Core Source Code" target="_blank">.Net Core Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notfalse.net/" title="NotFalse 技術客" target="_blank">NotFalse 技術客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gist.github.com/ronsun" title="放零碎筆記的 Gist" target="_blank">放零碎筆記的 Gist</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#安裝-StyleCop"><span class="nav-number">1.</span> <span class="nav-text">安裝 StyleCop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-StyleCop"><span class="nav-number">2.</span> <span class="nav-text">使用 StyleCop</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#編輯-StyleCop-設定檔"><span class="nav-number">2.1.</span> <span class="nav-text">編輯 StyleCop 設定檔</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自訂規則"><span class="nav-number">3.</span> <span class="nav-text">自訂規則</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#依賴組件"><span class="nav-number">3.1.</span> <span class="nav-text">依賴組件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#規則設定檔"><span class="nav-number">3.2.</span> <span class="nav-text">規則設定檔</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#程式碼"><span class="nav-number">3.3.</span> <span class="nav-text">程式碼</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#測試自訂規則"><span class="nav-number">3.4.</span> <span class="nav-text">測試自訂規則</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#套用規則"><span class="nav-number">3.5.</span> <span class="nav-text">套用規則</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">4.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">5.</span> <span class="nav-text">參考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

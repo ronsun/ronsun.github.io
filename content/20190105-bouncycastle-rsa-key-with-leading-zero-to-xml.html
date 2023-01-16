@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA" />
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://github.com/identicons/ronsun.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content=".NET 內建的 RSA 加解密相關元件可以用讀取憑證檔或是 XML 格式的金鑰的方式來初始化, 之前的專案都是用讀取 XML 的方式來操作, 讓管理者能夠方便的從後台來管理金鑰.   而在 PEM 檔中, 金鑰的格式是 base64 字串, 這用 JAVA 是可以正常讀取的, 但卻不是 .NET 接受的 XML 格式, 因此用了一個第三方套件 Bouncy Castle 來幫忙轉換, 但是在一個">
+<meta property="og:type" content="article">
+<meta property="og:title" content="將 RSA 金鑰轉成 XML 格式的少見問題">
+<meta property="og:url" content="https://ronsun.github.io/content/20190105-bouncycastle-rsa-key-with-leading-zero-to-xml.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content=".NET 內建的 RSA 加解密相關元件可以用讀取憑證檔或是 XML 格式的金鑰的方式來初始化, 之前的專案都是用讀取 XML 的方式來操作, 讓管理者能夠方便的從後台來管理金鑰.   而在 PEM 檔中, 金鑰的格式是 base64 字串, 這用 JAVA 是可以正常讀取的, 但卻不是 .NET 接受的 XML 格式, 因此用了一個第三方套件 Bouncy Castle 來幫忙轉換, 但是在一個">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2023-11-26T16:36:29.840Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="將 RSA 金鑰轉成 XML 格式的少見問題">
+<meta name="twitter:description" content=".NET 內建的 RSA 加解密相關元件可以用讀取憑證檔或是 XML 格式的金鑰的方式來初始化, 之前的專案都是用讀取 XML 的方式來操作, 讓管理者能夠方便的從後台來管理金鑰.   而在 PEM 檔中, 金鑰的格式是 base64 字串, 這用 JAVA 是可以正常讀取的, 但卻不是 .NET 接受的 XML 格式, 因此用了一個第三方套件 Bouncy Castle 來幫忙轉換, 但是在一個">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://ronsun.github.io/content/20190105-bouncycastle-rsa-key-with-leading-zero-to-xml.html"/>
+
+
+
+
+
+  <title>將 RSA 金鑰轉成 XML 格式的少見問題 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ron 2.0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">Simple Is Not Easy</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Searching..." spellcheck="false"
+             type="text" id="local-search-input" />
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20190105-bouncycastle-rsa-key-with-leading-zero-to-xml.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ron Sun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">將 RSA 金鑰轉成 XML 格式的少見問題</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-05T20:20:17+08:00">
+                2019-01-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C#</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/Packages/" itemprop="url" rel="index">
+                    <span itemprop="name">Packages</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>.NET 內建的 RSA 加解密相關元件可以用讀取憑證檔或是 XML 格式的金鑰的方式來初始化, 之前的專案都是用讀取 XML 的方式來操作, 讓管理者能夠方便的從後台來管理金鑰.  </p>
+<p>而在 PEM 檔中, 金鑰的格式是 base64 字串, 這用 JAVA 是可以正常讀取的, 但卻不是 .NET 接受的 XML 格式, 因此用了一個第三方套件 <a href="https://github.com/bcgit/bc-csharp" target="_blank" rel="noopener">Bouncy Castle</a> 來幫忙轉換, 但是在一個少見的情境下 (其實也沒有多少見, 我用 OpenSSL 隨機生 500 組, 就有 10 組觸發), 轉換出來的 XML 是錯誤的, 且只有私鑰有發生過.  </p>
+<a id="more"></a>
+<h3 id="問題"><a href="#問題" class="headerlink" title="問題"></a>問題</h3><p>如果有在網路上找過金鑰轉換的方式的話, 應該不難找到下面段轉換私鑰的程式碼, 透過 <code>RSAPrivateKeyJava2DotNet(string privateKey)</code> 方法來將 base64 格式的私鑰轉換成 XML 格式.  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">SignDataByPrivateKey</span>(<span class="params"><span class="keyword">string</span> data, <span class="keyword">string</span> key</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">string</span> xmlData = RSAPrivateKeyJava2DotNet(key);</span><br><span class="line">    RSACryptoServiceProvider privateKey = <span class="keyword">new</span> RSACryptoServiceProvider();</span><br><span class="line">    privateKey.FromXmlString(xmlData);</span><br><span class="line">    <span class="keyword">var</span> signBytes = privateKey.SignData(Encoding.UTF8.GetBytes(data), <span class="string">"sha1"</span>);</span><br><span class="line">    <span class="keyword">return</span> Convert.ToBase64String(signBytes);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">RSAPrivateKeyJava2DotNet</span>(<span class="params"><span class="keyword">string</span> privateKey</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    RsaPrivateCrtKeyParameters privateKeyParam = (RsaPrivateCrtKeyParameters)PrivateKeyFactory.CreateKey(Convert.FromBase64String(privateKey));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">string</span>.Format(</span><br><span class="line">        <span class="string">"&lt;RSAKeyValue&gt;&lt;Modulus&gt;&#123;0&#125;&lt;/Modulus&gt;&lt;Exponent&gt;&#123;1&#125;&lt;/Exponent&gt;&lt;P&gt;&#123;2&#125;&lt;/P&gt;&lt;Q&gt;&#123;3&#125;&lt;/Q&gt;&lt;DP&gt;&#123;4&#125;&lt;/DP&gt;&lt;DQ&gt;&#123;5&#125;&lt;/DQ&gt;&lt;InverseQ&gt;&#123;6&#125;&lt;/InverseQ&gt;&lt;D&gt;&#123;7&#125;&lt;/D&gt;&lt;/RSAKeyValue&gt;"</span>,</span><br><span class="line">        Convert.ToBase64String(privateKeyParam.Modulus.ToByteArrayUnsigned()),</span><br><span class="line">        Convert.ToBase64String(privateKeyParam.PublicExponent.ToByteArrayUnsigned()),</span><br><span class="line">        Convert.ToBase64String(privateKeyParam.P.ToByteArrayUnsigned()),</span><br><span class="line">        Convert.ToBase64String(privateKeyParam.Q.ToByteArrayUnsigned()),</span><br><span class="line">        Convert.ToBase64String(privateKeyParam.DP.ToByteArrayUnsigned()),</span><br><span class="line">        Convert.ToBase64String(privateKeyParam.DQ.ToByteArrayUnsigned()),</span><br><span class="line">        Convert.ToBase64String(privateKeyParam.QInv.ToByteArrayUnsigned()),</span><br><span class="line">        Convert.ToBase64String(privateKeyParam.Exponent.ToByteArrayUnsigned())</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>這段程式碼一般情境下沒有問題, 但是如果用下面的測試私鑰來試, 就會在 <code>privateKey.FromXmlString(xmlData);</code> 這一行拋出 <code>CryptographicException</code> 且錯誤資訊只有短短的 “Bad Data.\r\n”.  </p>
+<p><strong>Private Key</strong> :<br><code>MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAOEZbmixVVPO6Z96
+sGqb8G3gBOgBuLc6o673GyxLZPXPk6VaBF+2LJ+WnIbuYu3iDE2pR1SHeA09BCyz
+YJnJTYl77vqzRqyzf9lWHGJDkwpEnftlDfeIc5ICfWpu3bHuBuzmtIfqrErCbaJJ
+3HkhOsuJ3oL8dAYQN5RTt66IpSn9AgMBAAECgYBEOuotj7sWeTx1W8IHvpbFJ0c1
+b/gmif69dSdmaMAEhlPxpfR3cofaI9P0TmPsST2DeNEnPRzVnm4agpDAbLU0ana1
+I8pfjRq3xrlTJkDjWKOyaFF2afo2y1pyIFsm1G5wVEFwKWSNUo/1Jy61H4snYxMk
+/SCZqAYxO3S12jAFHQJBAP6Cv1MV8HcBMuDgyl9Obq/tU6r9zrGOmR1bWBA61DVw
+jcWgMSpo8dkBAs0Hd5SfWNNzUIVH2gryAcy5Skyq8mMCQQDiaqBM2nCLfQ3EaLzy
+e1tYZCuZYiZl60OX9nS9FNLFwSI6sFsy/+aGg1ivSVHvXpi9N1oaNgvSI13z9DT0
+B/AfAkAArfqyzxkwSCmJnjAMJxp2j8ysZTcbFEVmZasLiAyvA9jtEStwcI1Mxgrq
+3z07gV1sWx9466MyakkE8e233LD/AkEA244n+b6NCkZu1jn2l3CVaIZiXO93areT
+qUV9eGk75jXdemnPVgoeQewWUIvZ3zOtCzcksWwdVF2lWs5Bly4nYwJBAK+niJt3
+7jWf13muppL1aRN/i1otm3yNZuNGhrCZ/nEfehhBtege3IHn337fuyLhlXMc37OY
+k1iKRpcW8kn4LFQ=</code>  </p>
+<h3 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h3><p>當初也是找了很久, 最後發現 <code>privateKeyParam.DP.ToByteArrayUnsigned()</code> 中的 DP 只有 63 bytes, 少了一個位元組, 而造成這個現象的原因是因為 <code>privateKeyParam.DP</code> 是數值型態, <code>Org.BouncyCastle.Math.BigInteger</code> 在初始化的時候, 跳過了開頭的所有 0, 而且這個問題在 DP , DQ , Exponent , QInv 這四段上面都會發生.  </p>
+<blockquote>
+<p>根據<a href="http://www.bouncycastle.org/jira/browse/BMA-92?jql=project%20%3D%20BMA%20AND%20fixVersion%20%3D%201.8.0" target="_blank" rel="noopener">官方JIRA 上的單子 BMA-92</a> 可以看出是在 <code>Org.BouncyCastle.Math.BigInteger</code> 初始化過程造成的, 從原始碼中看起來也很合理(不過我只是<a href="https://github.com/bcgit/bc-csharp/blob/f18a2dbbc2c1b4277e24a2e51f09cac02eedf1f5/crypto/src/math/BigInteger.cs" target="_blank" rel="noopener">看看原始碼推測的</a>, 沒有直接拉下來驗證, 不保證真的是):<br>從 public BigInteger(byte[] bytes) : this(bytes, 0, bytes.Length)<br>=&gt; public BigInteger(byte[] bytes, int offset, int length)<br>=&gt; private static int[] MakeMagnitude(byte[]    bytes, int offset, int length)<br>中的 firstSignificant 這個 flag 以第一個非 0 位置為起點</p>
+</blockquote>
+<p>而用這個發現來推論, 也可以理解為什麼公鑰不會有這問題, 因為公鑰只有 Modulus 和 Exponent 這兩段.  </p>
+<h3 id="解決方式"><a href="#解決方式" class="headerlink" title="解決方式"></a>解決方式</h3><p>其實這個轉換過程 Bouncy Castle 有提供更簡便的方式, 不需要自己串, 將 <code>RSAPrivateKeyJava2DotNet(string privateKey)</code> 改成像下面這樣(公鑰的部分也一併改了):  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">string</span> <span class="title">RSAPrivateKeyJava2DotNet</span>(<span class="params"><span class="keyword">string</span> privateKey</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    RsaPrivateCrtKeyParameters privateKeyParam = (RsaPrivateCrtKeyParameters)PrivateKeyFactory.CreateKey(Convert.FromBase64String(privateKey));</span><br><span class="line">    <span class="keyword">return</span> DotNetUtilities.ToRSA(privateKeyParam).ToXmlString(<span class="literal">true</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">string</span> <span class="title">RSAPublicKeyJava2DotNet</span>(<span class="params"><span class="keyword">string</span> publicKey</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    RsaKeyParameters publicKeyParam = (RsaKeyParameters)PublicKeyFactory.CreateKey(Convert.FromBase64String(publicKey));</span><br><span class="line">    <span class="keyword">return</span> DotNetUtilities.ToRSA(publicKeyParam).ToXmlString(<span class="literal">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果有追進去<a href="https://github.com/bcgit/bc-csharp/blob/f18a2dbbc2c1b4277e24a2e51f09cac02eedf1f5/crypto/src/security/DotNetUtilities.cs" target="_blank" rel="noopener">原始碼</a>看可以發現, 他在要轉換成 XML 字串前, 將開頭有 0 被忽略的部分再補回來, 實測後也確實可以避免原本的問題, 他的 call stack 有點長, 這裡直接列出最關鍵的地方如下, 就是 <code>ConvertRSAParametersField</code> 這個方法才避免掉這個問題的:  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RSAParameters <span class="title">ToRSAParameters</span>(<span class="params">RsaPrivateKeyStructure privKey</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    RSAParameters rp = <span class="keyword">new</span> RSAParameters();</span><br><span class="line">    rp.Modulus = privKey.Modulus.ToByteArrayUnsigned();</span><br><span class="line">    rp.Exponent = privKey.PublicExponent.ToByteArrayUnsigned();</span><br><span class="line">    rp.P = privKey.Prime1.ToByteArrayUnsigned();</span><br><span class="line">    rp.Q = privKey.Prime2.ToByteArrayUnsigned();</span><br><span class="line">    rp.D = ConvertRSAParametersField(privKey.PrivateExponent, rp.Modulus.Length);</span><br><span class="line">    rp.DP = ConvertRSAParametersField(privKey.Exponent1, rp.P.Length);</span><br><span class="line">    rp.DQ = ConvertRSAParametersField(privKey.Exponent2, rp.Q.Length);</span><br><span class="line">    rp.InverseQ = ConvertRSAParametersField(privKey.Coefficient, rp.Q.Length);</span><br><span class="line">    <span class="keyword">return</span> rp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] <span class="title">ConvertRSAParametersField</span>(<span class="params">BigInteger n, <span class="keyword">int</span> size</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">byte</span>[] bs = n.ToByteArrayUnsigned();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bs.Length == size)</span><br><span class="line">        <span class="keyword">return</span> bs;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bs.Length &gt; size)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ArgumentException(<span class="string">"Specified size too small"</span>, <span class="string">"size"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">byte</span>[] padded = <span class="keyword">new</span> <span class="keyword">byte</span>[size];</span><br><span class="line">    Array.Copy(bs, <span class="number">0</span>, padded, size - bs.Length, bs.Length);</span><br><span class="line">    <span class="keyword">return</span> padded;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="案外案-套件版本"><a href="#案外案-套件版本" class="headerlink" title="案外案 - 套件版本"></a>案外案 - 套件版本</h3><p><strong>但是</strong><br><strong>但是</strong><br><strong>但是</strong>  </p>
+<p><strong>剛剛的解決方式只在 1.8.0 之後才有效, 1.7.x 以前的版本即使這樣使用還是會出錯.</strong>  </p>
+<p>這部分從上面有出現過一個 <a href="http://www.bouncycastle.org/jira/browse/BMA-92?jql=project%20%3D%20BMA%20AND%20fixVersion%20%3D%201.8.0" target="_blank" rel="noopener">JIRA 的列表</a>就可以看到這個問題是 1.8.0 才修復的, 但是 GitHub 的時候已經是 1.8.0 版了, 所以如果真的想比對舊版的原始碼的話, 就要去<a href="https://www.bouncycastle.org/csharp/index.html" target="_blank" rel="noopener">官網</a>考古了.  </p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>其實如果直接讀憑證檔, 就不會有這個問題, 但是專案特性的關係, 這個金鑰會常常新增或更新, 為了不要每次增加或修改都要重新佈署, 只能花時間下去找原因跟解法了.  </p>
+<p>當時遇到這個問題的時候真的是很難過, 因為錯誤訊息超級少, 想找 google 都不知道關鍵字怎麼下, 還好弄了兩三天之後意外發現資料長度不對才有突破口, 這個專案中加解密的部分是存在好幾年的共用方法, 一直沒人遇到過這個情境, 既然被我踩到了也算是得到一個難得的經驗吧.  </p>
+<p>另外, 既然套件有封裝好這麼方便的方法, 之後有需要寫類似的方法時, 就不用再用以前流傳的那種方式了, 直接用解法中的做法就好, 這也是在網路上搜尋解決方案的時候要注意的, 多找幾種解決方案比較過再決定, 會更有機會找到比較適合的解決方案.  </p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://www.cryptosys.net/pki/rsakeyformats.html" target="_blank" rel="noopener">RSA Key Formats - Key File Encoding</a><br><a href="https://blog.csdn.net/yupu56/article/details/72624229" target="_blank" rel="noopener">C#和JAVA的RSA密钥、公钥转换</a><br><a href="http://www.bouncycastle.org/jira/browse/BMA-92?jql=project%20%3D%20BMA%20AND%20fixVersion%20%3D%201.8.0" target="_blank" rel="noopener">JIRA of Bouncy Castle</a>  </p>
+<hr>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/content/20181230-interaction-between-key-and-keysize-in-symmetric-algorithm.html" rel="next" title="SymmetricAlgorithm 中 Key 和 KeySize 的依賴造成的少見問題">
+                <i class="fa fa-chevron-left"></i> SymmetricAlgorithm 中 Key 和 KeySize 的依賴造成的少見問題
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/content/20190111-if-directive-and-conditional.html" rel="prev" title="指示詞(#if) 和 ConditionalAttribute">
+                指示詞(#if) 和 ConditionalAttribute <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+        <div id="container" class="gitment_container"></div>
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+        <script>
+          const myTheme = {
+            render(state, instance) {
+              const container = document.createElement('div');
+              container.lang = "en-US";
+              container.className = 'gitment-container gitment-root-container';
+              container.appendChild(instance.renderHeader(state, instance));
+              container.appendChild(instance.renderEditor(state, instance));
+              container.appendChild(instance.renderComments(state, instance));
+              container.appendChild(instance.renderFooter(state, instance));
+              return container;
+            }
+          }
+          function showGitment() {
+            var gitment = new Gitment({
+              id: '1546690817000',
+              theme: myTheme,
+              owner: 'ronsun',
+              repo: 'ronsun.github.io.gitment',
+              oauth: {
+                client_id: '749fee720f2039efbbde',
+                client_secret: '3104dc228340ec2814ce1a11a7457d4f2d1effa6'
+              }
+            });
+            gitment.render('container');
+          }
+          showGitment();
+        </script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ron Sun" />
+          <p class="site-author-name" itemprop="name">Ron Sun</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">71</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ronsun" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.linkedin.com/in/ronsun/" target="_blank" title="Linkedin">
+                  
+                    <i class="fa fa-fw fa-linkedin"></i>
+                  
+                    
+                      Linkedin
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Resources
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://referencesource.microsoft.com/" title=".Net Source Code" target="_blank">.Net Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://source.dot.net/" title=".Net Core Source Code" target="_blank">.Net Core Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notfalse.net/" title="NotFalse 技術客" target="_blank">NotFalse 技術客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gist.github.com/ronsun" title="放零碎筆記的 Gist" target="_blank">放零碎筆記的 Gist</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#問題"><span class="nav-number">1.</span> <span class="nav-text">問題</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原因"><span class="nav-number">2.</span> <span class="nav-text">原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解決方式"><span class="nav-number">3.</span> <span class="nav-text">解決方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案外案-套件版本"><span class="nav-number">4.</span> <span class="nav-text">案外案 - 套件版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">5.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">6.</span> <span class="nav-text">參考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
