@@ -28,6 +28,37 @@
       <div id="lv-container" data-id="city" data-uid="{{ theme.livere_uid }}"></div>
     {% elseif theme.changyan.appid and theme.changyan.appkey %}
       <div id="SOHUCS"></div>
-    {% endif %}
+    {% elseif theme.gitment.enable %}
+        <div id="container" class="gitment_container"></div>
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+        <script>
+          const myTheme = {
+            render(state, instance) {
+              const container = document.createElement('div');
+              container.lang = "en-US";
+              container.className = 'gitment-container gitment-root-container';
+              container.appendChild(instance.renderHeader(state, instance));
+              container.appendChild(instance.renderEditor(state, instance));
+              container.appendChild(instance.renderComments(state, instance));
+              container.appendChild(instance.renderFooter(state, instance));
+              return container;
+            }
+          }
+          function showGitment() {
+            var gitment = new Gitment({
+              id: '{{ page.date }}',
+              theme: myTheme,
+              owner: '{{ theme.gitment.owner }}',
+              repo: '{{ theme.gitment.repo }}',
+              oauth: {
+                client_id: '{{ theme.gitment.client_id }}',
+                client_secret: '{{ theme.gitment.client_secret }}'
+              }
+            });
+            gitment.render('container');
+          }
+          showGitment();
+        </script>
   </div>
 {% endif %}

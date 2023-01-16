@@ -413,6 +413,14 @@ facebook_comments_plugin:
   width: 100%       # default width is 550px
   scheme: light     # default scheme is light (light or dark)
 
+# Gitment comments
+gitment:
+  enable: true
+  owner: ronsun #your github ID
+  repo: ronsun.github.io.gitment #the name of repo to store comments()
+  client_id: 749fee720f2039efbbde #your client ID
+  client_secret: 3104dc228340ec2814ce1a11a7457d4f2d1effa6 #your client
+
 # VKontakte API Support.
 # To get your AppID visit https://vk.com/editapp?act=create
 vkontakte_api:
