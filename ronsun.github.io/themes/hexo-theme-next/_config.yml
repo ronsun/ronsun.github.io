@@ -33,11 +33,11 @@ copyright: true
 canonical: true
 
 # Change headers hierarchy on site-subtitle (will be main site description) and on all post/pages titles for better SEO-optimization.
-seo: false
+seo: true
 
 # If true, will add site-subtitle to index page, added in main hexo config.
 # subtitle: Subtitle
-index_with_subtitle: false
+index_with_subtitle: true
 
 
 # ---------------------------------------------------------------
@@ -51,7 +51,7 @@ menu:
   #about: /about/
   archives: /archives/
   tags: /tags/
-  #sitemap: /sitemap.xml
+  sitemap: /sitemap.xml
   #commonweal: /404/
 
 # Enable/Disable menu icons.
@@ -125,7 +125,7 @@ links_title: Resources
 links:
   .Net Source Code: https://referencesource.microsoft.com/  
   .Net Core Source Code: https://source.dot.net/  
-  Jason Puzzle 中勝拼圖: https://blog.jason.party/  
+  NotFalse 技術客: https://notfalse.net/  
   放零碎筆記的 Gist: https://gist.github.com/ronsun
 
 # Sidebar Avatar
