@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/identicons/ronsun.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ronsun.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="之前在寫 AES 加解密用的工具方法的時候, 意外發現某個特殊的情境, 會導致解密時因為沒有 Key 而拋出例外 (但 Key 確實有設定).">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SymmetricAlgorithm 中 Key 和 KeySize 的依賴造成的少見問題">
+<meta property="og:url" content="https://ronsun.github.io/content/20181230-interaction-between-key-and-keysize-in-symmetric-algorithm.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="之前在寫 AES 加解密用的工具方法的時候, 意外發現某個特殊的情境, 會導致解密時因為沒有 Key 而拋出例外 (但 Key 確實有設定).">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-12-30T05:54:34.000Z">
+<meta property="article:modified_time" content="2026-05-04T09:50:53.360Z">
+<meta property="article:author" content="Ron Sun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ronsun.github.io/content/20181230-interaction-between-key-and-keysize-in-symmetric-algorithm.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://ronsun.github.io/content/20181230-interaction-between-key-and-keysize-in-symmetric-algorithm.html","path":"content/20181230-interaction-between-key-and-keysize-in-symmetric-algorithm.html","title":"SymmetricAlgorithm 中 Key 和 KeySize 的依賴造成的少見問題"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>SymmetricAlgorithm 中 Key 和 KeySize 的依賴造成的少見問題 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ron 2.0</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Simple Is Not Easy</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%95%8F%E9%A1%8C%E8%A7%A3%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">問題解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%95%8F%E9%A1%8C%E9%BB%9E%E8%AA%AA%E6%98%8E"><span class="nav-number">2.</span> <span class="nav-text">問題點說明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B5%90%E8%AB%96"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%83%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">參考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ron Sun</p>
+  <div class="site-description" itemprop="description">Simple Is Not Easy</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ronsun" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ronsun" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/ronsun/" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;ronsun&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://referencesource.microsoft.com/" title="https:&#x2F;&#x2F;referencesource.microsoft.com&#x2F;" rel="noopener" target="_blank">.Net Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://source.dot.net/" title="https:&#x2F;&#x2F;source.dot.net&#x2F;" rel="noopener" target="_blank">.Net Core Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://notfalse.net/" title="https:&#x2F;&#x2F;notfalse.net&#x2F;" rel="noopener" target="_blank">NotFalse 技術客</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://gist.github.com/ronsun" title="https:&#x2F;&#x2F;gist.github.com&#x2F;ronsun" rel="noopener" target="_blank">放零碎筆記的 Gist</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20181230-interaction-between-key-and-keysize-in-symmetric-algorithm.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ron Sun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+      <meta itemprop="description" content="Simple Is Not Easy">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="SymmetricAlgorithm 中 Key 和 KeySize 的依賴造成的少見問題 | Ron 2.0">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SymmetricAlgorithm 中 Key 和 KeySize 的依賴造成的少見問題
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-12-30 13:54:34" itemprop="dateCreated datePublished" datetime="2018-12-30T13:54:34+08:00">2018-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/NET/" itemprop="url" rel="index"><span itemprop="name">.NET</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>之前在寫 AES 加解密用的工具方法的時候, 意外發現某個特殊的情境, 會導致解密時因為沒有 Key 而拋出例外 (但 Key 確實有設定).  </p>
+<span id="more"></span>
+
+<h3 id="問題解析"><a href="#問題解析" class="headerlink" title="問題解析"></a>問題解析</h3><p>首先要來看一下示意的程式碼 </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Main logic</span></span><br><span class="line"><span class="keyword">var</span> aes = <span class="keyword">new</span> AesCryptoServiceProvider()</span><br><span class="line">&#123;</span><br><span class="line">    Mode = CipherMode.ECB,</span><br><span class="line">    Key = GenerateKey(<span class="number">128</span>),</span><br><span class="line">    KeySize = <span class="number">128</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">string</span> ciphertext = <span class="string">&quot;jYCA05v0hL52/wT5WEJitQ==&quot;</span>;</span><br><span class="line"><span class="built_in">string</span> plaintext = aes.Decrypt(ciphertext);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// extension method for decrypt</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">string</span> <span class="title">Decrypt</span>(<span class="params"><span class="keyword">this</span> SymmetricAlgorithm symmetric, <span class="built_in">string</span> ciphertext</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> plaintext = <span class="built_in">string</span>.Empty;</span><br><span class="line"></span><br><span class="line">    MemoryStream ms = <span class="keyword">new</span> MemoryStream();</span><br><span class="line">    <span class="keyword">using</span> (CryptoStream cs = <span class="keyword">new</span> CryptoStream(ms, symmetric.CreateDecryptor(), CryptoStreamMode.Write))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> ciphertextBytes = Convert.FromBase64String(ciphertext);</span><br><span class="line"></span><br><span class="line">        cs.Write(ciphertextBytes, <span class="number">0</span>, ciphertextBytes.Length);</span><br><span class="line">        cs.FlushFinalBlock();</span><br><span class="line">        plaintext = Encoding.UTF8.GetString(ms.ToArray());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> plaintext;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接著來分析一下錯誤內容<br><strong>錯誤訊息</strong>: System.Security.Cryptography.CryptographicException: ‘Decrypting a value requires that a key be set on the algorithm object.’<br><strong>堆疊追蹤最後一行</strong>:<br><code>at System.Security.Cryptography.AesCryptoServiceProvider.CreateDecryptor()</code></p>
+<p>這看起來像是 Key 不存在, 但我們確實有指定 Key, 而用中斷點進去 <code>symmetric.CreateDecryptor()</code> 這一行的 <code>symmetric</code> 中卻發現 Key 的值已經不是一開始指定的值了.  </p>
+<h3 id="問題點說明"><a href="#問題點說明" class="headerlink" title="問題點說明"></a>問題點說明</h3><p>總之是耗了一點時間在排除問題, 最後發現是 <code>KeySize = 128</code> 這一行導致的, 因為<strong>設定 KeySize 這件事本身會使得 Key 被釋放掉</strong>.  </p>
+<p>這個現象要看官方的原始碼才能知道, 從 <a target="_blank" rel="noopener" href="https://referencesource.microsoft.com/#System.Core/System/Security/Cryptography/AesCryptoServiceProvider.cs,123">AesCryptoServiceProvider.cs</a> 中可以看到 KeySize 的 setter 會將一開始設定的 Key 釋放掉, 導致 <a target="_blank" rel="noopener" href="https://referencesource.microsoft.com/#System.Core/System/Security/Cryptography/AesCryptoServiceProvider.cs,144">AesCryptoServiceProvider.CreateDecryptor()</a> 執行時發現 <code>m_key</code> 沒有值而拋錯. </p>
+<p>再更進一步去看父類別中 <a target="_blank" rel="noopener" href="https://referencesource.microsoft.com/#mscorlib/system/security/cryptography/symmetricalgorithm.cs,158">SymmetricAlgorithm 中的 KeySize</a> 就可以發現, 其實<strong>不只 AES, 整個 SymmetricAlgorithm 的衍生類別都會在 KeySize 的 setter 中清掉現有的 Key</strong> (除非有誰特別將這段邏輯覆寫掉).  </p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>相關的程式碼想看可以去上面那些連結裡面深入了解, 總之</p>
+<ul>
+<li>Key 和 KeySize 之間是有依賴的, 指定 Key 之前如果先指定 KeySize 沒有意義, 因為指定 Key 的時候, KeySize 也會被改變, 所以下面範例<strong>最後的 KeySize 是 256 而不是 128</strong>.   <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> AesCryptoServiceProvider()</span><br><span class="line">&#123;</span><br><span class="line">    Mode = CipherMode.ECB,</span><br><span class="line">    KeySize = <span class="number">128</span>,</span><br><span class="line">    Key = GenerateKey(<span class="number">256</span>),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>同理, 如果指定了 Key, 就不可以在後面再指定 KeySize, 不然原本指定的 Key 會被清掉, 也就是本文遇到的問題. </li>
+<li>需要指定 KeySize 的時機是, 加密時要指定 Key 的長度且不想自己產生 Key, 例如  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> AesCryptoServiceProvider()</span><br><span class="line">&#123;</span><br><span class="line">    Mode = CipherMode.ECB,</span><br><span class="line">    KeySize = <span class="number">128</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>相關問題, 網路上也有人討論, 附在下方參考中</li>
+</ul>
+<p>其實這樣想起來也合理, Key 的值本身就可以算出 KeySize, 如果 KeySize 被指定時沒有清掉舊的 Key, 那就會可能發生 Key 的實際長度跟 KeySize 紀錄的長度不一樣的問題.  </p>
+<p>然後 <a target="_blank" rel="noopener" href="https://referencesource.microsoft.com/">Reference Source</a> 和 <a target="_blank" rel="noopener" href="https://source.dot.net/">Source Browser - .net core</a> 真的是神物, 很多時候能靠這兩個東西了解細部的運作與問題發生的具體原因.  </p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/39275663/rijndaelmanaged-what-does-setting-keysize-property-do">RijndaelManaged - What does setting KeySize property do?</a>  </p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/content/20181225-use-xml-schema-definition.html" rel="prev" title="XSD 的使用與應用">
+                  <i class="fa fa-angle-left"></i> XSD 的使用與應用
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/content/20190105-bouncycastle-rsa-key-with-leading-zero-to-xml.html" rel="next" title="將 RSA 金鑰轉成 XML 格式的少見問題">
+                  將 RSA 金鑰轉成 XML 格式的少見問題 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2017 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ronsun/ronsun.github.io.utterances","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>

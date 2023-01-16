@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/identicons/ronsun.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ronsun.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="C# 各版本新特性摘要，包含自己的想法與實務上的偏好。 C# 7 系列比較特殊，總共經過 7.0、7.1、7.2、7.3 四個版本，且範圍有高度重疊，所以這邊不分開看，直接依照 2021 年版官方整合過的文件將 C# 7 的新特性一起看。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# 語言特性更新 - C# 7">
+<meta property="og:url" content="https://ronsun.github.io/content/20240203-whats-new-in-csharp-7.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="C# 各版本新特性摘要，包含自己的想法與實務上的偏好。 C# 7 系列比較特殊，總共經過 7.0、7.1、7.2、7.3 四個版本，且範圍有高度重疊，所以這邊不分開看，直接依照 2021 年版官方整合過的文件將 C# 7 的新特性一起看。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-02-02T17:22:57.000Z">
+<meta property="article:modified_time" content="2026-05-04T09:50:53.415Z">
+<meta property="article:author" content="Ron Sun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ronsun.github.io/content/20240203-whats-new-in-csharp-7.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://ronsun.github.io/content/20240203-whats-new-in-csharp-7.html","path":"content/20240203-whats-new-in-csharp-7.html","title":"C# 語言特性更新 - C# 7"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C# 語言特性更新 - C# 7 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ron 2.0</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Simple Is Not Easy</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tuples-%E5%92%8C-Discards"><span class="nav-number">1.</span> <span class="nav-text">Tuples 和 Discards</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B7%E5%90%8D-Tuple"><span class="nav-number">1.1.</span> <span class="nav-text">具名 Tuple</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Discards"><span class="nav-number">1.2.</span> <span class="nav-text">Discards</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C-%E6%80%8E%E9%BA%BC%E8%99%95%E7%90%86-Tuple-%E7%9A%84%E5%90%8D%E5%AD%97"><span class="nav-number">1.3.</span> <span class="nav-text">C# 怎麼處理 Tuple 的名字?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E6%A7%8B-Deconstruction"><span class="nav-number">1.4.</span> <span class="nav-text">解構 (Deconstruction)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E6%AF%94%E5%B0%8D-Pattern-matching"><span class="nav-number">2.</span> <span class="nav-text">模式比對 (Pattern matching)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#is-%E9%97%9C%E9%8D%B5%E5%AD%97"><span class="nav-number">2.1.</span> <span class="nav-text">is 關鍵字</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#switch"><span class="nav-number">2.2.</span> <span class="nav-text">switch</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Async-main"><span class="nav-number">3.</span> <span class="nav-text">Async main</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%80%E5%9F%9F%E5%87%BD%E5%BC%8F-Local-functions"><span class="nav-number">4.</span> <span class="nav-text">區域函式 (Local functions)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%A6%E5%8B%99%E4%BD%BF%E7%94%A8%E6%83%85%E5%A2%83"><span class="nav-number">4.1.</span> <span class="nav-text">實務使用情境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A0%85"><span class="nav-number">4.2.</span> <span class="nav-text">使用注意事項</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A%E6%88%90%E5%93%A1%E6%94%AF%E6%8F%B4%E9%81%8B%E7%AE%97%E5%BC%8F%E4%B8%BB%E9%AB%94-More-expression-bodied-members"><span class="nav-number">5.</span> <span class="nav-text">更多成員支援運算式主體 (More expression-bodied members)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#throw-%E9%81%8B%E7%AE%97%E5%BC%8F-Throw-expressions"><span class="nav-number">6.</span> <span class="nav-text">throw 運算式 (Throw expressions)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A0%90%E8%A8%AD%E5%B8%B8%E5%80%BC%E9%81%8B%E7%AE%97%E5%BC%8F-Default-literal-expressions"><span class="nav-number">7.</span> <span class="nav-text">預設常值運算式 (Default literal expressions)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B8%E5%80%BC%E5%B8%B8%E5%80%BC%E7%9A%84%E8%AA%9E%E6%B3%95%E5%A2%9E%E5%BC%B7%E5%8A%9F%E8%83%BD-Numeric-literal-syntax-improvements"><span class="nav-number">8.</span> <span class="nav-text">數值常值的語法增強功能 (Numeric literal syntax improvements)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#out-%E8%AE%8A%E6%95%B8-out-variables"><span class="nav-number">9.</span> <span class="nav-text">out 變數 (out variables)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E5%BE%8C%E7%BD%AE%E5%85%B7%E5%90%8D%E5%BC%95%E6%95%B8-Non-trailing-named-arguments"><span class="nav-number">10.</span> <span class="nav-text">非後置具名引數 (Non-trailing named arguments)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#private-protected-%E5%AD%98%E5%8F%96%E4%BF%AE%E9%A3%BE%E8%A9%9E-private-protected-access-modifier"><span class="nav-number">11.</span> <span class="nav-text">private protected 存取修飾詞 (private protected access modifier)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E5%96%84%E9%81%B8%E6%93%87%E5%A4%9A%E8%BC%89%E7%9A%84%E8%A6%8F%E5%89%87-Improved-overload-candidates"><span class="nav-number">12.</span> <span class="nav-text">改善選擇多載的規則 (Improved overload candidates)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%B4%E5%85%85%E5%AE%89%E5%85%A8%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%9A%84%E8%83%BD%E5%8A%9B-Enabling-more-efficient-safe-code"><span class="nav-number">13.</span> <span class="nav-text">擴充安全程式碼的能力 (Enabling more efficient safe code)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%97%E7%94%A8-ref-%E5%88%B0%E5%8D%80%E5%9F%9F%E8%AE%8A%E6%95%B8%E5%92%8C%E5%9B%9E%E5%82%B3%E5%80%BC%E4%B8%8A-ref-%E6%A2%9D%E4%BB%B6%E9%81%8B%E7%AE%97%E5%BC%8F-Ref-locals-and-returns-Conditional-ref-expressions"><span class="nav-number">14.</span> <span class="nav-text">套用 ref 到區域變數和回傳值上 &#x2F; ref 條件運算式 (Ref locals and returns &#x2F; Conditional ref expressions)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#in-%E5%8F%83%E6%95%B8%E4%BF%AE%E9%A3%BE%E8%A9%9E"><span class="nav-number">15.</span> <span class="nav-text">in 參數修飾詞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A%E5%9E%8B%E5%88%A5%E6%94%AF%E6%8F%B4-fixed-%E9%99%B3%E8%BF%B0%E5%BC%8F-More-types-support-the-fixed-statement"><span class="nav-number">16.</span> <span class="nav-text">更多型別支援 fixed 陳述式 (More types support the fixed statement)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fixed-%E7%B4%A2%E5%BC%95%E6%AC%84%E4%BD%8D%E4%B8%8D%E9%9C%80%E8%A6%81%E9%87%98%E9%81%B8-Indexing-fixed-fields-does-not-require-pinning"><span class="nav-number">17.</span> <span class="nav-text">fixed 索引欄位不需要釘選 (Indexing fixed fields does not require pinning)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stackalloc-%E9%99%A3%E5%88%97%E6%94%AF%E6%8F%B4%E5%88%9D%E5%A7%8B%E8%A8%AD%E5%AE%9A%E5%BC%8F-stackalloc-arrays-support-initializers"><span class="nav-number">18.</span> <span class="nav-text">stackalloc 陣列支援初始設定式 (stackalloc arrays support initializers)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%B4%E5%85%85%E6%B3%9B%E5%9E%8B%E9%99%90%E5%88%B6"><span class="nav-number">19.</span> <span class="nav-text">擴充泛型限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E7%9A%84%E7%B7%A8%E8%AD%AF%E9%81%B8%E9%A0%85"><span class="nav-number">20.</span> <span class="nav-text">新的編譯選項</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B5%90%E8%AB%96"><span class="nav-number">21.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%83%E8%80%83"><span class="nav-number">22.</span> <span class="nav-text">參考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ron Sun</p>
+  <div class="site-description" itemprop="description">Simple Is Not Easy</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ronsun" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ronsun" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/ronsun/" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;ronsun&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://referencesource.microsoft.com/" title="https:&#x2F;&#x2F;referencesource.microsoft.com&#x2F;" rel="noopener" target="_blank">.Net Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://source.dot.net/" title="https:&#x2F;&#x2F;source.dot.net&#x2F;" rel="noopener" target="_blank">.Net Core Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://notfalse.net/" title="https:&#x2F;&#x2F;notfalse.net&#x2F;" rel="noopener" target="_blank">NotFalse 技術客</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://gist.github.com/ronsun" title="https:&#x2F;&#x2F;gist.github.com&#x2F;ronsun" rel="noopener" target="_blank">放零碎筆記的 Gist</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20240203-whats-new-in-csharp-7.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ron Sun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+      <meta itemprop="description" content="Simple Is Not Easy">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C# 語言特性更新 - C# 7 | Ron 2.0">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C# 語言特性更新 - C# 7
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-02-03 01:22:57" itemprop="dateCreated datePublished" datetime="2024-02-03T01:22:57+08:00">2024-02-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/Language-Spec/" itemprop="url" rel="index"><span itemprop="name">Language Spec</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>C# 各版本新特性摘要，包含自己的想法與實務上的偏好。</p>
+<p>C# 7 系列比較特殊，總共經過 7.0、7.1、7.2、7.3 四個版本，且範圍有高度重疊，所以這邊不分開看，直接依照 2021 年版官方整合過的文件將 C# 7 的新特性一起看。</p>
+<span id="more"></span>
+
+<h3 id="Tuples-和-Discards"><a href="#Tuples-和-Discards" class="headerlink" title="Tuples 和 Discards"></a>Tuples 和 Discards</h3><h4 id="具名-Tuple"><a href="#具名-Tuple" class="headerlink" title="具名 Tuple"></a>具名 Tuple</h4><p>以前的 Tuple 沒辦法具名，所以會產生很多 <code>tuple.Item1</code> 這類的呼叫，嚴重影響程式碼的可讀性，具名 Tuple 出現後很大程度解決了這個問題，如下範例：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> (<span class="built_in">int</span> Id, <span class="built_in">string</span> Name) GetPerson()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="number">1</span>, <span class="string">&quot;Ron&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Caller</span></span><br><span class="line"><span class="keyword">var</span> user = GetPerson();</span><br><span class="line"><span class="string">$&quot;ID: <span class="subst">&#123;user.Id&#125;</span>, Name: <span class="subst">&#123;user.Name&#125;</span>&quot;</span>.Dump(); <span class="comment">// ID: 1, Name: Ron</span></span><br></pre></td></tr></table></figure>
+
+<p>但這也衍生出另外一個問題就是命名風格，這邊我建議依照呼叫端的使用方式來決定，以本例來說，呼叫端使用上像是將他視為屬性，因此使用雙駝峰。但如果像下面的情境，就應該使用單駝峰，因為呼叫端使用上像是區域變數：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">var</span> id, <span class="keyword">var</span> name) = (<span class="number">1</span>, <span class="string">&quot;Ron&quot;</span>);</span><br><span class="line"><span class="string">$&quot;ID: <span class="subst">&#123;id&#125;</span>, Name: <span class="subst">&#123;name&#125;</span>&quot;</span>.Dump(); <span class="comment">// ID: 1, Name: Ron</span></span><br></pre></td></tr></table></figure>
+
+<p>另外還要注意這種風格的 Tuple 其實背後是編譯成 <code>System.ValueTuple</code> 而不是傳統的 <code>System.Tuple</code>，<a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-tuples#tuples-vs-systemtuple">這兩種型別有一些差異</a>。  </p>
+<h4 id="Discards"><a href="#Discards" class="headerlink" title="Discards"></a>Discards</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> (<span class="built_in">int</span> Id, <span class="built_in">string</span> Name, <span class="built_in">string</span> Address) GetPerson()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="number">1</span>, <span class="string">&quot;Ron&quot;</span>, <span class="string">&quot;My Home&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Caller, discard the Address</span></span><br><span class="line">(<span class="keyword">var</span> id, <span class="keyword">var</span> name, _) = GetPerson();</span><br><span class="line"><span class="string">$&quot;ID: <span class="subst">&#123;id&#125;</span>, Name: <span class="subst">&#123;name&#125;</span>&quot;</span>.Dump(); <span class="comment">// ID: 1, Name: Ron</span></span><br></pre></td></tr></table></figure>
+
+<p>如上範例，用不到的變數可以用一個底線 <code>_</code> 取代，可以讓維護的人不用關注無用的資訊。但這也不是他唯一的使用情境，詳細情境參考<a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/functional/discards"> Discards 官方文件</a>。</p>
+<h4 id="C-怎麼處理-Tuple-的名字"><a href="#C-怎麼處理-Tuple-的名字" class="headerlink" title="C# 怎麼處理 Tuple 的名字?"></a>C# 怎麼處理 Tuple 的名字?</h4><p>將一段簡單的程式碼編譯後，透過反組譯工具反組譯回低版本的 C# 可以發現，最後還是呼叫 <code>Item1</code>、<code>Item2</code>，所以具名 Tuple 其實是一種編譯時期的語法糖。</p>
+<h4 id="解構-Deconstruction"><a href="#解構-Deconstruction" class="headerlink" title="解構 (Deconstruction)"></a>解構 (Deconstruction)</h4><p>雖然解構看起來是另外一個主題了，但可能是因為 Tuple、Discards、解構，三者太常互相搭配使用，官方文件中是將他和 Discards 放在一起的，解構不只能套用到 Tuple 還能透過實作 <code>Deconstruct</code> 方法套用到其他型別上。  </p>
+<p>直接看 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/functional/discards">Discards</a> 和 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/functional/deconstruct">Deconstructing tuples and other types</a> 來了解會更全面。  </p>
+<p>這邊要注意一下，寫這篇文章時 C# 已經更新到 12 版了，官方的規格介紹中會夾很多後面版本新增的特性。  </p>
+<h3 id="模式比對-Pattern-matching"><a href="#模式比對-Pattern-matching" class="headerlink" title="模式比對 (Pattern matching)"></a>模式比對 (Pattern matching)</h3><p>這個功能比較像是為了可讀性的擴充，主要用途在於用 <code>is</code> 關鍵字來做型別確認與轉換；用 <code>when</code> 關鍵字來做附加條件判斷；額外搭配 <code>switch</code> 來透過簡單的語法達到複雜的運用。</p>
+<h4 id="is-關鍵字"><a href="#is-關鍵字" class="headerlink" title="is 關鍵字"></a><code>is</code> 關鍵字</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Do</span>(<span class="params"><span class="built_in">object</span> obj</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (obj <span class="keyword">is</span> <span class="built_in">int</span> i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Do somthing using i.</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (obj <span class="keyword">is</span> <span class="built_in">string</span> s)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Do somthing using s.</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>從上述範例可以看到以前需要先透過 <code>is</code> 判斷型別後再轉型 (或使用 <code>as</code> 後再判斷空值後處理)，現在可以將兩個行為合一讓可維護性提高很多。</p>
+<h4 id="switch"><a href="#switch" class="headerlink" title="switch"></a><code>switch</code></h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Do</span>(<span class="params"><span class="built_in">object</span> obj</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">switch</span> (obj)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="built_in">int</span> i:</span><br><span class="line">            <span class="comment">// Do somthing using i.</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="built_in">string</span> s:</span><br><span class="line">            <span class="comment">// Do somthing using s.</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> DateTime dt <span class="keyword">when</span> dt.Year == <span class="number">2021</span>:</span><br><span class="line">            <span class="comment">// Do somthing using dt which contains Year is 2021.</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="literal">null</span>:</span><br><span class="line">            <span class="comment">// Do somthing for null scenario.</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="literal">default</span>:</span><br><span class="line">            <span class="comment">// Default behavior.</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>從上述範例可以看到，<code>switch</code> 關鍵字在使用上能更有彈性的設定條件了。  </p>
+<p>這個規格依然是編譯時期的語法糖， <code>switch</code> 本身的限制並沒有改變，上面的範例編譯後其實是 <code>if</code>、<code>else if</code>、<code>else</code> 條件式的組合。</p>
+<h3 id="Async-main"><a href="#Async-main" class="headerlink" title="Async main"></a>Async main</h3><p>在 Main 上可以加上 <code>async</code> 關鍵字了。<br>比較意外的是這也是語法糖，<a target="_blank" rel="noopener" href="https://blog.miniasp.com/post/2019/04/03/Deep-Dive-CSharp-71-async-Main-method">保哥有一篇文章提供詳細的說明</a>。</p>
+<h3 id="區域函式-Local-functions"><a href="#區域函式-Local-functions" class="headerlink" title="區域函式 (Local functions)"></a>區域函式 (Local functions)</h3><p>區域函式允許一個方法中包含另外一個方法，而區域函式只能被包含他的方法呼叫。這個設計主要用於迭代器和非同步方法中。  </p>
+<h4 id="實務使用情境"><a href="#實務使用情境" class="headerlink" title="實務使用情境"></a>實務使用情境</h4><p>而在實務上，在滿足以下條件下，也可考慮使用區域函式：</p>
+<ul>
+<li><strong>有足夠的理由將該區塊抽離：</strong> 通常這種情境下如果不抽離的話，原方法會過於肥大，以前常見的作法是用 <code>#region</code> 包覆起來，但這種做法對維護沒有太大的幫助。</li>
+<li><strong>該方法做為私有方法仍然過於特殊：</strong> 很多時候會有程式碼區塊內容過於特殊，離開主方法後無法封裝成一個方法。</li>
+</ul>
+<h4 id="使用注意事項"><a href="#使用注意事項" class="headerlink" title="使用注意事項"></a>使用注意事項</h4><p>區域函式不宜濫用，如果濫用會發現主要方法仍然很肥大，且會增加排版的難度。關於區域函式排版上我自己有幾個建議要點：</p>
+<ol>
+<li>區域函式集中放在最下方且要在 <code>return</code> 後，這樣區域函式才不會穿插在呼叫端的程式碼中造成更大的混亂。</li>
+<li>即使方法無回傳也要在區域函式前加上 <code>return;</code>，用以更明確的區隔呼叫端程式碼和區域函式部分。</li>
+</ol>
+<p>如下範例：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Do</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b, <span class="built_in">bool</span> c</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> a2 = LocalFunction(a);</span><br><span class="line">    <span class="built_in">int</span> ans = c ? LocalFunction(a2 + b) : LocalFunction(a * b);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Always return at the last line of primary implementation.</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Local functions</span></span><br><span class="line">    <span class="function"><span class="built_in">int</span> <span class="title">LocalFunction</span>(<span class="params"><span class="built_in">int</span> num</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> num * <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>區域函式也是編譯時期的語法糖且有很多細節要說，尤其是參數傳遞的部分，這部分之後再另外寫一篇來詳細說明。  </p>
+<h3 id="更多成員支援運算式主體-More-expression-bodied-members"><a href="#更多成員支援運算式主體-More-expression-bodied-members" class="headerlink" title="更多成員支援運算式主體 (More expression-bodied members)"></a>更多成員支援運算式主體 (More expression-bodied members)</h3><p>運算式主體套用到更多成員上，包含建構子、Finalizer、以及在屬性和索引子上的 <code>get</code> 與 <code>set</code> 存取子，範例如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyContainer</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> List&lt;<span class="built_in">string</span>&gt; items = <span class="keyword">new</span> List&lt;<span class="built_in">string</span>&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">string</span> label;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Expression-bodied constructor</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyContainer</span>(<span class="params"><span class="built_in">string</span> initialLabel</span>)</span> =&gt; Label = initialLabel;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Expression-bodied finalizer</span></span><br><span class="line">    ~MyContainer() =&gt; Console.WriteLine(<span class="string">&quot;Finalizing or cleaning up MyContainer.&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Expression-bodied property get and set accessors</span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Label</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span> =&gt; label;</span><br><span class="line">        <span class="keyword">set</span> =&gt; label = <span class="keyword">value</span> ?? <span class="string">&quot;Default label&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Expression-bodied indexer</span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> <span class="keyword">this</span>[<span class="built_in">int</span> index]</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span> =&gt; items[index];</span><br><span class="line">        <span class="keyword">set</span> =&gt; items[index] = <span class="keyword">value</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>要注意的是 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/finalizers">Finalizer，舊稱 Destructor</a> 的語法 <code>~</code> 實際上是個語法糖，編譯後其實是 <code>Finalize()</code> 方法。</p>
+<h3 id="throw-運算式-Throw-expressions"><a href="#throw-運算式-Throw-expressions" class="headerlink" title="throw 運算式 (Throw expressions)"></a>throw 運算式 (Throw expressions)</h3><p><code>throw</code> 一直都是陳述式 (Statement) 而非運算式 (Expression)，也因此以前很多運算式中無法包含 <code>throw</code> (例如在三元運算子中)，而在 C# 7.0 中新增的 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/exception-handling-statements#the-throw-expression">throw 運算式</a> 解決了這個限制。  </p>
+<h3 id="預設常值運算式-Default-literal-expressions"><a href="#預設常值運算式-Default-literal-expressions" class="headerlink" title="預設常值運算式 (Default literal expressions)"></a>預設常值運算式 (Default literal expressions)</h3><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/default#default-literal">擴大 <code>default</code> 運算子的適用範圍到運算式上</a>  </p>
+<h3 id="數值常值的語法增強功能-Numeric-literal-syntax-improvements"><a href="#數值常值的語法增強功能-Numeric-literal-syntax-improvements" class="headerlink" title="數值常值的語法增強功能 (Numeric literal syntax improvements)"></a>數值常值的語法增強功能 (Numeric literal syntax improvements)</h3><p>允許利用 <code>_</code> 符號來分隔數字而不影響數值本身，類似於千分位符號的功能且同時能套用到二進位數值上，範例如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> binary = <span class="number">0b001</span>_0000;</span><br><span class="line"><span class="built_in">int</span> number = <span class="number">10</span>_000_000;</span><br><span class="line"><span class="built_in">decimal</span> money = <span class="number">1</span>_000<span class="number">.123</span>_456;</span><br></pre></td></tr></table></figure>
+
+<h3 id="out-變數-out-variables"><a href="#out-變數-out-variables" class="headerlink" title="out 變數 (out variables)"></a><code>out</code> 變數 (<code>out</code> variables)</h3><p>可以把 <code>out</code> 變數的宣告和傳遞寫在一起，如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span>.TryParse(str, <span class="keyword">out</span> <span class="built_in">int</span> number);</span><br></pre></td></tr></table></figure>
+
+<p>這個特性雖然看起來不起眼，但是在實務上對於維護是有非常大的幫助的，他能避免讓變數的宣告和使用的位置距離太遠，如下面範例是實務上常見的痛點。<br>首先看這段程式碼，因為維護或各種關係導致變數 <code>number</code> 和 <code>decimal</code> 的宣告遠離第一次被使用的位置，進而造成閱讀時必須同時關注這麼一大段程式碼並忽略中間穿插的各種雜訊。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> number;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Unrelated code, making it hard to track &#x27;number&#x27;</span></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;Loop 1: &quot;</span> + i);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">string</span> temp = <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">Console.WriteLine(temp.ToUpper());</span><br><span class="line"><span class="built_in">bool</span> flag = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">if</span> (flag) &#123;</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;Flag is true&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">decimal</span> money;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Unrelated code, making it hard to track &#x27;money&#x27;</span></span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> <span class="keyword">new</span> List&lt;<span class="built_in">string</span>&gt; &#123; <span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span> &#125;) &#123;</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;Item: &quot;</span> + item);</span><br><span class="line">&#125;</span><br><span class="line">DateTime now = DateTime.Now;</span><br><span class="line">Console.WriteLine(<span class="string">&quot;Current time: &quot;</span> + now);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Usage of &#x27;number&#x27; and &#x27;money&#x27; is separated from its declaration</span></span><br><span class="line"><span class="built_in">int</span>.TryParse(str, <span class="keyword">out</span> number);</span><br><span class="line"><span class="built_in">decimal</span>.TryParse(str2, <span class="keyword">out</span> money);</span><br></pre></td></tr></table></figure>
+
+<p>但套用這個特性，維護過程我們就不用關注那些雜訊而能直接鎖定在真正的目標上。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span>.TryParse(str, <span class="keyword">out</span> <span class="built_in">int</span> number);</span><br><span class="line"><span class="built_in">decimal</span>.TryParse(str2, <span class="keyword">out</span> <span class="built_in">decimal</span> money);</span><br></pre></td></tr></table></figure>
+
+<p>這個問題的主因是不好的開發習慣，但長期多人開發的專案很難完全避免這個現象。重構和 Code Reivew 能緩解這個問題，但終究是額外的成本，因此從語言特性上直接避免是更理想的。</p>
+<h3 id="非後置具名引數-Non-trailing-named-arguments"><a href="#非後置具名引數-Non-trailing-named-arguments" class="headerlink" title="非後置具名引數 (Non-trailing named arguments)"></a>非後置具名引數 (Non-trailing named arguments)</h3><p>具名引數非必要放在最後，例如：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// In C# 7.1 and earlier, named arguments should be trailing.</span></span><br><span class="line">DisplayPersonDetails(<span class="number">35</span>, <span class="string">&quot;Ron&quot;</span>, city: <span class="string">&quot;New York&quot;</span>);</span><br><span class="line"><span class="comment">// In C# 7.2 and later, named arguments do not necessarily have to be trailing.</span></span><br><span class="line">DisplayPersonDetails(age: <span class="number">35</span>, <span class="string">&quot;Ron&quot;</span>, city: <span class="string">&quot;New York&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>這讓我們可以不用為了遷就前排的具名引數而將其後所有引數具名，但從另外一個角度來看，使用具名引數時提高可讀性前應該先思考方法參數列的設計是否需要改善。  </p>
+<h3 id="private-protected-存取修飾詞-private-protected-access-modifier"><a href="#private-protected-存取修飾詞-private-protected-access-modifier" class="headerlink" title="private protected 存取修飾詞 (private protected access modifier)"></a><code>private protected</code> 存取修飾詞 (<code>private protected</code> access modifier)</h3><p>限制存取範圍在 <strong><code>protected</code> AND <code>internal</code></strong>，比 <code>protected internal</code> 代表的 <strong><code>protected</code> OR <code>internal</code></strong> 存取範圍更狹窄。  </p>
+<h3 id="改善選擇多載的規則-Improved-overload-candidates"><a href="#改善選擇多載的規則-Improved-overload-candidates" class="headerlink" title="改善選擇多載的規則 (Improved overload candidates)"></a>改善選擇多載的規則 (Improved overload candidates)</h3><p>增加三個解析規則來讓更明確的選擇多載。  </p>
+<p>老實說我不想特別去記這些複雜的規則，因為這些規則是建立在呼叫多載方法時會混淆的前提，通常這代表多載設計得不夠好，應該優先考慮改善多載方法的設計。</p>
+<h3 id="擴充安全程式碼的能力-Enabling-more-efficient-safe-code"><a href="#擴充安全程式碼的能力-Enabling-more-efficient-safe-code" class="headerlink" title="擴充安全程式碼的能力 (Enabling more efficient safe code)"></a>擴充安全程式碼的能力 (Enabling more efficient safe code)</h3><p>幾乎都是沒用過的特性，所以直接看官方文件，沒甚麼好說的。</p>
+<h3 id="套用-ref-到區域變數和回傳值上-ref-條件運算式-Ref-locals-and-returns-Conditional-ref-expressions"><a href="#套用-ref-到區域變數和回傳值上-ref-條件運算式-Ref-locals-and-returns-Conditional-ref-expressions" class="headerlink" title="套用 ref 到區域變數和回傳值上 &#x2F; ref 條件運算式 (Ref locals and returns &#x2F; Conditional ref expressions)"></a>套用 <code>ref</code> 到區域變數和回傳值上 &#x2F; <code>ref</code> 條件運算式 (Ref locals and returns &#x2F; Conditional <code>ref</code> expressions)</h3><p>允許傳址給區域變數，例如：  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">int</span>[] numbers = &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> &#125;;</span><br><span class="line">        <span class="keyword">ref</span> <span class="built_in">int</span> two = <span class="keyword">ref</span> numbers[<span class="number">1</span>];</span><br><span class="line">        </span><br><span class="line">        two = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        Console.WriteLine(two); <span class="comment">// 0</span></span><br><span class="line">        Console.WriteLine(numbers[<span class="number">1</span>]); <span class="comment">// 0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>允許回傳時傳址，例如：  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">int</span>[] numbers = &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> &#125;;</span><br><span class="line">        <span class="keyword">ref</span> <span class="keyword">var</span> two = <span class="function"><span class="keyword">ref</span> <span class="title">GetTwo</span>(<span class="params">numbers</span>)</span>;</span><br><span class="line"></span><br><span class="line">        two = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        Console.WriteLine(two); <span class="comment">// 0</span></span><br><span class="line">        Console.WriteLine(numbers[<span class="number">1</span>]); <span class="comment">// 0</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">ref</span> <span class="built_in">int</span> <span class="title">GetTwo</span>(<span class="params"><span class="built_in">int</span>[] numbers</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">ref</span> numbers[<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ref</code> 條件運算式，例如：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ref</span> <span class="keyword">var</span> i = <span class="keyword">ref</span> (numbers1 != <span class="literal">null</span> ? <span class="keyword">ref</span> numbers1[<span class="number">0</span>] : <span class="keyword">ref</span> numbers2[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure>
+
+<p>除非很必要否則我不用 <code>ref</code> 的，因為對於開發、維護人員來說門檻較高且容易被濫用，且到目前為止工作上可以使用 <code>ref</code> 的情境其實都有其他成本不高且低副作用的替代方案。 當然也不是說 <code>ref</code> 不好，相信他在一些效能極度敏感的情境是很有用的。  </p>
+<h3 id="in-參數修飾詞"><a href="#in-參數修飾詞" class="headerlink" title="in 參數修飾詞"></a><code>in</code> 參數修飾詞</h3><p>補充現有的 <code>ref</code> 和 <code>out</code>。<br><code>ref</code> 傳址，被呼叫的方法不一定要為其賦值；<code>out</code> 傳址，被呼叫的方法一定要為其賦值，代表這個引數在傳入前賦值通常是沒意義的；<code>in</code> 傳址，被呼叫的方法不能為其賦值。  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Do</span>(<span class="params"><span class="keyword">ref</span> <span class="built_in">string</span> a, <span class="keyword">out</span> <span class="built_in">string</span> b, <span class="keyword">in</span> <span class="built_in">string</span> c</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Must to have</span></span><br><span class="line">    b = <span class="string">&quot;B&quot;</span>;</span><br><span class="line">    <span class="comment">// Can not assign to &quot;in&quot; parameter.</span></span><br><span class="line">    <span class="comment">// c = &quot;C&quot;;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">string</span> s1 = <span class="string">&quot;a&quot;</span>;</span><br><span class="line"><span class="comment">// Bad, assignment here generally doesn&#x27;t make sense.</span></span><br><span class="line"><span class="built_in">string</span> s2 = <span class="string">&quot;b&quot;</span>;</span><br><span class="line"><span class="comment">// Need to have value generally.</span></span><br><span class="line"><span class="built_in">string</span> s3 = <span class="string">&quot;c&quot;</span>;</span><br><span class="line">Do(<span class="keyword">ref</span> s1, <span class="keyword">out</span> s2, <span class="keyword">in</span> s3);</span><br></pre></td></tr></table></figure>
+
+<h3 id="更多型別支援-fixed-陳述式-More-types-support-the-fixed-statement"><a href="#更多型別支援-fixed-陳述式-More-types-support-the-fixed-statement" class="headerlink" title="更多型別支援 fixed 陳述式 (More types support the fixed statement)"></a>更多型別支援 <code>fixed</code> 陳述式 (More types support the <code>fixed</code> statement)</h3><p>在 C# 7.3 之後，所有包含 <code>GetPinnableReference()</code> 方法且回傳 <code>ref T</code> 或 <code>ref readonly T</code> 的型別都能套用 <code>fixed</code>。</p>
+<h3 id="fixed-索引欄位不需要釘選-Indexing-fixed-fields-does-not-require-pinning"><a href="#fixed-索引欄位不需要釘選-Indexing-fixed-fields-does-not-require-pinning" class="headerlink" title="fixed 索引欄位不需要釘選 (Indexing fixed fields does not require pinning)"></a><code>fixed</code> 索引欄位不需要釘選 (Indexing <code>fixed</code> fields does not require pinning)</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">unsafe</span> <span class="keyword">struct</span> MyStruct</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">fixed</span> <span class="built_in">int</span> FixedArray[<span class="number">10</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Example</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        MyStruct myStruct = <span class="keyword">new</span> MyStruct();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Before C# 7, pinning required</span></span><br><span class="line">        <span class="keyword">fixed</span> (<span class="built_in">int</span>* ptr = myStruct.FixedArray)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                ptr[i] = i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// After C# 7, no pinning required</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// Direct indexing is now allowed</span></span><br><span class="line">            myStruct.FixedArray[i] = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="stackalloc-陣列支援初始設定式-stackalloc-arrays-support-initializers"><a href="#stackalloc-陣列支援初始設定式-stackalloc-arrays-support-initializers" class="headerlink" title="stackalloc 陣列支援初始設定式 (stackalloc arrays support initializers)"></a><code>stackalloc</code> 陣列支援初始設定式 (<code>stackalloc</code> arrays support initializers)</h3><p>C# 7.3 之前：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span>* arr = <span class="keyword">stackalloc</span> <span class="built_in">int</span>[<span class="number">3</span>];</span><br><span class="line"></span><br><span class="line">arr[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">arr[<span class="number">1</span>] = <span class="number">3</span>;</span><br><span class="line">arr[<span class="number">2</span>] = <span class="number">5</span>;</span><br></pre></td></tr></table></figure>
+
+<p>C# 7.3 之後：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span>* arr = <span class="keyword">stackalloc</span> <span class="built_in">int</span>[<span class="number">3</span>] &#123; <span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span> &#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="擴充泛型限制"><a href="#擴充泛型限制" class="headerlink" title="擴充泛型限制"></a>擴充泛型限制</h3><p>可以限制 <code>System.Enum</code> 或 <code>System.Delegate</code> 做為泛型型別的限制；也可以用 <code>unmanaged</code> 限制為不可空的非託管型別。  </p>
+<p>最有感的是 <code>System.Enum</code> 以前要限制泛型型別只能用 <code>struct</code> 再加上一些驗證程式碼，沒辦法在編譯時期精準限制列舉為泛型型別。</p>
+<h3 id="新的編譯選項"><a href="#新的編譯選項" class="headerlink" title="新的編譯選項"></a>新的編譯選項</h3><p>這部分沒用過，就<a target="_blank" rel="noopener" href="https://web.archive.org/web/20211114194546/https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-7#new-compiler-options">留個連結備查</a>。</p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>C# 7 多了很多東西，最明顯的是各種語法糖，面對語法糖，應該找時間更仔細的研究他們編譯後實際的樣子避免誤用。</p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a target="_blank" rel="noopener" href="https://web.archive.org/web/20211114194546/https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-7">What’s new in C# 7.0 through C# 7.3 (原文件已經被刪除，這是 Archive 網站的存檔)</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/content/20240122-reuseable-xml-documentation-comments.html" rel="prev" title="可重用的 XML 文件註解">
+                  <i class="fa fa-angle-left"></i> 可重用的 XML 文件註解
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/content/20240324-whats-new-in-csharp-8.html" rel="next" title="C# 語言特性更新 - C# 8">
+                  C# 語言特性更新 - C# 8 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2017 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ronsun/ronsun.github.io.utterances","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>

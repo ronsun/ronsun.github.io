@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/identicons/ronsun.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ronsun.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="在之前的文章 在 vs2017 中使用 Entity Framework 操作 SQLite 使用方式雖然方便, 但是相對的非常依賴工具, 所以這篇用來記錄用盡量少的工具來使用 Entity Framework 操作 SQLite.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="不依賴 DDEX provider 使用 Entity Framework 操作 SQLite">
+<meta property="og:url" content="https://ronsun.github.io/content/20191017-manually-use-sqlite-with-ef.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="在之前的文章 在 vs2017 中使用 Entity Framework 操作 SQLite 使用方式雖然方便, 但是相對的非常依賴工具, 所以這篇用來記錄用盡量少的工具來使用 Entity Framework 操作 SQLite.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-10-17T15:33:43.000Z">
+<meta property="article:modified_time" content="2026-05-04T09:50:53.387Z">
+<meta property="article:author" content="Ron Sun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ronsun.github.io/content/20191017-manually-use-sqlite-with-ef.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://ronsun.github.io/content/20191017-manually-use-sqlite-with-ef.html","path":"content/20191017-manually-use-sqlite-with-ef.html","title":"不依賴 DDEX provider 使用 Entity Framework 操作 SQLite"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>不依賴 DDEX provider 使用 Entity Framework 操作 SQLite | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ron 2.0</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Simple Is Not Easy</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%97%E4%BB%B6%E8%88%87%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%9D"><span class="nav-number">1.</span> <span class="nav-text">套件與工具安裝</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A-App-config"><span class="nav-number">2.</span> <span class="nav-text">設定 App.config</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%80%E5%A1%8A"><span class="nav-number">2.1.</span> <span class="nav-text">&lt;providers&gt; 區塊</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%80%E5%A1%8A-1"><span class="nav-number">2.2.</span> <span class="nav-text">&lt;system.data&gt; 區塊</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%80%E5%A1%8A-2"><span class="nav-number">2.3.</span> <span class="nav-text">&lt;connectionStrings&gt; 區塊</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AA%AA%E6%98%8E"><span class="nav-number">2.4.</span> <span class="nav-text">說明</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E5%A2%9E-Model"><span class="nav-number">3.</span> <span class="nav-text">新增 Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E5%A2%9E-NorthwindContext"><span class="nav-number">4.</span> <span class="nav-text">新增 NorthwindContext</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%AB%E6%AE%B5%E7%A8%8B%E5%BC%8F%E7%94%A8%E7%94%A8%E7%9C%8B"><span class="nav-number">5.</span> <span class="nav-text">寫段程式用用看</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B5%90%E8%AB%96"><span class="nav-number">6.</span> <span class="nav-text">結論</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ron Sun</p>
+  <div class="site-description" itemprop="description">Simple Is Not Easy</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ronsun" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ronsun" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/ronsun/" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;ronsun&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://referencesource.microsoft.com/" title="https:&#x2F;&#x2F;referencesource.microsoft.com&#x2F;" rel="noopener" target="_blank">.Net Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://source.dot.net/" title="https:&#x2F;&#x2F;source.dot.net&#x2F;" rel="noopener" target="_blank">.Net Core Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://notfalse.net/" title="https:&#x2F;&#x2F;notfalse.net&#x2F;" rel="noopener" target="_blank">NotFalse 技術客</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://gist.github.com/ronsun" title="https:&#x2F;&#x2F;gist.github.com&#x2F;ronsun" rel="noopener" target="_blank">放零碎筆記的 Gist</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20191017-manually-use-sqlite-with-ef.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ron Sun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+      <meta itemprop="description" content="Simple Is Not Easy">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="不依賴 DDEX provider 使用 Entity Framework 操作 SQLite | Ron 2.0">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          不依賴 DDEX provider 使用 Entity Framework 操作 SQLite
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-10-17 23:33:43" itemprop="dateCreated datePublished" datetime="2019-10-17T23:33:43+08:00">2019-10-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/NET/" itemprop="url" rel="index"><span itemprop="name">.NET</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在之前的文章 <a href="/content/20190907-use-sqlite-with-ef-and-vs2017.html" title="在 vs2017 中使用 Entity Framework 操作 SQLite">在 vs2017 中使用 Entity Framework 操作 SQLite</a> 使用方式雖然方便, 但是相對的非常依賴工具, 所以這篇用來記錄用盡量少的工具來使用 Entity Framework 操作 SQLite.    </p>
+<span id="more"></span>
+
+<h3 id="套件與工具安裝"><a href="#套件與工具安裝" class="headerlink" title="套件與工具安裝"></a>套件與工具安裝</h3><p>不同於之前, 這次只需要</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/ErikEJ/SqlCeToolbox/wiki/EF6-workflow-with-SQLite-DDEX-provider#install-systemdatasqlite-nuget-package">安裝 NuGet 套件 System.Data.Sqlite</a><br>System.Data.Sqlite 會一併安裝依賴的套件與 Entity Framework 本身.</li>
+</ul>
+<h3 id="設定-App-config"><a href="#設定-App-config" class="headerlink" title="設定 App.config"></a>設定 App.config</h3><p>App.config 中主要有三個部分要設定, 有些在安裝 System.Data.Sqlite 與 Entity Framework 時會有預設的內容, 預設內容可能需要調整, 可運作的版本如下:  </p>
+<h4 id="區塊"><a href="#區塊" class="headerlink" title="&lt;providers&gt; 區塊"></a><code>&lt;providers&gt;</code> 區塊</h4><p>這個區塊在 <code>&lt;entityFramework&gt;&lt;/entityFramework&gt;</code> 中, 安裝完 Entity Framework 會自動生成一組範本, 修改後只留必要的.  </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">providers</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">provider</span> <span class="attr">invariantName</span>=<span class="string">&quot;SQLiteProvider&quot;</span> <span class="attr">type</span>=<span class="string">&quot;System.Data.SQLite.EF6.SQLiteProviderServices, System.Data.SQLite.EF6&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">providers</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="區塊-1"><a href="#區塊-1" class="headerlink" title="&lt;system.data&gt; 區塊"></a><code>&lt;system.data&gt;</code> 區塊</h4><p>這個區塊在 <code>&lt;configuration&gt;&lt;/configuration&gt;</code> 中.  </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">system.data</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">DbProviderFactories</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">add</span> <span class="attr">name</span>=<span class="string">&quot;SQLite Data Provider&quot;</span> <span class="attr">invariant</span>=<span class="string">&quot;SQLiteProvider&quot;</span> <span class="attr">description</span>=<span class="string">&quot;.NET Framework Data Provider for SQLite&quot;</span> <span class="attr">type</span>=<span class="string">&quot;System.Data.SQLite.SQLiteFactory, System.Data.SQLite&quot;</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">DbProviderFactories</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">system.data</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="區塊-2"><a href="#區塊-2" class="headerlink" title="&lt;connectionStrings&gt; 區塊"></a><code>&lt;connectionStrings&gt;</code> 區塊</h4><p>這個區塊在 <code>&lt;configuration&gt;&lt;/configuration&gt;</code> 中, 跟 <code>&lt;system.data&gt;</code> 同一層.  </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">connectionStrings</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">add</span> <span class="attr">name</span>=<span class="string">&quot;NorthwindConnection&quot;</span> <span class="attr">providerName</span>=<span class="string">&quot;SQLiteProvider&quot;</span> <span class="attr">connectionString</span>=<span class="string">&quot;data source=C:\Users\Ron\Desktop\SqliteDemo\SqliteDemo\Northwind.sqlite&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">connectionStrings</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h4><p>相較於之前透過工具產生的內容, 這邊手動調整後簡短很多, 要注意的大概就是 providerName, invariant 和 invariantName 要對得起來, connectionString 寫好就好.  </p>
+<h3 id="新增-Model"><a href="#新增-Model" class="headerlink" title="新增 Model"></a>新增 Model</h3><p>以北風資料庫中的 Category 表為例, 新增一個相應的 Model 如下:  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">Category</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">long</span> Id &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> CategoryName &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Description &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="新增-NorthwindContext"><a href="#新增-NorthwindContext" class="headerlink" title="新增 NorthwindContext"></a>新增 NorthwindContext</h3><p>繼承 <code>DbContext</code> 並覆寫 <code>OnModelCreating(DbModelBuilder)</code> 方法, 設定資料表跟 Model 的對應, 並增加相應的 <code>DbSet&lt;T&gt;</code>.  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">NorthwindContext</span> : <span class="title">DbContext</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">NorthwindContext</span>()</span></span><br><span class="line"><span class="function">        : <span class="title">base</span>(<span class="params"><span class="string">&quot;name=NorthwindConnection&quot;</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnModelCreating</span>(<span class="params">DbModelBuilder modelBuilder</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        modelBuilder.Entity&lt;Category&gt;().ToTable(<span class="string">&quot;Category&quot;</span>);</span><br><span class="line">        <span class="keyword">base</span>.OnModelCreating(modelBuilder);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">virtual</span> DbSet&lt;Category&gt; Categories &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>DbContext</code> 的部分就我目前理解是 UnitOfWork Pattern 的實作, 而 <code>DbSet&lt;T&gt;</code> 則像是 Generic Repository.  </p>
+</blockquote>
+<h3 id="寫段程式用用看"><a href="#寫段程式用用看" class="headerlink" title="寫段程式用用看"></a>寫段程式用用看</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] <span class="keyword">args</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">using</span> (<span class="keyword">var</span> context = <span class="keyword">new</span> NorthwindContext())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> categories = context.Categories.ToList();</span><br><span class="line">            <span class="keyword">foreach</span> (<span class="keyword">var</span> category <span class="keyword">in</span> categories)</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">$&quot;<span class="subst">&#123;category.CategoryName&#125;</span>: <span class="subst">&#123;category.Description&#125;</span>&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Console.ReadLine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>用這種方式來優點就是彈性, 減少開發工具的相容性的問題, 另一方面, 實作過程能更清楚每個環節的角色, 即使不完全了解細節也能避免過度依賴工具自動產生程式碼而忘記要去了解內容. </p>
+<p>缺點也是顯而易見的, 資料庫欄位變動後都需要手動維護 Model 和 <code>NorthwindContext</code>, 沒有工具幫忙同步, 維護成本高.</p>
+<p>總結來說, 用在產品開發上太耗時間有點不實際, 但作為工具限制下的方案或是學習用途還是很適合的.  </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/content/20190907-use-sqlite-with-ef-and-vs2017.html" rel="prev" title="在 vs2017 中使用 Entity Framework 操作 SQLite">
+                  <i class="fa fa-angle-left"></i> 在 vs2017 中使用 Entity Framework 操作 SQLite
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/content/20191126-json-net-trailing-zero-number-problem.html" rel="next" title="Json.NET 反序列化數字時, 尾數 0 可能被捨棄">
+                  Json.NET 反序列化數字時, 尾數 0 可能被捨棄 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2017 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ronsun/ronsun.github.io.utterances","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/identicons/ronsun.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ronsun.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="C# 各版本新特性摘要，包含自己的想法與實務上的偏好。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# 語言特性更新 - C# 11">
+<meta property="og:url" content="https://ronsun.github.io/content/20240630-whats-new-in-csharp-11.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="C# 各版本新特性摘要，包含自己的想法與實務上的偏好。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-06-30T15:41:03.000Z">
+<meta property="article:modified_time" content="2026-05-04T09:50:53.418Z">
+<meta property="article:author" content="Ron Sun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ronsun.github.io/content/20240630-whats-new-in-csharp-11.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://ronsun.github.io/content/20240630-whats-new-in-csharp-11.html","path":"content/20240630-whats-new-in-csharp-11.html","title":"C# 語言特性更新 - C# 11"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C# 語言特性更新 - C# 11 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ron 2.0</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Simple Is Not Easy</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%80%A7%E5%8F%AF%E6%94%AF%E6%8F%B4%E6%B3%9B%E5%9E%8B-Generic-attributes"><span class="nav-number">1.</span> <span class="nav-text">特性可支援泛型 (Generic attributes)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%AF%E6%8F%B4%E6%B3%9B%E5%9E%8B%E6%95%B8%E5%AD%B8%E9%81%8B%E7%AE%97-Generic-math-support"><span class="nav-number">2.</span> <span class="nav-text">支援泛型數學運算 (Generic math support)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IntPtr-%E5%92%8C-UIntPtr-%E7%9A%84%E5%88%A5%E5%90%8D-Numeric-IntPtr-and-UIntPtr"><span class="nav-number">3.</span> <span class="nav-text">IntPtr 和 UIntPtr 的別名 (Numeric IntPtr and UIntPtr)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E4%B8%B2%E6%8F%92%E8%A3%9C%E4%B8%AD%E7%9A%84%E5%88%86%E8%A1%8C%E7%AC%A6%E8%99%9F-Newlines-in-string-interpolations"><span class="nav-number">4.</span> <span class="nav-text">字串插補中的分行符號 (Newlines in string interpolations)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#List-patterns"><span class="nav-number">5.</span> <span class="nav-text">List patterns</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E5%96%84%E7%9A%84%E6%96%B9%E6%B3%95%E7%BE%A4%E7%B5%84%E8%BD%89%E6%8F%9B%E8%87%B3%E5%A7%94%E6%B4%BE-Improved-method-group-conversion-to-delegate"><span class="nav-number">6.</span> <span class="nav-text">改善的方法群組轉換至委派 (Improved method group conversion to delegate)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%A7%8B%E5%AD%97%E4%B8%B2%E5%B8%B8%E5%80%BC-Raw-string-literals"><span class="nav-number">7.</span> <span class="nav-text">原始字串常值 (Raw string literals)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%8B%95%E9%A0%90%E8%A8%AD%E7%B5%90%E6%A7%8B-Auto-default-struct"><span class="nav-number">8.</span> <span class="nav-text">自動預設結構 (Auto-default struct)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E4%B8%B2%E5%B8%B8%E6%95%B8%E6%A8%A1%E5%BC%8F%E6%AF%94%E5%B0%8D%E5%8F%AF%E5%A5%97%E7%94%A8%E5%88%B0-Span-%E5%92%8C-ReadOnlySpan-%E4%B8%8A"><span class="nav-number">9.</span> <span class="nav-text">字串常數模式比對可套用到 Span&lt;char&gt; 和 ReadOnlySpan&lt;char&gt; 上</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%B4%E5%85%85-nameof-%E7%9A%84%E9%81%A9%E7%94%A8%E7%AF%84%E5%9C%8D-Extended-nameof-scope"><span class="nav-number">10.</span> <span class="nav-text">擴充 nameof 的適用範圍 (Extended nameof scope)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UTF-8-%E5%AD%97%E4%B8%B2%E5%B8%B8%E5%80%BC-UTF-8-string-literals"><span class="nav-number">11.</span> <span class="nav-text">UTF-8 字串常值 (UTF-8 string literals)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E6%88%90%E5%93%A1-Required-members"><span class="nav-number">12.</span> <span class="nav-text">必要成員 (Required members)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ref-%E6%AC%84%E4%BD%8D%E5%92%8C-ref-scoped-%E8%AE%8A%E6%95%B8"><span class="nav-number">13.</span> <span class="nav-text">ref 欄位和 ref scoped 變數</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#file-%E5%AD%98%E5%8F%96%E4%BF%AE%E9%A3%BE%E8%A9%9E-File-local-types"><span class="nav-number">14.</span> <span class="nav-text">file 存取修飾詞 (File local types)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B5%90%E8%AB%96"><span class="nav-number">15.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%83%E8%80%83"><span class="nav-number">16.</span> <span class="nav-text">參考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ron Sun</p>
+  <div class="site-description" itemprop="description">Simple Is Not Easy</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ronsun" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ronsun" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/ronsun/" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;ronsun&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://referencesource.microsoft.com/" title="https:&#x2F;&#x2F;referencesource.microsoft.com&#x2F;" rel="noopener" target="_blank">.Net Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://source.dot.net/" title="https:&#x2F;&#x2F;source.dot.net&#x2F;" rel="noopener" target="_blank">.Net Core Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://notfalse.net/" title="https:&#x2F;&#x2F;notfalse.net&#x2F;" rel="noopener" target="_blank">NotFalse 技術客</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://gist.github.com/ronsun" title="https:&#x2F;&#x2F;gist.github.com&#x2F;ronsun" rel="noopener" target="_blank">放零碎筆記的 Gist</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20240630-whats-new-in-csharp-11.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ron Sun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+      <meta itemprop="description" content="Simple Is Not Easy">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C# 語言特性更新 - C# 11 | Ron 2.0">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C# 語言特性更新 - C# 11
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-06-30 23:41:03" itemprop="dateCreated datePublished" datetime="2024-06-30T23:41:03+08:00">2024-06-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/Language-Spec/" itemprop="url" rel="index"><span itemprop="name">Language Spec</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>C# 各版本新特性摘要，包含自己的想法與實務上的偏好。</p>
+<span id="more"></span>
+
+<h3 id="特性可支援泛型-Generic-attributes"><a href="#特性可支援泛型-Generic-attributes" class="headerlink" title="特性可支援泛型 (Generic attributes)"></a>特性可支援泛型 (Generic attributes)</h3><p>可在特性上使用泛型參數。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GenericAttribute</span>&lt;<span class="title">T</span>&gt; : <span class="title">Attribute</span> &#123; &#125;</span><br><span class="line"></span><br><span class="line">[<span class="meta">GenericAttribute&lt;string&gt;</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">Method</span>()</span> =&gt; <span class="literal">default</span>;</span><br></pre></td></tr></table></figure>
+
+<p>但有一些限制：</p>
+<ol>
+<li>必須是已確定的型別，例如 <code>GenericAttribute&lt;string&gt;</code>；不能是不確定的泛型型別像是 <code>GenericAttribute&lt;T&gt;</code>。</li>
+<li>型別引數和 <code>typeof</code> 有相同的限制，不允許需要 metadata annotation 的型別，像是 <code>dynamic</code>、<code>string?</code> 等可為 null 的參考型別、<code>(int x, int y)</code> 等各種 Tuple。但上述情境分別可用 <code>object</code>、<code>string</code>、<code>ValueTuple&lt;int, int&gt;</code> 取代。</li>
+</ol>
+<blockquote>
+<p>關於 metadata annotation 以及為什麼有這些限制應該找時間深入研究背後的機制。  </p>
+</blockquote>
+<h3 id="支援泛型數學運算-Generic-math-support"><a href="#支援泛型數學運算-Generic-math-support" class="headerlink" title="支援泛型數學運算 (Generic math support)"></a>支援泛型數學運算 (Generic math support)</h3><p>透過在介面中加入 <code>static abstract</code> 或 <code>static virtual</code> 的運算子多載來訂定一致的規範與慣例。且泛型數學運算支援下面的一些特性：</p>
+<ol>
+<li><p>運算子多載</p>
+ <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IMathOperations</span>&lt;<span class="title">TSelf</span>&gt;</span><br><span class="line">    <span class="keyword">where</span> <span class="title">TSelf</span> : <span class="title">IMathOperations</span>&lt;<span class="title">TSelf</span>&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">abstract</span> TSelf <span class="keyword">operator</span> +(TSelf left, TSelf right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">struct</span> MyNumber : IMathOperations&lt;MyNumber&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Value &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyNumber</span>(<span class="params"><span class="built_in">int</span> <span class="keyword">value</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Value = <span class="keyword">value</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> MyNumber <span class="keyword">operator</span> +(MyNumber left, MyNumber right)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyNumber(left.Value + right.Value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="built_in">string</span> <span class="title">ToString</span>()</span> =&gt; Value.ToString();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        MyNumber a = <span class="keyword">new</span> MyNumber(<span class="number">10</span>);</span><br><span class="line">        MyNumber b = <span class="keyword">new</span> MyNumber(<span class="number">5</span>);</span><br><span class="line"></span><br><span class="line">        MyNumber resultAdd = a + b;</span><br><span class="line"></span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;Addition: <span class="subst">&#123;resultAdd&#125;</span>&quot;</span>); <span class="comment">// Output: Addition: 15</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>checked</code> 運算子多載和隱含的 unchecked 運算子多載可以同時存在</p>
+ <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IMathOperations</span>&lt;<span class="title">TSelf</span>&gt; <span class="keyword">where</span> <span class="title">TSelf</span> : <span class="title">IMathOperations</span>&lt;<span class="title">TSelf</span>&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">abstract</span> TSelf <span class="keyword">operator</span> +(TSelf left, TSelf right);</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">abstract</span> TSelf <span class="keyword">operator</span> checked +(TSelf left, TSelf right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">struct</span> MyNumber : IMathOperations&lt;MyNumber&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Value &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyNumber</span>(<span class="params"><span class="built_in">int</span> <span class="keyword">value</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Value = <span class="keyword">value</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Normal addition operator</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> MyNumber <span class="keyword">operator</span> +(MyNumber left, MyNumber right)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyNumber(left.Value + right.Value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Checked addition operator</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> MyNumber <span class="keyword">operator</span> checked +(MyNumber left, MyNumber right)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyNumber(checked(left.Value + right.Value));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="built_in">string</span> <span class="title">ToString</span>()</span> =&gt; Value.ToString();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        MyNumber a = <span class="keyword">new</span> MyNumber(<span class="built_in">int</span>.MaxValue);</span><br><span class="line">        MyNumber b = <span class="keyword">new</span> MyNumber(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Using the generic method with checked context</span></span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            MyNumber resultChecked = checked(a + b);</span><br><span class="line">            Console.WriteLine(resultChecked); <span class="comment">// This will throw OverflowException</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (OverflowException)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;Overflow in checked context&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Using the generic method with normal addition</span></span><br><span class="line">        MyNumber c = <span class="keyword">new</span> MyNumber(<span class="number">10</span>);</span><br><span class="line">        MyNumber d = <span class="keyword">new</span> MyNumber(<span class="number">5</span>);</span><br><span class="line">        MyNumber resultUnchecked = c + d;</span><br><span class="line">        Console.WriteLine(resultUnchecked); <span class="comment">// Output: 15</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不帶正負號的右移運算子 <code>&gt;&gt;&gt;</code> (unsigned right-shift operator)<br> <code>&gt;&gt;&gt;</code> 是邏輯移位 (Logical Shift)，不同於 <code>&gt;&gt;</code> 是算數移位 (Arithmetic Shift)。</p>
+</li>
+<li><p>寬鬆的位移運算子<br>第二個運算元可以不是 <code>int</code> 或隱含可轉換成 <code>int</code> 的型別。</p>
+</li>
+</ol>
+<blockquote>
+<p>上述特性有些在 C# 11 以前就已經存在，只是不是透過實作介面來達成。這個新特性比較偏向設計面，讓一些特性能經由介面來規範，但缺點是如果用舊版的方式實作也可以運作，維護上就很容易出現兩套做法。就我的角度而言，雖然有一點優點，但如果引入到沒有強力慣例約束的團隊中可能會造成更大的反效果。</p>
+</blockquote>
+<h3 id="IntPtr-和-UIntPtr-的別名-Numeric-IntPtr-and-UIntPtr"><a href="#IntPtr-和-UIntPtr-的別名-Numeric-IntPtr-and-UIntPtr" class="headerlink" title="IntPtr 和 UIntPtr 的別名 (Numeric IntPtr and UIntPtr)"></a><code>IntPtr</code> 和 <code>UIntPtr</code> 的別名 (Numeric <code>IntPtr</code> and <code>UIntPtr</code>)</h3><p>分別是 <code>nint</code> 和 <code>nuint</code>。</p>
+<h3 id="字串插補中的分行符號-Newlines-in-string-interpolations"><a href="#字串插補中的分行符號-Newlines-in-string-interpolations" class="headerlink" title="字串插補中的分行符號 (Newlines in string interpolations)"></a>字串插補中的分行符號 (Newlines in string interpolations)</h3><p>字串插補可直接斷行。</p>
+<h3 id="List-patterns"><a href="#List-patterns" class="headerlink" title="List patterns"></a>List patterns</h3><p>針對 List 和陣列的語法糖，像是這樣：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Foo</span>(<span class="params">IList&lt;<span class="built_in">int</span>&gt; list</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> ans = list <span class="keyword">switch</span></span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">1, 2, 3</span>] =&gt; <span class="string">&quot;Matched exactly [1, 2, 3]&quot;</span>,</span><br><span class="line">        [<span class="meta">1, _, 3</span>] =&gt; <span class="string">&quot;Matched pattern [1, _, 3]&quot;</span>,</span><br><span class="line">        _ =&gt; <span class="string">&quot;No match&quot;</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    ans.Dump();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>要讓 <code>switch</code> 模式比對可用， <code>list</code> 只能是陣列、 <code>IList&lt;T&gt;</code> 或其衍生型別。</p>
+<h3 id="改善的方法群組轉換至委派-Improved-method-group-conversion-to-delegate"><a href="#改善的方法群組轉換至委派-Improved-method-group-conversion-to-delegate" class="headerlink" title="改善的方法群組轉換至委派 (Improved method group conversion to delegate)"></a>改善的方法群組轉換至委派 (Improved method group conversion to delegate)</h3><p>以下面範例比對差異：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Action&lt;<span class="built_in">string</span>&gt; action1 = PrintMessage;</span><br><span class="line">        Action&lt;<span class="built_in">string</span>&gt; action2 = PrintMessage;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// In C# 10 and earlier, these will be different instances. Output: False</span></span><br><span class="line">        <span class="comment">// In C# 11, these may be the same instance due to caching. Output: True</span></span><br><span class="line">        Console.WriteLine(<span class="built_in">object</span>.ReferenceEquals(action1, action2));</span><br><span class="line"></span><br><span class="line">        action1(<span class="string">&quot;Hello from action1!&quot;</span>); <span class="comment">// Output: Hello from action1!</span></span><br><span class="line">        action2(<span class="string">&quot;Hello from action2!&quot;</span>); <span class="comment">// Output: Hello from action2!</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">PrintMessage</span>(<span class="params"><span class="built_in">string</span> message</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="原始字串常值-Raw-string-literals"><a href="#原始字串常值-Raw-string-literals" class="headerlink" title="原始字串常值 (Raw string literals)"></a>原始字串常值 (Raw string literals)</h3><p>以 <code>&quot;&quot;&quot;</code> 開始與結尾，可支援任意文字，包括空白字元、分行符號、內嵌引號和其他特殊字元。可搭配 <code>$$</code> 使用。</p>
+<blockquote>
+<p>但搭配  <code>$$</code> 使用時，規則有一些細節上的不同，先知道就好之後再補坑。</p>
+</blockquote>
+<h3 id="自動預設結構-Auto-default-struct"><a href="#自動預設結構-Auto-default-struct" class="headerlink" title="自動預設結構 (Auto-default struct)"></a>自動預設結構 (Auto-default struct)</h3><p>自動把未初始化的欄位設為該型別預設值，如下面程式碼在舊版無法編譯但在 C# 11 可以編譯，未初始化的屬性 <code>Y</code> 會是 <code>default(int)</code>。  </p>
+<blockquote>
+<p>是針對欄位，但屬性其實是 backing field + getter + setter 的組合，所以也適用。</p>
+</blockquote>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">struct</span> Point</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> X &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Y &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Point</span>(<span class="params"><span class="built_in">int</span> x</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        X = x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="字串常數模式比對可套用到-Span-和-ReadOnlySpan-上"><a href="#字串常數模式比對可套用到-Span-和-ReadOnlySpan-上" class="headerlink" title="字串常數模式比對可套用到 Span&lt;char&gt; 和 ReadOnlySpan&lt;char&gt; 上"></a>字串常數模式比對可套用到 <code>Span&lt;char&gt;</code> 和 <code>ReadOnlySpan&lt;char&gt;</code> 上</h3><p>如下方範例，在 C# 11 上可以運作。  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ProcessSpan</span>(<span class="params">ReadOnlySpan&lt;<span class="built_in">char</span>&gt; span</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">switch</span> (span)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&quot;Hello&quot;</span>:</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;Greeting detected.&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&quot;World&quot;</span>:</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;World detected.&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="literal">default</span>:</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;Unknown span.&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="擴充-nameof-的適用範圍-Extended-nameof-scope"><a href="#擴充-nameof-的適用範圍-Extended-nameof-scope" class="headerlink" title="擴充 nameof 的適用範圍 (Extended nameof scope)"></a>擴充 <code>nameof</code> 的適用範圍 (Extended nameof scope)</h3><p><code>nameof()</code> 可運用在特性上作為參數傳入，在參數驗證情境下可方便的印出有問題的參數名稱。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">MyMethod</span>(<span class="params">[Validation(<span class="keyword">nameof</span>(param</span>))]<span class="built_in">int</span> param)</span></span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;Method executed.&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="UTF-8-字串常值-UTF-8-string-literals"><a href="#UTF-8-字串常值-UTF-8-string-literals" class="headerlink" title="UTF-8 字串常值 (UTF-8 string literals)"></a>UTF-8 字串常值 (UTF-8 string literals)</h3><p>類似於 <code>123m</code> 表示 decimal <code>123</code>，<code>&quot;Hello, 世界! 🌍&quot;u8</code> 表示以 UTF-8 編碼的字串，省去一些轉碼的操作。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        ReadOnlySpan&lt;<span class="built_in">byte</span>&gt; utf8StringLiteral = <span class="string">&quot;Hello, 世界! 🌍&quot;</span>u8;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 48 65 6C 6C 6F 2C 20 E4 B8 96 E7 95 8C 21 20 F0 9F 8C 8D </span></span><br><span class="line">        <span class="keyword">foreach</span> (<span class="built_in">byte</span> b <span class="keyword">in</span> utf8StringLiteral)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.Write(<span class="string">$&quot;<span class="subst">&#123;b:X2&#125;</span> &quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="必要成員-Required-members"><a href="#必要成員-Required-members" class="headerlink" title="必要成員 (Required members)"></a>必要成員 (Required members)</h3><p>可將 <code>required</code> 修飾詞加到屬性和欄位上，強迫建構子和呼叫端初始化這些值。  </p>
+<h3 id="ref-欄位和-ref-scoped-變數"><a href="#ref-欄位和-ref-scoped-變數" class="headerlink" title="ref 欄位和 ref scoped 變數"></a><code>ref</code> 欄位和 <code>ref scoped</code> 變數</h3><h3 id="file-存取修飾詞-File-local-types"><a href="#file-存取修飾詞-File-local-types" class="headerlink" title="file 存取修飾詞 (File local types)"></a><code>file</code> 存取修飾詞 (File local types)</h3><p>不同於其他存取修飾詞關注在 Assembly 或類別， <code>file</code> 以檔案為基準將可見度限縮在單一檔案中。</p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>從這陣子從 C# 7 一路追上來，到後面發現基於 C# 7 後面的版本的新特性另外再做的延伸我已經看不太懂了，等看完 C# 12 後還是要再回頭從特性的角度全面了解。</p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p>ChatGPT  </p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-11">What’s new in C# 11</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/content/20240629-whats-new-in-csharp-10.html" rel="prev" title="C# 語言特性更新 - C# 10">
+                  <i class="fa fa-angle-left"></i> C# 語言特性更新 - C# 10
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/content/20240708-whats-new-in-csharp-12.html" rel="next" title="C# 語言特性更新 - C# 12">
+                  C# 語言特性更新 - C# 12 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2017 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ronsun/ronsun.github.io.utterances","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>

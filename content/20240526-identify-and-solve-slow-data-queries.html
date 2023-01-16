@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/identicons/ronsun.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ronsun.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="在實際專案中，資料查詢緩慢是一個常見的問題，如何找出具體原因成了一個很重要的主題。但在工作中，很多人往往過於注重單一面向而沒有精確的找出真正的瓶頸。例如，因為 ORM 使用不當而導致效能低落，卻將問題歸咎於 ORM 本身進而禁用 ORM。直接撰寫 SQL 查詢雖然可能較快，但失去了 ORM 的優勢。如果能先意識到 ORM 使用不當的問題並加以改善，或許能同時達到效能需求並保有 ORM 的優勢。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="資料查詢很慢的原因與因應方式">
+<meta property="og:url" content="https://ronsun.github.io/content/20240526-identify-and-solve-slow-data-queries.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="在實際專案中，資料查詢緩慢是一個常見的問題，如何找出具體原因成了一個很重要的主題。但在工作中，很多人往往過於注重單一面向而沒有精確的找出真正的瓶頸。例如，因為 ORM 使用不當而導致效能低落，卻將問題歸咎於 ORM 本身進而禁用 ORM。直接撰寫 SQL 查詢雖然可能較快，但失去了 ORM 的優勢。如果能先意識到 ORM 使用不當的問題並加以改善，或許能同時達到效能需求並保有 ORM 的優勢。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-05-26T15:30:08.000Z">
+<meta property="article:modified_time" content="2026-05-04T09:50:53.417Z">
+<meta property="article:author" content="Ron Sun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ronsun.github.io/content/20240526-identify-and-solve-slow-data-queries.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://ronsun.github.io/content/20240526-identify-and-solve-slow-data-queries.html","path":"content/20240526-identify-and-solve-slow-data-queries.html","title":"資料查詢很慢的原因與因應方式"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>資料查詢很慢的原因與因應方式 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ron 2.0</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Simple Is Not Easy</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%9E-ORM-%E9%96%8B%E5%A7%8B"><span class="nav-number">1.</span> <span class="nav-text">從 ORM 開始</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#N-1-Problem-N-1-Queries"><span class="nav-number">1.1.</span> <span class="nav-text">N+1 Problem (N+1 Queries)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BF%AB%E7%94%A8-Lazy-Loading"><span class="nav-number">1.2.</span> <span class="nav-text">濫用 Lazy Loading</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LINQ-%E6%9F%A5%E8%A9%A2%E6%89%80%E7%BF%BB%E8%AD%AF%E5%87%BA%E4%BE%86%E7%9A%84-SQL-%E4%B8%8D%E5%A4%A0%E7%90%86%E6%83%B3"><span class="nav-number">1.3.</span> <span class="nav-text">LINQ 查詢所翻譯出來的 SQL 不夠理想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%8F%E7%B5%90"><span class="nav-number">1.4.</span> <span class="nav-text">小結</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B3%87%E6%96%99%E5%BA%AB%E8%88%87-SQL-%E6%95%88%E8%83%BD"><span class="nav-number">2.</span> <span class="nav-text">資料庫與 SQL 效能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Cartesian-Explosion-%E7%AC%9B%E5%8D%A1%E5%85%92%E7%88%86%E7%82%B8"><span class="nav-number">2.1.</span> <span class="nav-text">Cartesian Explosion (笛卡兒爆炸)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%B7%E8%A1%8C%E8%A8%88%E5%8A%83-Execution-Plan"><span class="nav-number">2.2.</span> <span class="nav-text">執行計劃 (Execution Plan)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%8F%E7%B5%90-1"><span class="nav-number">2.3.</span> <span class="nav-text">小結</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-number">3.</span> <span class="nav-text">總結</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%83%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">參考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ron Sun</p>
+  <div class="site-description" itemprop="description">Simple Is Not Easy</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ronsun" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ronsun" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/ronsun/" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;ronsun&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://referencesource.microsoft.com/" title="https:&#x2F;&#x2F;referencesource.microsoft.com&#x2F;" rel="noopener" target="_blank">.Net Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://source.dot.net/" title="https:&#x2F;&#x2F;source.dot.net&#x2F;" rel="noopener" target="_blank">.Net Core Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://notfalse.net/" title="https:&#x2F;&#x2F;notfalse.net&#x2F;" rel="noopener" target="_blank">NotFalse 技術客</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://gist.github.com/ronsun" title="https:&#x2F;&#x2F;gist.github.com&#x2F;ronsun" rel="noopener" target="_blank">放零碎筆記的 Gist</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20240526-identify-and-solve-slow-data-queries.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ron Sun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+      <meta itemprop="description" content="Simple Is Not Easy">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="資料查詢很慢的原因與因應方式 | Ron 2.0">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          資料查詢很慢的原因與因應方式
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-05-26 23:30:08" itemprop="dateCreated datePublished" datetime="2024-05-26T23:30:08+08:00">2024-05-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Others/" itemprop="url" rel="index"><span itemprop="name">Others</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在實際專案中，資料查詢緩慢是一個常見的問題，如何找出具體原因成了一個很重要的主題。但在工作中，很多人往往過於注重單一面向而沒有精確的找出真正的瓶頸。例如，因為 ORM 使用不當而導致效能低落，卻將問題歸咎於 ORM 本身進而禁用 ORM。直接撰寫 SQL 查詢雖然可能較快，但失去了 ORM 的優勢。如果能先意識到 ORM 使用不當的問題並加以改善，或許能同時達到效能需求並保有 ORM 的優勢。  </p>
+<p>找到問題後的解決方案又是另一個複雜的過程，本文將簡單記錄幾個排查資料查詢緩慢的常見方向及應對方式。</p>
+<span id="more"></span>
+
+<h3 id="從-ORM-開始"><a href="#從-ORM-開始" class="headerlink" title="從 ORM 開始"></a>從 ORM 開始</h3><p>接續一開始說的，從 ORM 常見問題開始排查。</p>
+<h4 id="N-1-Problem-N-1-Queries"><a href="#N-1-Problem-N-1-Queries" class="headerlink" title="N+1 Problem (N+1 Queries)"></a>N+1 Problem (N+1 Queries)</h4><p>以下面程式碼為範例，並有以下前提：</p>
+<ol>
+<li>使用 Entity Framework Core 作為 ORM。</li>
+<li>啟用 Lazy Loading。</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> (<span class="keyword">var</span> context = <span class="keyword">new</span> MyDbContext())</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 1 Query.</span></span><br><span class="line">    <span class="keyword">var</span> authors = context.Authors.ToList();</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> author <span class="keyword">in</span> authors)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Additional N Queries.</span></span><br><span class="line">        <span class="keyword">var</span> books = author.Books;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的範例中總共會產生 1 (<code>context.Authors</code>) + N (<code>author.Books</code>) 次查詢。也就是說如果資料庫中有 1000 個作者，就會先執行一次查詢來查出所有作者資訊，並<strong>在迴圈中額外查詢 1000 次各個作者的著作</strong>。  </p>
+<p>而正確的做法應該如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> (<span class="keyword">var</span> context = <span class="keyword">new</span> AppDbContext())</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// A single query.</span></span><br><span class="line">    <span class="keyword">var</span> authorsWithBooks = context.Authors</span><br><span class="line">                                  .Include(a =&gt; a.Books)</span><br><span class="line">                                  .ToList();</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> author <span class="keyword">in</span> authorsWithBooks)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// No additional queries are executed here.</span></span><br><span class="line">        <span class="keyword">var</span> books = author.Books;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>這個做法在一開始查詢出作者時，也將所有作者的著作查詢出來，迴圈中就只是存取記憶體中的資料，如果資料庫中有 1000 個作者，相當於省下了 1000 次額外查詢。</p>
+<h4 id="濫用-Lazy-Loading"><a href="#濫用-Lazy-Loading" class="headerlink" title="濫用 Lazy Loading"></a>濫用 Lazy Loading</h4><p>如果沒有注意 Lazy Loading 的特性就很容易在存取 Model 的過程，不經意的造成大量的額外查詢。例如下面範例：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> (<span class="keyword">var</span> context = <span class="keyword">new</span> MyDbContext())</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// The 1st query.</span></span><br><span class="line">    <span class="keyword">var</span> author = context.Authors.FirstOrDefault();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The 2nd query.</span></span><br><span class="line">    <span class="keyword">var</span> books = author.Books;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The 3rd query</span></span><br><span class="line">    <span class="keyword">var</span> awards = author.Awards;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Much more queries via navigations.</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Entity Framework Core 預設不啟用 Lazy Loading 就讓我覺得很放心，即使是資淺同事也不容易誤用。</p>
+</blockquote>
+<h4 id="LINQ-查詢所翻譯出來的-SQL-不夠理想"><a href="#LINQ-查詢所翻譯出來的-SQL-不夠理想" class="headerlink" title="LINQ 查詢所翻譯出來的 SQL 不夠理想"></a>LINQ 查詢所翻譯出來的 SQL 不夠理想</h4><p>既然 ORM 的功能之一是將 LINQ 翻譯成 SQL，就應該適時的開啟相應的 Log 功能來印出翻譯結果，並試著透過調整 LINQ 語句來得到更理想的 SQL。</p>
+<h4 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h4><p>在分析 ORM 的效能影響時，先確定不是誤用造成的效能瓶頸再來討論 ORM 本身對效能的影響會比較恰當。</p>
+<h3 id="資料庫與-SQL-效能"><a href="#資料庫與-SQL-效能" class="headerlink" title="資料庫與 SQL 效能"></a>資料庫與 SQL 效能</h3><p>ORM 能做的就是翻譯，除了翻譯效果不理想的因素外，另外一個面向是從資料庫與 SQL 本身來排查。</p>
+<h4 id="Cartesian-Explosion-笛卡兒爆炸"><a href="#Cartesian-Explosion-笛卡兒爆炸" class="headerlink" title="Cartesian Explosion (笛卡兒爆炸)"></a>Cartesian Explosion (笛卡兒爆炸)</h4><p>這是很經典的問題，網路上資源很多所以這邊就用個範例簡介一下就好。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- Count: 1 AUTHORS * N BOOKS * M AWARDS</span></span><br><span class="line"><span class="keyword">SELECT</span> a.NAME <span class="keyword">AS</span> AUTHOR_NAME, b.TITLE <span class="keyword">AS</span> BOOK_TITLE, aw.AWARD_NAME <span class="keyword">AS</span> AWARD_NAME</span><br><span class="line"><span class="keyword">FROM</span> AUTHORS a</span><br><span class="line"><span class="keyword">JOIN</span> BOOKS b <span class="keyword">ON</span> a.AUTHOR_ID <span class="operator">=</span> b.AUTHOR_ID</span><br><span class="line"><span class="keyword">JOIN</span> AWARDS aw <span class="keyword">ON</span> a.AUTHOR_ID <span class="operator">=</span> aw.AUTHOR_ID;</span><br><span class="line"><span class="keyword">WHERE</span> a.NAME <span class="operator">=</span> <span class="string">&#x27;John Smith&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>假設這個作者關聯 20 本書且他得了 10 個獎項，上面的查詢會查出 200 (10 * 20) 筆資料，依此類推，這個現象在星型架構(Star Schema)的情境會更明顯。但如果我們把它拆成兩個查詢如下，則只會產生總共 30 (10 + 20) 筆資料。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- Count: 1 AUTHORS * N BOOKS</span></span><br><span class="line"><span class="keyword">SELECT</span> a.AUTHOR_ID, a.NAME <span class="keyword">AS</span> AUTHOR_NAME, b.TITLE <span class="keyword">AS</span> BOOK_TITLE</span><br><span class="line"><span class="keyword">FROM</span> AUTHORS a</span><br><span class="line"><span class="keyword">JOIN</span> BOOKS b <span class="keyword">ON</span> a.AUTHOR_ID <span class="operator">=</span> b.AUTHOR_ID</span><br><span class="line"><span class="keyword">WHERE</span> a.NAME <span class="operator">=</span> <span class="string">&#x27;John Smith&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- Count: 1 AUTHORS * M AWARDS</span></span><br><span class="line"><span class="keyword">SELECT</span> a.AUTHOR_ID, a.NAME <span class="keyword">AS</span> AUTHOR_NAME, aw.AWARD_NAME <span class="keyword">AS</span> AWARD_NAME</span><br><span class="line"><span class="keyword">FROM</span> AUTHORS a</span><br><span class="line"><span class="keyword">JOIN</span> AWARDS aw <span class="keyword">ON</span> a.AUTHOR_ID <span class="operator">=</span> aw.AUTHOR_ID</span><br><span class="line"><span class="keyword">WHERE</span> a.NAME <span class="operator">=</span> <span class="string">&#x27;John Smith&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>雖然一般情況下，較少的查詢次數能帶來更好的效能，但在笛卡兒爆炸問題下，需要視情況拆分查詢以避免過多資料造成記憶體負擔。大量資料除了對記憶體是負擔外，應用程式處理這些資料也會拖慢執行時間。在極端情況下，多次查詢可能遠快於一次引發笛卡兒爆炸的查詢。</p>
+</blockquote>
+<h4 id="執行計劃-Execution-Plan"><a href="#執行計劃-Execution-Plan" class="headerlink" title="執行計劃 (Execution Plan)"></a>執行計劃 (Execution Plan)</h4><p>透過執行計劃查看查詢執行的過程，能夠有效的判定出主要效能問題。常見的解決方案如下：</p>
+<p><strong>Index</strong><br>最常見的處理方式，適當的索引能大幅提升查詢速度，而索引種類與細節非常多，需要另外花時間研究。</p>
+<p><strong>Partition</strong><br>索引不是萬能，當一張表的資料量與查詢範圍夠大時，即使使用 Index 進行範圍查詢也會造成效能低落的問題，這時候 Partition (以 Oracle 來說) 就能有效的進一步提升查詢效能。</p>
+<blockquote>
+<p>另一個概念是分片(Shard)，<a target="_blank" rel="noopener" href="https://medium.com/@_amanarora/partitioning-sharding-choosing-the-right-scaling-method-dbc6b2bec1d5">兩者差異參考其他資料</a></p>
+</blockquote>
+<p><strong>資料歸檔(Archive)</strong><br>將少用的資料 (通常是舊資料) 分散到其他資料庫中，減少常用資料庫中的資料量。但這個策略很依賴商務層面使用資料的方式，只在存在少用資料時才有用。  </p>
+<p>另外這個做法很複雜：</p>
+<ol>
+<li>首先要先制定資料遷移的時間和相關操作，如果要不停機遷移難度會更高。</li>
+<li>查詢時，如果少用資料終究還是要用到，那應用程式中查詢就要考慮兩個資料庫來源，非常麻煩。</li>
+<li>承上，跨資料庫查詢對於需要排序與分頁的功能來說是難以跨越的障礙，這個限制會直接限縮這個解法的適用範圍。</li>
+</ol>
+<h4 id="小結-1"><a href="#小結-1" class="headerlink" title="小結"></a>小結</h4><p>資料庫和 SQL 分析範圍很廣，這邊提的是我見過的部分。  </p>
+<h3 id="總結"><a href="#總結" class="headerlink" title="總結"></a>總結</h3><p>會想寫這篇是因為在面對效能問題時，常見到找不到真正的瓶頸但卻花很多精神在微小的改善上的情況，或是沒意識到誤用工具而棄用工具，實在很可惜。  </p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a target="_blank" rel="noopener" href="https://medium.com/@_amanarora/partitioning-sharding-choosing-the-right-scaling-method-dbc6b2bec1d5">Partitioning &amp; Sharding — choosing the right scaling method</a>  </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/content/20240512-ef-core-warmup.html" rel="prev" title="Entity Framework Core 預熱">
+                  <i class="fa fa-angle-left"></i> Entity Framework Core 預熱
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/content/20240622-concurrent-dictionary.html" rel="next" title="在非同步情境下使用 ConcurrentDictionary">
+                  在非同步情境下使用 ConcurrentDictionary <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2017 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ronsun/ronsun.github.io.utterances","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>

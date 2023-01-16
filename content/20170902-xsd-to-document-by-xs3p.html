@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/identicons/ronsun.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ronsun.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="有時候專案中會需要使用xml做為設定文件去定義程式的行為與參數, 而config有可能會非常複雜, 所以為了開發上的方便會用xsd來定義, 並且需要產出一份文件來讓新手快速了解config應該如何編寫, 所以我們需要一些工具來幫來製作文件。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用xs3p將xsd轉換成文件">
+<meta property="og:url" content="https://ronsun.github.io/content/20170902-xsd-to-document-by-xs3p.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="有時候專案中會需要使用xml做為設定文件去定義程式的行為與參數, 而config有可能會非常複雜, 所以為了開發上的方便會用xsd來定義, 並且需要產出一份文件來讓新手快速了解config應該如何編寫, 所以我們需要一些工具來幫來製作文件。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://ronsun.github.io/content/20170902-xsd-to-document-by-xs3p/001-duplicate-namespace.png">
+<meta property="article:published_time" content="2017-09-02T07:40:30.000Z">
+<meta property="article:modified_time" content="2026-05-04T09:50:53.342Z">
+<meta property="article:author" content="Ron Sun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ronsun.github.io/content/20170902-xsd-to-document-by-xs3p/001-duplicate-namespace.png">
+
+
+<link rel="canonical" href="https://ronsun.github.io/content/20170902-xsd-to-document-by-xs3p.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://ronsun.github.io/content/20170902-xsd-to-document-by-xs3p.html","path":"content/20170902-xsd-to-document-by-xs3p.html","title":"利用xs3p將xsd轉換成文件"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>利用xs3p將xsd轉換成文件 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ron 2.0</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Simple Is Not Easy</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BC%89%E5%B7%A5%E5%85%B7%E8%88%87%E4%BE%9D%E8%B3%B4%E5%85%83%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">下載工具與依賴元件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xs3p%E8%B3%87%E6%96%99%E5%A4%BE%E7%B5%90%E6%A7%8B%E8%88%87%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">xs3p資料夾結構與使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">主要文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-%E4%BB%A5msxml%E7%82%BA%E4%BE%8B"><span class="nav-number">2.2.</span> <span class="nav-text">使用(以msxml為例)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%84%E7%A8%AE%E5%95%8F%E9%A1%8C"><span class="nav-number">3.</span> <span class="nav-text">各種問題</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B7%A8%E7%A2%BC%E5%95%8F%E9%A1%8C"><span class="nav-number">3.1.</span> <span class="nav-text">編碼問題</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E5%90%8D%E7%A9%BA%E9%96%93%E5%95%8F%E9%A1%8C"><span class="nav-number">3.2.</span> <span class="nav-text">命名空間問題</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%97%E8%88%89%E9%A1%9E%E5%9E%8B%E7%9A%84Annotation%E7%84%A1%E6%B3%95%E8%BD%89%E6%8F%9B"><span class="nav-number">3.3.</span> <span class="nav-text">列舉類型的Annotation無法轉換</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%8C%E8%A8%98"><span class="nav-number">4.</span> <span class="nav-text">後記</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ron Sun</p>
+  <div class="site-description" itemprop="description">Simple Is Not Easy</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ronsun" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ronsun" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/ronsun/" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;ronsun&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://referencesource.microsoft.com/" title="https:&#x2F;&#x2F;referencesource.microsoft.com&#x2F;" rel="noopener" target="_blank">.Net Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://source.dot.net/" title="https:&#x2F;&#x2F;source.dot.net&#x2F;" rel="noopener" target="_blank">.Net Core Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://notfalse.net/" title="https:&#x2F;&#x2F;notfalse.net&#x2F;" rel="noopener" target="_blank">NotFalse 技術客</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://gist.github.com/ronsun" title="https:&#x2F;&#x2F;gist.github.com&#x2F;ronsun" rel="noopener" target="_blank">放零碎筆記的 Gist</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20170902-xsd-to-document-by-xs3p.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ron Sun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+      <meta itemprop="description" content="Simple Is Not Easy">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="利用xs3p將xsd轉換成文件 | Ron 2.0">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          利用xs3p將xsd轉換成文件
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-09-02 15:40:30" itemprop="dateCreated datePublished" datetime="2017-09-02T15:40:30+08:00">2017-09-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>有時候專案中會需要使用xml做為設定文件去定義程式的行為與參數, 而config有可能會非常複雜, 所以為了開發上的方便會用xsd來定義, 並且需要產出一份文件來讓新手快速了解config應該如何編寫, 所以我們需要一些工具來幫來製作文件。</p>
+<span id="more"></span>
+
+<p>目前這個專案, 需要文件化的xsd只有一個, 所以並沒有使用大砲級的 <a target="_blank" rel="noopener" href="https://www.liquid-technologies.com/xml-studio">Liquid Studio</a> 以及 <a target="_blank" rel="noopener" href="http://www.filigris.com/docflex/">DocFlex</a>, 而是用了比較輕量簡單的 xs3p , 但是 <a target="_blank" rel="noopener" href="https://xml.fiforms.org/xs3p/">官方的xs3p</a> 排版太陽春, 所以這邊推薦使用 <a target="_blank" rel="noopener" href="https://github.com/bitfehler/xs3p">Github上的美化版</a>, 或是我<a target="_blank" rel="noopener" href="https://github.com/ronsun/xs3p">後來 fork 出來改過的版本</a>.  </p>
+<p>接著會用 bitfehler 版本的 xs3p 介紹這個小工具的使用. </p>
+<h2 id="下載工具與依賴元件"><a href="#下載工具與依賴元件" class="headerlink" title="下載工具與依賴元件"></a>下載工具與依賴元件</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/bitfehler/xs3p">xs3p美化版</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/download/details.aspx?id=21714">Command Line Transformation Utility (msxsl.exe)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/download/details.aspx?id=15697">MSXML 4.0 Service Pack 3</a>: 可以不裝, 但轉換時Annotation中如果有CDATA區段會轉不出來。</li>
+</ul>
+<h2 id="xs3p資料夾結構與使用"><a href="#xs3p資料夾結構與使用" class="headerlink" title="xs3p資料夾結構與使用"></a>xs3p資料夾結構與使用</h2><h3 id="主要文件"><a href="#主要文件" class="headerlink" title="主要文件"></a>主要文件</h3><ul>
+<li><code>/examples</code>: 範例資料夾。<ul>
+<li><code>/examples/test_*.bat</code> : 執行各種轉換工具的批次檔。</li>
+<li><code>/examples/*.xsd</code>: 範例XSD檔。</li>
+</ul>
+</li>
+<li><code>/xs3p.xsl</code>: 轉換時需要使用的樣式定義。</li>
+</ul>
+<h3 id="使用-以msxml為例"><a href="#使用-以msxml為例" class="headerlink" title="使用(以msxml為例)"></a>使用(以msxml為例)</h3><ol>
+<li>將 <code>msxsl.exe</code> 放到 <code>/examples</code> 資料夾中。</li>
+<li>點擊 <code>/examples/test_msxsl.bat</code> 直接執行。</li>
+<li>會在 <code>/examples/msxsl-results</code> 中產出 <code>/examples</code> 目錄下所有XSD檔轉換後的html文件。</li>
+<li><a href="sample.xsd">範例XSD</a> 與 <a href="sample.html">範例HTML</a>。</li>
+</ol>
+<h2 id="各種問題"><a href="#各種問題" class="headerlink" title="各種問題"></a>各種問題</h2><h3 id="編碼問題"><a href="#編碼問題" class="headerlink" title="編碼問題"></a>編碼問題</h3><p>轉出來的html檔所需要的css, js等資源都是連到cdn上拿, 如果在chrome上面樣式無法套用, 可能是編碼問題, 要在 xs3p.xsl 中的 <code>&lt;link&gt;</code> 元素中加上 <code>charset=&quot;UTF-8&quot;</code>。  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;link href=&quot;&#123;$bootstrapURL&#125;/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot; charset=&quot;UTF-8&quot;/&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="命名空間問題"><a href="#命名空間問題" class="headerlink" title="命名空間問題"></a>命名空間問題</h3><p>用xs3p搭配msxml.exe去產生xsd文件時, 需要特別當一個命名空間設定多個前綴, 只認第一個。  </p>
+<p>舉例, 下面的範例中, <code>xmlns:first</code>以及 <code>xmlns:me</code>是同樣的命名空間, 轉換時只認第一個, 所以如果xsd中以me為前綴的type轉換出來的超連結都會是失效的, 如附圖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">xs:schema</span> <span class="attr">id</span>=<span class="string">&quot;ComponentDefinition&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">targetNamespace</span>=<span class="string">&quot;http://www.ronsun.com/ComponentDefinition/Guide.md&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">elementFormDefault</span>=<span class="string">&quot;qualified&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:first</span>=<span class="string">&quot;http://www.ronsun.com/ComponentDefinition/Guide.md&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:me</span>=<span class="string">&quot;http://www.ronsun.com/ComponentDefinition/Guide.md&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:xs</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">xs:schema</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<img src="/content/20170902-xsd-to-document-by-xs3p/001-duplicate-namespace.png" class="">  
+
+
+
+<h3 id="列舉類型的Annotation無法轉換"><a href="#列舉類型的Annotation無法轉換" class="headerlink" title="列舉類型的Annotation無法轉換"></a>列舉類型的Annotation無法轉換</h3><p>如下範例將註解加在enumeration中, 轉換後的文件會遺漏掉註解。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">xs:simpleType</span> <span class="attr">name</span>=<span class="string">&quot;componentTypeEnum&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">xs:restriction</span> <span class="attr">base</span>=<span class="string">&quot;xs:string&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xs:enumeration</span> <span class="attr">value</span>=<span class="string">&quot;Typ1&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">xs:annotation</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">xs:documentation</span>&gt;</span></span><br><span class="line">          &lt;![CDATA[This is type1]]&gt;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">xs:documentation</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">xs:annotation</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">xs:enumeration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xs:enumeration</span> <span class="attr">value</span>=<span class="string">&quot;Typ2&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">xs:annotation</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">xs:documentation</span>&gt;</span></span><br><span class="line">          &lt;![CDATA[This is type1]]&gt;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">xs:documentation</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">xs:annotation</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">xs:enumeration</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">xs:restriction</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">xs:simpleType</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>因應方式是把註解加在simpleType下, 如:  </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">xs:simpleType</span> <span class="attr">name</span>=<span class="string">&quot;componentTypeEnum&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">xs:annotation</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xs:documentation</span>&gt;</span></span><br><span class="line">      &lt;![CDATA[</span><br><span class="line">      `Type1`: this is type1  </span><br><span class="line">      `Type2`: this is type2</span><br><span class="line">      ]]&gt;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">xs:documentation</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">xs:annotation</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">xs:restriction</span> <span class="attr">base</span>=<span class="string">&quot;xs:string&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xs:enumeration</span> <span class="attr">value</span>=<span class="string">&quot;Typ1&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xs:enumeration</span> <span class="attr">value</span>=<span class="string">&quot;Typ2&quot;</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">xs:restriction</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">xs:simpleType</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="後記"><a href="#後記" class="headerlink" title="後記"></a>後記</h2><p>這個工具用起來很不錯, 不過如上面所說, 有一些細節不符合目前專案需求, 所以只好自己另外 fork 出來改成 <a target="_blank" rel="noopener" href="https://github.com/ronsun/xs3p">ronsun&#x2F;xs3p</a>.  </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/content/20170820-mssql-random-string.html" rel="prev" title="新增一個使用者定義函數提供亂數字串">
+                  <i class="fa fa-angle-left"></i> 新增一個使用者定義函數提供亂數字串
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/content/20170902-hexo-and-next-fragments.html" rel="next" title="Hexo 與 hexo-theme-next 的零碎片段">
+                  Hexo 與 hexo-theme-next 的零碎片段 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2017 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ronsun/ronsun.github.io.utterances","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>

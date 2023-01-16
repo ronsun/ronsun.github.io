@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/identicons/ronsun.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ronsun.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="在開發的過程, 常常有一些需要改進但現階段沒時間做的部分, 我們在上面加上一個 &#x2F;&#x2F; TODO: 的註解來標註, 甚至依照特性的不同會用不一樣的語彙(Token)來標註, 例如: &#x2F;&#x2F; BadSmell:  等等, Visual Studio 已經有內建幾個常用語彙, 除了這些內建語彙外我們也可以自己新增團隊內部使用的語彙.   另一方面, 這些工作清單慢慢累積後就會變得不好管理, 這部分也可以通">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vsual Studio 中的工作清單(Task List)">
+<meta property="og:url" content="https://ronsun.github.io/content/20181213-use-task-list-in-visual-studio.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="在開發的過程, 常常有一些需要改進但現階段沒時間做的部分, 我們在上面加上一個 &#x2F;&#x2F; TODO: 的註解來標註, 甚至依照特性的不同會用不一樣的語彙(Token)來標註, 例如: &#x2F;&#x2F; BadSmell:  等等, Visual Studio 已經有內建幾個常用語彙, 除了這些內建語彙外我們也可以自己新增團隊內部使用的語彙.   另一方面, 這些工作清單慢慢累積後就會變得不好管理, 這部分也可以通">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://ronsun.github.io/content/20181213-use-task-list-in-visual-studio/task-list-explorer.gif">
+<meta property="og:image" content="https://ronsun.github.io/content/20181213-use-task-list-in-visual-studio/task-list-add.gif">
+<meta property="article:published_time" content="2018-12-12T17:11:40.000Z">
+<meta property="article:modified_time" content="2026-05-04T09:50:53.360Z">
+<meta property="article:author" content="Ron Sun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ronsun.github.io/content/20181213-use-task-list-in-visual-studio/task-list-explorer.gif">
+
+
+<link rel="canonical" href="https://ronsun.github.io/content/20181213-use-task-list-in-visual-studio.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://ronsun.github.io/content/20181213-use-task-list-in-visual-studio.html","path":"content/20181213-use-task-list-in-visual-studio.html","title":"Vsual Studio 中的工作清單(Task List)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Vsual Studio 中的工作清單(Task List) | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ron 2.0</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Simple Is Not Easy</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AA%9E%E5%BD%99-Token-%E7%9A%84%E7%A8%AE%E9%A1%9E"><span class="nav-number">1.</span> <span class="nav-text">語彙(Token)的種類</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%B8%85%E5%96%AE%E8%A6%96%E7%AA%97-Task-List-Explorer"><span class="nav-number">2.</span> <span class="nav-text">工作清單視窗 (Task List Explorer)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E7%BE%A9%E8%AA%9E%E5%BD%99"><span class="nav-number">3.</span> <span class="nav-text">自定義語彙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B5%90%E8%AB%96"><span class="nav-number">4.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%83%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">參考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ron Sun</p>
+  <div class="site-description" itemprop="description">Simple Is Not Easy</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ronsun" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ronsun" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/ronsun/" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;ronsun&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://referencesource.microsoft.com/" title="https:&#x2F;&#x2F;referencesource.microsoft.com&#x2F;" rel="noopener" target="_blank">.Net Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://source.dot.net/" title="https:&#x2F;&#x2F;source.dot.net&#x2F;" rel="noopener" target="_blank">.Net Core Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://notfalse.net/" title="https:&#x2F;&#x2F;notfalse.net&#x2F;" rel="noopener" target="_blank">NotFalse 技術客</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://gist.github.com/ronsun" title="https:&#x2F;&#x2F;gist.github.com&#x2F;ronsun" rel="noopener" target="_blank">放零碎筆記的 Gist</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20181213-use-task-list-in-visual-studio.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ron Sun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+      <meta itemprop="description" content="Simple Is Not Easy">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Vsual Studio 中的工作清單(Task List) | Ron 2.0">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Vsual Studio 中的工作清單(Task List)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-12-13 01:11:40" itemprop="dateCreated datePublished" datetime="2018-12-13T01:11:40+08:00">2018-12-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在開發的過程, 常常有一些需要改進但現階段沒時間做的部分, 我們在上面加上一個 <code>// TODO:</code> 的註解來標註, 甚至依照特性的不同會用不一樣的語彙(Token)來標註, 例如: <code>// BadSmell: </code> 等等, Visual Studio 已經有內建幾個常用語彙, 除了這些內建語彙外我們也可以自己新增團隊內部使用的語彙.  </p>
+<p>另一方面, 這些工作清單慢慢累積後就會變得不好管理, 這部分也可以通過 Visual Studio 提供的相關功能來協助我們管理.    </p>
+<span id="more"></span>
+
+<h3 id="語彙-Token-的種類"><a href="#語彙-Token-的種類" class="headerlink" title="語彙(Token)的種類"></a>語彙(Token)的種類</h3><p>Visual Studio 內建幾種語彙與建議使用方式如下  </p>
+<ul>
+<li>TODO: 未實作的功能.</li>
+<li>HACK: 為了解決緊急問題而寫的程式, 但不是個適當的做法, 例如寫死一些變數或參數的數值先應急, 但這個數值不應該是寫死的.</li>
+<li>UNDONE: 為了解決短期問題而移除或註解掉程式碼, 或是需要切換並觀察兩個不同的做法哪種比較好. </li>
+<li>UnresolvedMergeConflict: 某一小段程式碼單獨運作良好, 但放到整個專案中運作會有問題, 需要 debug 找出問題.</li>
+</ul>
+<blockquote>
+<p>UnresolvedMergeConflict 的情境看起來比較像單元測試都能過, 但是整個流程測下來有問題, 可能是跟依賴物件的互動不正確, 或是是依賴度太高, 導致很容易被流程或是依賴物件影響他的正確性.</p>
+</blockquote>
+<p>雖然說教學是這樣建議, 不過團隊如果有其他共識的話其實就大家說好就好, 另外, 這些語彙是不分大小寫的, 所以 TODO 和 ToDo 是一樣的, 但還是跟著團隊習慣, 盡量一致比較好.</p>
+<h3 id="工作清單視窗-Task-List-Explorer"><a href="#工作清單視窗-Task-List-Explorer" class="headerlink" title="工作清單視窗 (Task List Explorer)"></a>工作清單視窗 (Task List Explorer)</h3><p>我們可以點選 <strong>View &gt; Task List</strong> 來打開工作清單視窗, 工作清單視窗中可以有篩選器或是關鍵字搜尋可以用, 很方便, 不需要用全域搜尋之類的方式找關鍵字.  </p>
+<img src="/content/20181213-use-task-list-in-visual-studio/task-list-explorer.gif" class="">  
+
+
+<h3 id="自定義語彙"><a href="#自定義語彙" class="headerlink" title="自定義語彙"></a>自定義語彙</h3><p>我們可以在 <strong>Tools &gt; Options</strong> 中的 <strong>Task List</strong> 頁籤中增加自定義的語彙, 例如我們要加入一個語彙叫做 BadSmell, 用來表示程式碼中的壞味道, 方便之後重構或整理.  </p>
+<blockquote>
+<p>可以在 Task List 中改語彙的優先權(Piority), 但無法改名, 想要改名只能加上新的再刪掉舊的.  </p>
+</blockquote>
+<img src="/content/20181213-use-task-list-in-visual-studio/task-list-add.gif" class="">  
+
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>這篇也沒什麼特別難的, 主要是對於內建語彙的使用時機跟目的沒找到太多說明, 剛好有一本書有提到, 就稍微記一下, 而且自己平常很少用這個功能容易忘, 就順便備忘一下, 然後再順便試試一下用螢幕錄影轉 GIF 檔來說明操作流程的效果.</p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a target="_blank" rel="noopener" href="https://books.google.com.tw/books?id=XXtoCqnxXVUC&printsec=frontcover&hl=zh-TW#v=onepage&q&f=false">Mastering Web Development with Microsoft Visual Studio 2005 (P.45-P.46)</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/content/20181208-custom-stylecop-rules-and-testing.html" rel="prev" title="自訂 StyleCop 規則與測試方式">
+                  <i class="fa fa-angle-left"></i> 自訂 StyleCop 規則與測試方式
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/content/20181225-use-xml-schema-definition.html" rel="next" title="XSD 的使用與應用">
+                  XSD 的使用與應用 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2017 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ronsun/ronsun.github.io.utterances","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/identicons/ronsun.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ronsun.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="LINQ (Language Integrated Query)  的延遲執行機制 (Deferred Execution)  是其一大特色，讓查詢表達式在實際迭代前都不會執行。然而，如果不加注意，可能會因誤用而引發難以察覺的效能問題。本文將探討 LINQ 的延遲執行機制及其潛在的誤用風險，並提供實際程式碼範例說明。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LINQ 的延遲執行與誤用風險">
+<meta property="og:url" content="https://ronsun.github.io/content/20241003-linq-deferred-execution-and-pitfalls.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="LINQ (Language Integrated Query)  的延遲執行機制 (Deferred Execution)  是其一大特色，讓查詢表達式在實際迭代前都不會執行。然而，如果不加注意，可能會因誤用而引發難以察覺的效能問題。本文將探討 LINQ 的延遲執行機制及其潛在的誤用風險，並提供實際程式碼範例說明。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-10-02T16:14:37.000Z">
+<meta property="article:modified_time" content="2026-05-04T09:50:53.421Z">
+<meta property="article:author" content="Ron Sun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ronsun.github.io/content/20241003-linq-deferred-execution-and-pitfalls.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://ronsun.github.io/content/20241003-linq-deferred-execution-and-pitfalls.html","path":"content/20241003-linq-deferred-execution-and-pitfalls.html","title":"LINQ 的延遲執行與誤用風險"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>LINQ 的延遲執行與誤用風險 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ron 2.0</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Simple Is Not Easy</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8B%E7%B4%B9%E5%BB%B6%E9%81%B2%E5%9F%B7%E8%A1%8C-Deferred-Execution"><span class="nav-number">1.</span> <span class="nav-text">介紹延遲執行 (Deferred Execution)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%88%A4%E6%96%B7%E6%98%AF%E5%90%A6%E6%9C%83%E7%9C%9F%E6%AD%A3%E5%8F%96%E5%87%BA%E8%B3%87%E6%96%99"><span class="nav-number">1.1.</span> <span class="nav-text">快速判斷是否會真正取出資料</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BB%B6%E9%81%B2%E5%9F%B7%E8%A1%8C%E9%81%8B%E7%AE%97%E5%AD%90-Deferred-Execution-Operators"><span class="nav-number">1.1.1.</span> <span class="nav-text">延遲執行運算子 (Deferred Execution Operators)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AB%8B%E5%8D%B3%E5%9F%B7%E8%A1%8C%E9%81%8B%E7%AE%97%E5%AD%90-Immediate-Execution-Operators"><span class="nav-number">1.1.2.</span> <span class="nav-text">立即執行運算子 (Immediate Execution Operators)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B0%8F%E7%B5%90"><span class="nav-number">1.1.3.</span> <span class="nav-text">小結</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AA%A4%E7%94%A8%E6%83%85%E5%A2%83"><span class="nav-number">2.</span> <span class="nav-text">誤用情境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E8%A4%87%E9%81%8B%E7%AE%97-LINQ"><span class="nav-number">2.1.</span> <span class="nav-text">重複運算 - LINQ</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E8%A4%87%E9%81%8B%E7%AE%97-foreach"><span class="nav-number">2.2.</span> <span class="nav-text">重複運算 - foreach</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E8%A4%87%E9%81%8B%E7%AE%97-%E5%AD%90%E6%9F%A5%E8%A9%A2"><span class="nav-number">2.3.</span> <span class="nav-text">重複運算 - 子查詢</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E8%A4%87%E9%81%8B%E7%AE%97-%E4%B8%8D%E6%B4%BD%E7%95%B6%E7%9A%84%E5%AE%A2%E8%A3%BD%E6%96%B9%E6%B3%95"><span class="nav-number">2.4.</span> <span class="nav-text">重複運算 - 不洽當的客製方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E8%A4%87%E9%81%8B%E7%AE%97-%E6%90%AD%E9%85%8D%E5%A4%96%E5%B1%A4%E8%BF%B4%E5%9C%88%E6%88%96%E8%BF%AD%E4%BB%A3%E5%99%A8"><span class="nav-number">2.5.</span> <span class="nav-text">重複運算 - 搭配外層迴圈或迭代器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%8F%E7%B5%90-1"><span class="nav-number">2.6.</span> <span class="nav-text">小結</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B5%90%E8%AB%96"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%83%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">參考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ron Sun</p>
+  <div class="site-description" itemprop="description">Simple Is Not Easy</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ronsun" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ronsun" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/ronsun/" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;ronsun&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://referencesource.microsoft.com/" title="https:&#x2F;&#x2F;referencesource.microsoft.com&#x2F;" rel="noopener" target="_blank">.Net Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://source.dot.net/" title="https:&#x2F;&#x2F;source.dot.net&#x2F;" rel="noopener" target="_blank">.Net Core Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://notfalse.net/" title="https:&#x2F;&#x2F;notfalse.net&#x2F;" rel="noopener" target="_blank">NotFalse 技術客</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://gist.github.com/ronsun" title="https:&#x2F;&#x2F;gist.github.com&#x2F;ronsun" rel="noopener" target="_blank">放零碎筆記的 Gist</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20241003-linq-deferred-execution-and-pitfalls.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ron Sun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+      <meta itemprop="description" content="Simple Is Not Easy">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="LINQ 的延遲執行與誤用風險 | Ron 2.0">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LINQ 的延遲執行與誤用風險
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-10-03 00:14:37" itemprop="dateCreated datePublished" datetime="2024-10-03T00:14:37+08:00">2024-10-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/NET/" itemprop="url" rel="index"><span itemprop="name">.NET</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>LINQ (Language Integrated Query)  的延遲執行機制 (Deferred Execution)  是其一大特色，讓查詢表達式在實際迭代前都不會執行。然而，如果不加注意，可能會因誤用而引發難以察覺的效能問題。本文將探討 LINQ 的延遲執行機制及其潛在的誤用風險，並提供實際程式碼範例說明。</p>
+<span id="more"></span>
+
+<h3 id="介紹延遲執行-Deferred-Execution"><a href="#介紹延遲執行-Deferred-Execution" class="headerlink" title="介紹延遲執行 (Deferred Execution)"></a>介紹延遲執行 (Deferred Execution)</h3><p>LINQ 的延遲執行意指查詢表達式不會立即執行，只有在真正需要取出資料時才進行計算。</p>
+<h4 id="快速判斷是否會真正取出資料"><a href="#快速判斷是否會真正取出資料" class="headerlink" title="快速判斷是否會真正取出資料"></a>快速判斷是否會真正取出資料</h4><p>許多人知道延遲執行的概念，也能列出一些延遲執行的運算子 (Deferred Execution Operators)  和會立即執行的運算子 (Immediate Execution Operators)  。但很少人能說明「如何分辨延遲執行運算子與立即執行運算子」。以下提供一些快速分辨方式，讓我們在看到陌生的 LINQ 方法時，能大概猜出其執行方式。</p>
+<h5 id="延遲執行運算子-Deferred-Execution-Operators"><a href="#延遲執行運算子-Deferred-Execution-Operators" class="headerlink" title="延遲執行運算子 (Deferred Execution Operators)"></a>延遲執行運算子 (Deferred Execution Operators)</h5><p>幾乎所有的延遲執行運算子都會回傳 <code>IEnumerable&lt;T&gt;</code> 或 <code>IOrderedEnumerable&lt;TElement&gt;</code>，基本概念就是「Enumerable」，包含 <code>foreach</code> 搭配 <code>yield</code> 並回傳 <code>IEnumerable&lt;T&gt;</code> 的方法。</p>
+<blockquote>
+<p>之所以說「幾乎」，是因為我們可以透過擴充方法實作回傳這些型別的 LINQ 方法，但如果內部實作觸及立即執行運算，那麼單從方法簽章判斷可能會誤判。<br>但擴充會回傳 <code>IEnumerable&lt;T&gt;</code> 或 <code>IOrderedEnumerable&lt;TElement&gt;</code> 的 LINQ 方法卻觸及立即執行運算，我認為這是設計上的錯誤。</p>
+</blockquote>
+<h5 id="立即執行運算子-Immediate-Execution-Operators"><a href="#立即執行運算子-Immediate-Execution-Operators" class="headerlink" title="立即執行運算子 (Immediate Execution Operators)"></a>立即執行運算子 (Immediate Execution Operators)</h5><p>與延遲執行運算子不同，立即執行運算子的判定相對容易。只要是回傳具體的值或集合等非「Enumerable」型別的方法都是立即執行運算子，包括透過 <code>foreach</code> 直接取得運算結果的方式。</p>
+<h5 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h5><p>上述兩種 LINQ 運算子的分類只是初步判定。實際上，還有串流 (Streaming) 或非串流 (Nonstreaming) 兩種方式，區分內部是可能提前返回還是必須走訪所有元素，詳見 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/csharp/linq/get-started/introduction-to-linq-queries#classification-of-standard-query-operators-by-manner-of-execution">Classification of standard query operators by manner of execution</a>。</p>
+<h3 id="誤用情境"><a href="#誤用情境" class="headerlink" title="誤用情境"></a>誤用情境</h3><p>用於展示誤用情境，所有範例都會使用下面的類別與資料示範。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Age &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> source = <span class="keyword">new</span> List&lt;Person&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Alice&quot;</span>, Age = <span class="number">25</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Bob&quot;</span>, Age = <span class="number">32</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Charlie&quot;</span>, Age = <span class="number">45</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Diana&quot;</span>, Age = <span class="number">38</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Eve&quot;</span>, Age = <span class="number">29</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Frank&quot;</span>, Age = <span class="number">40</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Grace&quot;</span>, Age = <span class="number">54</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Henry&quot;</span>, Age = <span class="number">3</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Ivy&quot;</span>, Age = <span class="number">30</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Jack&quot;</span>, Age = <span class="number">27</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Karen&quot;</span>, Age = <span class="number">35</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Leo&quot;</span>, Age = <span class="number">48</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Mia&quot;</span>, Age = <span class="number">22</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Nina&quot;</span>, Age = <span class="number">37</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Oscar&quot;</span>, Age = <span class="number">55</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Paul&quot;</span>, Age = <span class="number">15</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Quincy&quot;</span>, Age = <span class="number">42</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Rita&quot;</span>, Age = <span class="number">36</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Steve&quot;</span>, Age = <span class="number">25</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">&quot;Tina&quot;</span>, Age = <span class="number">41</span> &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="重複運算-LINQ"><a href="#重複運算-LINQ" class="headerlink" title="重複運算 - LINQ"></a>重複運算 - LINQ</h4><p>以下面範例為例：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> enmerable = source.Where(r =&gt; r.Age &gt;= <span class="number">18</span>) ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> oldestAdult = enmerable.MaxBy(r =&gt; r.Age) ;</span><br><span class="line"><span class="keyword">var</span> youngestAdult = enmerable.MinBy(r =&gt; r.Age) ;</span><br></pre></td></tr></table></figure>
+
+<p>由於 <code>Where()</code> 是延遲執行運算子，因此在執行 <code>MaxBy()</code> 和 <code>MinBy()</code> 時，<code>source</code> 會被篩選兩次，造成不必要的運算浪費。改進方式如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> adults = source.Where(r =&gt; r.Age &gt;= <span class="number">18</span>) .ToList() ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> oldestAdult = adults.MaxBy(r =&gt; r.Age) ;</span><br><span class="line"><span class="keyword">var</span> youngestAdult = adults.MinBy(r =&gt; r.Age) ;</span><br></pre></td></tr></table></figure>
+
+<p>透過先使用 <code>ToList()</code> 方法將符合條件的成人資料篩選出來，後續的 <code>MaxBy()</code> 和 <code>MinBy()</code> 就不會重複篩選。  </p>
+<h4 id="重複運算-foreach"><a href="#重複運算-foreach" class="headerlink" title="重複運算 - foreach"></a>重複運算 - <code>foreach</code></h4><p>以下面範例為例：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> enmerable = source.Where(r =&gt; r.Age &gt;= <span class="number">18</span>) ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> enmerable) </span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Do something.</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> enmerable) </span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Do something else.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>類似於上一個情境，不同之處在於這裡由 <code>foreach</code> 觸發。修正方式同樣是提前呼叫立即執行運算，避免後續的兩個 <code>foreach</code> 造成重複的<code> Where()</code> 運算。</p>
+<h4 id="重複運算-子查詢"><a href="#重複運算-子查詢" class="headerlink" title="重複運算 - 子查詢"></a>重複運算 - 子查詢</h4><p>子查詢是容易被忽略的情境，以下範例：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> enumerable = source.Where(r =&gt; r.Age &gt;= <span class="number">18</span>) ;</span><br><span class="line"><span class="keyword">var</span> targetAges = <span class="keyword">new</span> List&lt;<span class="built_in">int</span>&gt; &#123; <span class="number">40</span>, <span class="number">54</span>, <span class="number">23</span> &#125;;</span><br><span class="line"><span class="keyword">var</span> result = targetAges</span><br><span class="line">    .Where(age =&gt;</span><br><span class="line">        enumerable.Any(s =&gt; s.Age == age) </span><br><span class="line">        &amp;&amp; enumerable.Any(s =&gt; (s.Age / <span class="number">10</span>)  &gt; <span class="number">3</span>) ) </span><br><span class="line">    .ToList() ;</span><br></pre></td></tr></table></figure>
+
+<p>由於兩次立即執行運算 <code>Any()</code> 被包含在子查詢中，容易忽略重複運算。解決方式如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> list = source.Where(r =&gt; r.Age &gt;= <span class="number">18</span>) .ToList() ;</span><br><span class="line"><span class="keyword">var</span> targetAges = <span class="keyword">new</span> List&lt;<span class="built_in">int</span>&gt; &#123; <span class="number">40</span>, <span class="number">54</span>, <span class="number">23</span> &#125;;</span><br><span class="line"><span class="keyword">var</span> result = targetAges</span><br><span class="line">    .Where(age =&gt;</span><br><span class="line">        list.Any(s =&gt; s.Age == age) </span><br><span class="line">        &amp;&amp; list.Any(s =&gt; (s.Age / <span class="number">10</span>)  &gt; <span class="number">3</span>) ) </span><br><span class="line">    .ToList() ;</span><br></pre></td></tr></table></figure>
+
+<h4 id="重複運算-不洽當的客製方法"><a href="#重複運算-不洽當的客製方法" class="headerlink" title="重複運算 - 不洽當的客製方法"></a>重複運算 - 不洽當的客製方法</h4><p>參考以下客製方法：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="title">IEnumerable</span>&lt;<span class="title">T</span>&gt; <span class="title">Duplicate</span>&lt;<span class="title">T</span>&gt;(<span class="params"><span class="keyword">this</span> IEnumerable&lt;T&gt; source</span>)</span> </span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> source) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="keyword">return</span> item;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> source) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="keyword">return</span> item;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>呼叫端如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> enmerable = src</span><br><span class="line">    .Where(r =&gt; r.Age &gt;= <span class="number">18</span>) </span><br><span class="line">    .Duplicate() </span><br><span class="line">    .ToList() ;</span><br></pre></td></tr></table></figure>
+
+<p>問題在於 <code>Duplicate()</code> 方法中包含了兩個 <code>foreach</code>。即使搭配了 <code>yield return</code> 使其為延遲執行運算，但當呼叫端執行時，<code>Where()</code> 方法會在 <code>Duplicate()</code> 中執行兩次。</p>
+<p>以這個範例來說，根本原因是 <code>Duplicate() </code> 方法的設計錯誤，應該改寫這個方法來解決問題，但如果無法修改 <code>Duplicate()</code> 方法，臨時解決方式如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> enmerable = src</span><br><span class="line">    .Where(r =&gt; r.Age &gt;= <span class="number">18</span>) </span><br><span class="line">    <span class="comment">// Workaround if we have no chance to correct Duplicate() </span></span><br><span class="line">    .ToList() </span><br><span class="line">    .Duplicate() </span><br><span class="line">    .ToList() ;</span><br></pre></td></tr></table></figure>
+
+<h4 id="重複運算-搭配外層迴圈或迭代器"><a href="#重複運算-搭配外層迴圈或迭代器" class="headerlink" title="重複運算 - 搭配外層迴圈或迭代器"></a>重複運算 - 搭配外層迴圈或迭代器</h4><p>有時候我們會想要利用 <code>Any()</code> 的效果減少不必要的重複運算，但如果沒有仔細分析可能會適得其反，以下面程式碼為例：  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">IEnumerable&lt;<span class="built_in">int</span>&gt; <span class="title">GetNumbers</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    List&lt;<span class="built_in">int</span>&gt; numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]; <span class="comment">// GetNumbersFromDatabase()</span></span><br><span class="line">    Console.WriteLine(<span class="string">&quot;GetNumbersFromDatabase() executed&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; numbers.Count; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;Yielding <span class="subst">&#123;numbers[i]&#125;</span>&quot;</span>);</span><br><span class="line">        <span class="keyword">yield</span> <span class="keyword">return</span> numbers[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> outer = <span class="keyword">new</span> List&lt;<span class="built_in">int</span>&gt; &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> &#125;;</span><br><span class="line"><span class="keyword">var</span> numbers = GetNumbers();</span><br><span class="line"><span class="comment">//var numbers = GetNumbers().ToList();</span></span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> n <span class="keyword">in</span> outer)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (numbers.Any(r =&gt; r % <span class="number">2</span> == <span class="number">0</span>))</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;An even found&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先，我們從 Case 1 可以看到試圖透過不先執行 <code>ToList()</code> 找出所有號碼，而是在 <code>Any()</code> 被呼叫時才去迭代，減少 Yielding 這邊的執行次數與成本，但卻重複執行了 <code>GetNumbersFromDatabase() executed</code> 的部分，當 <code>GetNumbersFromDatabase()</code> 成本遠高於 Yielding 的時候，整體的效能其實是更差的，輸入如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">GetNumbersFromDatabase() executed</span><br><span class="line">Yielding 1</span><br><span class="line">Yielding 2</span><br><span class="line">An even found</span><br><span class="line">GetNumbersFromDatabase() executed</span><br><span class="line">Yielding 1</span><br><span class="line">Yielding 2</span><br><span class="line">An even found</span><br><span class="line">GetNumbersFromDatabase() executed</span><br><span class="line">Yielding 1</span><br><span class="line">Yielding 2</span><br><span class="line">An even found</span><br></pre></td></tr></table></figure>
+
+<p>反之，Case 2 的部分，雖然看似執行了所有的 Yielding，但因為提早執行完 <code>GetNumbers()</code> 並得到所有結果，反而省下了 <code>GetNumbersFromDatabase()</code> 的高成本，輸出如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">GetNumbersFromDatabase() executed</span><br><span class="line">Yielding 1</span><br><span class="line">Yielding 2</span><br><span class="line">Yielding 3</span><br><span class="line">Yielding 4</span><br><span class="line">Yielding 5</span><br><span class="line">Yielding 6</span><br><span class="line">Yielding 7</span><br><span class="line">Yielding 8</span><br><span class="line">Yielding 9</span><br><span class="line">An even found</span><br><span class="line">An even found</span><br><span class="line">An even found</span><br></pre></td></tr></table></figure>
+
+<p>甚至我們可以更進一步思考，即使沒有 <code>GetNumbersFromDatabase()</code> 的消耗，只要外層 <code>outer</code> 的數量夠多，Case 2 的效能就可能會比 Case 1 好。</p>
+<h4 id="小結-1"><a href="#小結-1" class="headerlink" title="小結"></a>小結</h4><p>其實誤用情境主要是重複迭代。但由於 LINQ 方法的組合與類似子查詢的語法結構，很多時候我們未察覺其中的重複迭代，進而無意間犯錯。</p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>理解 LINQ 的延遲執行機制有助於我們撰寫更高效的程式碼。透過注意可能的重複迭代情境，並適時使用立即執行運算子，可以避免不必要的效能損耗。</p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/csharp/linq/get-started/introduction-to-linq-queries#classification-of-standard-query-operators-by-manner-of-execution">Classification of standard query operators by manner of execution</a>   </p>
+<p>ChatGPT</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/content/20240910-async-for-interview.html" rel="prev" title="從面試角度看 async">
+                  <i class="fa fa-angle-left"></i> 從面試角度看 async
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/content/20241006-closure-working-and-pitfalls.html" rel="next" title="C# 中的閉包與陷阱">
+                  C# 中的閉包與陷阱 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2017 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ronsun/ronsun.github.io.utterances","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>

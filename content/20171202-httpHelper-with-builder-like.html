@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/identicons/ronsun.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ronsun.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="在設計 API 的時候, 常常會被參數過多所困擾著, 因為當方法有著過多參數時, 使用的時候容易眼花, 而需要增減參數時也很不方便, 這邊以常見的 HttpHelper 為例來說明。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何避免大量參數 - 以HttpHelper為例">
+<meta property="og:url" content="https://ronsun.github.io/content/20171202-httpHelper-with-builder-like.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="在設計 API 的時候, 常常會被參數過多所困擾著, 因為當方法有著過多參數時, 使用的時候容易眼花, 而需要增減參數時也很不方便, 這邊以常見的 HttpHelper 為例來說明。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-12-02T15:54:45.000Z">
+<meta property="article:modified_time" content="2026-05-04T09:50:53.352Z">
+<meta property="article:author" content="Ron Sun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ronsun.github.io/content/20171202-httpHelper-with-builder-like.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://ronsun.github.io/content/20171202-httpHelper-with-builder-like.html","path":"content/20171202-httpHelper-with-builder-like.html","title":"如何避免大量參數 - 以HttpHelper為例"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>如何避免大量參數 - 以HttpHelper為例 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ron 2.0</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Simple Is Not Easy</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%93%81%E6%9C%89%E5%A4%A7%E9%87%8F%E5%8F%83%E6%95%B8%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">擁有大量參數的方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%81%B8%E6%93%87%E6%80%A7%E5%BC%95%E6%95%B8-Optional-Arguments"><span class="nav-number">2.</span> <span class="nav-text">選擇性引數(Optional Arguments)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8A%8A%E6%89%80%E6%9C%89%E5%8F%83%E6%95%B8%E5%8C%85%E6%88%90%E4%B8%80%E5%80%8Bcondition%E7%89%A9%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">把所有參數包成一個condition物件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#condition-%E7%89%A9%E4%BB%B6%E7%9A%84%E8%AE%8A%E5%BD%A2"><span class="nav-number">4.</span> <span class="nav-text">condition 物件的變形</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A8%E8%96%A6-%E5%8F%AA%E5%B0%87%E9%81%B8%E5%A1%AB%E5%8F%83%E6%95%B8%E5%8C%85%E6%88%90-Condition-%E7%89%A9%E4%BB%B6"><span class="nav-number">5.</span> <span class="nav-text">(推薦)只將選填參數包成 Condition 物件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BE%8C%E8%A8%98"><span class="nav-number">6.</span> <span class="nav-text">後記</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">7.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ron Sun</p>
+  <div class="site-description" itemprop="description">Simple Is Not Easy</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ronsun" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ronsun" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/ronsun/" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;ronsun&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://referencesource.microsoft.com/" title="https:&#x2F;&#x2F;referencesource.microsoft.com&#x2F;" rel="noopener" target="_blank">.Net Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://source.dot.net/" title="https:&#x2F;&#x2F;source.dot.net&#x2F;" rel="noopener" target="_blank">.Net Core Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://notfalse.net/" title="https:&#x2F;&#x2F;notfalse.net&#x2F;" rel="noopener" target="_blank">NotFalse 技術客</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://gist.github.com/ronsun" title="https:&#x2F;&#x2F;gist.github.com&#x2F;ronsun" rel="noopener" target="_blank">放零碎筆記的 Gist</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20171202-httpHelper-with-builder-like.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ron Sun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+      <meta itemprop="description" content="Simple Is Not Easy">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="如何避免大量參數 - 以HttpHelper為例 | Ron 2.0">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          如何避免大量參數 - 以HttpHelper為例
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-12-02 23:54:45" itemprop="dateCreated datePublished" datetime="2017-12-02T23:54:45+08:00">2017-12-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/DesignPatterns/" itemprop="url" rel="index"><span itemprop="name">DesignPatterns</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在設計 API 的時候, 常常會被參數過多所困擾著, 因為當方法有著過多參數時, 使用的時候容易眼花, 而需要增減參數時也很不方便, 這邊以常見的 HttpHelper 為例來說明。  </p>
+<span id="more"></span>
+
+<p>一般來說, 如果專案只需要跟內部的 API 溝通的話, 其實用 HttpClient 來實作既方便又快速, 但是大量外部廠商對接溝通的時候可能就不太適合, 因為每家廠商對接的方式都不一樣, 所以目前的專案是用 WebRequest 來實作。   </p>
+<hr>
+<h4 id="擁有大量參數的方法"><a href="#擁有大量參數的方法" class="headerlink" title="擁有大量參數的方法"></a>擁有大量參數的方法</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">Post</span>(<span class="params"><span class="built_in">string</span> url, <span class="built_in">string</span> content, Encoding encoding, <span class="built_in">int</span> contentType, <span class="built_in">string</span> proxyAddress, <span class="built_in">string</span> proxyUserName, <span class="built_in">string</span> proxyPassword</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> request = WebRequest.CreateHttp(url);</span><br><span class="line">    request.ContentType = contentType;</span><br><span class="line">    request.Method = WebRequestMethods.Http.Post;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> contentBytes = encoding.GetBytes(content);</span><br><span class="line">    request.ContentLength = contentBytes.Count();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//設定proxy</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//發送request, 取得並回傳response</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>需求的一開始, 參數可能只有 url 跟 content, 但是當對接廠商越來越多的時候, 有人要求只能用特定編碼(UTF8, GBK…), 資料格式不同時 content type 也要不同, 因為網路環境限制有時候要走 proxy 等等的, 這時候就會出現大量參數, 引發一些問題:  </p>
+<ul>
+<li>增加參數, 那所有呼叫端的程式都要改, 不難, 但是麻煩</li>
+<li>呼叫端改好了, 為了避免帶錯值, 所以要測試一輪, 也不難, 但是很花時間</li>
+</ul>
+<p>那就有改善的空間了  </p>
+<hr>
+<h4 id="選擇性引數-Optional-Arguments"><a href="#選擇性引數-Optional-Arguments" class="headerlink" title="選擇性引數(Optional Arguments)"></a>選擇性引數(Optional Arguments)</h4><blockquote>
+<p>註: 口語上大多稱選擇性參數(Optional Parameters), 不過MSDN是用選擇性引數(Optional Arguments)  </p>
+</blockquote>
+<blockquote>
+<p>註: 參數和引數意義上是不同的  </p>
+</blockquote>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">Post</span>(<span class="params"><span class="built_in">string</span> url, <span class="built_in">string</span> content = <span class="string">&quot;&quot;</span>, Encoding encoding = <span class="literal">null</span>, <span class="built_in">int</span> contentType = <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>, <span class="built_in">string</span> proxyAddress = <span class="string">&quot;&quot;</span>, <span class="built_in">string</span> proxyUserName = <span class="string">&quot;&quot;</span>, <span class="built_in">string</span> proxyPassword = <span class="string">&quot;&quot;</span></span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(encoding == <span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        encoding == Encoding.UTF8;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> request = WebRequest.CreateHttp(url);</span><br><span class="line">    request.ContentType = contentType;</span><br><span class="line">    request.Method = WebRequestMethods.Http.Post;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> contentBytes = encoding.GetBytes(content);</span><br><span class="line">    request.ContentLength = contentBytes.Count();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//設定proxy</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//發送request, 取得並回傳response</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>這樣用的好處是, 當需要增加非必要參數的時候, 可以直接加在參數列最後面, 並給他一個預設值, 那至少加參數的時候不用像尋寶一樣到處去找呼叫端修改了, 降低了手誤產生bug的風險, 也可以把測試專注在這個方法內就好。   </p>
+<p>但是, 還是有缺點:</p>
+<ul>
+<li>參數列還是超長</li>
+<li>參數預設值只能是編譯時期就決定好的常數, 所以Encoding這類參數, 必須預設為null, 然後另外在方法內判斷賦予預設值</li>
+<li>新的參數如果不是加在最後面, 在某些情境下會有問題</li>
+</ul>
+<blockquote>
+<p>註:<br>基於以下方法, 呼叫 <code>foo(0, &quot;B&quot;);</code> 時代表的是 <code>foo(0, b = &quot;B&quot;)</code><br>但是如果插了一個參數在b之前, 而型別和b一樣, 方法簽章變成<br><code>public void foo(int a, string c = &quot;&quot;, string b = &quot;&quot;)</code><br>這時候呼叫 <code>foo(0, &quot;B&quot;);</code>代表的就會是<code>foo(0, c = &quot;B&quot;)</code><br><strong>因此這邊會建議在呼叫帶有選擇性引數的方法時, 採用具名方式呼叫, 避免上面範例中的誤用</strong></p>
+</blockquote>
+<p>所以還是有改善的空間  </p>
+<hr>
+<h4 id="把所有參數包成一個condition物件"><a href="#把所有參數包成一個condition物件" class="headerlink" title="把所有參數包成一個condition物件"></a>把所有參數包成一個condition物件</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Condition</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Url &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Content &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> Encoding Cncoding &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125; = Encoding.UTF8;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> ContentType &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125; = <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//其他省略</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">Post</span>(<span class="params">Condition condition</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//基於condition準備request相關物件</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//設定proxy</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//發送request, 取得並回傳response</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>好多了, 這次的改善避免了之前參數過長, 預設值也不受限於常數, 同時當需要增加非必填的參數時, 只需要修改 condition 物件並設好預設值, 呼叫端基本上不用有任何修改。  </p>
+<p>但是真要在吹毛求疵的話, 還是有一個缺點: <strong>API使用者無法一眼看出那些參數是必填</strong>.  </p>
+<p>我個人的習慣是, 如果不想讓使用者誤用, 那就從技術層面阻止他, 誘導使用者正確使用, 所以接下來接下來  </p>
+<hr>
+<h4 id="condition-物件的變形"><a href="#condition-物件的變形" class="headerlink" title="condition 物件的變形"></a>condition 物件的變形</h4><p>直接先上完整版, 下面會細說</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Condition</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Url &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Content &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Encoding Encoding &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125; = Encoding.UTF8;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> ContentType &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125; = <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> IWebProxy Proxy &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125; = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Condition</span>()</span> &#123; &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Condition <span class="title">Create</span>(<span class="params"><span class="built_in">string</span> url</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> reqParams = <span class="keyword">new</span> Condition()</span><br><span class="line">        &#123;</span><br><span class="line">            Url = url</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> reqParams;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Condition <span class="title">WithContentType</span>(<span class="params"><span class="built_in">string</span> contentType</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        ContentType = contentType;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Condition <span class="title">WithContent</span>(<span class="params"><span class="built_in">string</span> content</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Content = content;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Condition <span class="title">WithEncoding</span>(<span class="params">Encoding encoding</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Encoding = encoding;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Condition <span class="title">WithProxy</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//default proxy</span></span><br><span class="line">        IWebProxy defaultProxy = WebRequest.GetSystemWebProxy();</span><br><span class="line">        defaultProxy.Credentials = CredentialCache.DefaultCredentials;</span><br><span class="line">        Proxy = defaultProxy;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Condition <span class="title">WithProxy</span>(<span class="params"><span class="built_in">string</span> address, <span class="built_in">string</span> userName, <span class="built_in">string</span> password</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        IWebProxy webProxy = <span class="keyword">new</span> WebProxy(address);</span><br><span class="line">        webProxy.Credentials = <span class="keyword">new</span> NetworkCredential(userName, password);</span><br><span class="line">        Proxy = webProxy;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>這樣做有幾個重點與目的  </p>
+<ul>
+<li><code>private Condition() { }</code> 把預設的建構子設成私有, 然後透過有著<strong>必填參數</strong>的靜態方法 <code>Create(string url)</code> 來建立物件, 目的是讓使用者沒有機會漏填必填的參數</li>
+<li>使用者建立物件後可以直接呼叫 <code>WithXXXX(...)</code> 方法設定非必填的參數, 具體呼叫範例: <code>Condition.Create(&quot;http://sample.com&quot;).WithContent(&quot;&lt;xml&gt;balalala&lt;/xml&gt;&quot;).WithProxy();</code>, 這樣的方法鏈非常方便, 是來自於 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Fluent_interface">Fluent Interface</a> 的概念</li>
+<li>這樣 condition 組好直接作為 <code>Post(Condition conditon)</code> 的參數就可以了</li>
+</ul>
+<p>這種方式是從建構者模式和 Fluent Interface 變形而來的, 建構者模式是把<strong>建構者</strong> 和 <strong>被建構者</strong> 分成兩個物件, 只不過對於一個只是要整合大量參數的需求來說, 要特別建立 Condition 和 ConditionBuilder 兩個物件是有點太多了, 所以稍微變化一下簡化他的複雜度, 網路上也有結合建構者模式和 Fluent Interface 做成 <a target="_blank" rel="noopener" href="https://code-maze.com/builder-design-pattern/">Fluent Builder</a> 的例子.<br><strong>但是!!</strong><br><strong>但是!!</strong><br><strong>但是!!</strong>  </p>
+<p>如果不是非常複雜的情境的話, 這樣是有點過度設計了, 雖然呼叫起來很方便, 但會使得 Condition 變得比較複雜, 如果系統中到處都是這種東西的話其實會提高後續的維護門檻的.</p>
+<hr>
+<h4 id="推薦-只將選填參數包成-Condition-物件"><a href="#推薦-只將選填參數包成-Condition-物件" class="headerlink" title="(推薦)只將選填參數包成 Condition 物件"></a>(推薦)只將選填參數包成 Condition 物件</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">RequestOptions</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> Encoding Cncoding &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125; = Encoding.UTF8;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> ContentType &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125; = <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//其他省略</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">Post</span>(<span class="params"><span class="built_in">string</span> url, <span class="built_in">string</span> content, RequestOptions options = <span class="literal">null</span></span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(options == <span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        options = <span class="keyword">new</span> RequestOptions();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//基於options準備request相關物件</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//設定proxy</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//發送request, 取得並回傳response</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>這個版本是我目前最推薦的</strong>, 一方面他減少了參數的數量, 另一方面把必填與選填參數分開, 避免使用者誤用, 也夠簡單好懂.</p>
+<h4 id="後記"><a href="#後記" class="headerlink" title="後記"></a>後記</h4><p>其實自己在寫東西常常弄到過度設計的窘境, 最近在練習怎麼樣才能把程式寫得剛好, 又能在易用, 好維護與好擴充中間找到平衡點(但好難XDD).</p>
+<h4 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h4><p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/6239373/how-to-avoid-too-many-parameters-problem-in-api-design">how-to-avoid-too-many-parameters-problem-in-api-design</a><br><a target="_blank" rel="noopener" href="https://code-maze.com/builder-design-pattern/">Builder Design Pattern and Fluent Builder</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/content/20171014-unmerged-pull-request-to-my-fork.html" rel="prev" title="將上游未合併的PR合併到自己的fork">
+                  <i class="fa fa-angle-left"></i> 將上游未合併的PR合併到自己的fork
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/content/20180131-correctly-re-throw-exception.html" rel="next" title="正確重拋例外">
+                  正確重拋例外 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2017 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ronsun/ronsun.github.io.utterances","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>

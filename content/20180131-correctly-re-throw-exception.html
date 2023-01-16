@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/identicons/ronsun.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ronsun.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="重拋例外有很多種方式, 包含 throw, throw ex, 使用 inner exception 以及 System.Runtime.ExceptionServices.ExceptionDispatchInfo, 或是不要重拋例外.   先總結選擇如下順序:    最好不要重拋例外 重拋優先選 System.Runtime.ExceptionServices.ExceptionDispatc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正確重拋例外">
+<meta property="og:url" content="https://ronsun.github.io/content/20180131-correctly-re-throw-exception.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="重拋例外有很多種方式, 包含 throw, throw ex, 使用 inner exception 以及 System.Runtime.ExceptionServices.ExceptionDispatchInfo, 或是不要重拋例外.   先總結選擇如下順序:    最好不要重拋例外 重拋優先選 System.Runtime.ExceptionServices.ExceptionDispatc">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-01-31T04:37:52.000Z">
+<meta property="article:modified_time" content="2026-05-04T09:50:53.352Z">
+<meta property="article:author" content="Ron Sun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ronsun.github.io/content/20180131-correctly-re-throw-exception.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://ronsun.github.io/content/20180131-correctly-re-throw-exception.html","path":"content/20180131-correctly-re-throw-exception.html","title":"正確重拋例外"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>正確重拋例外 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ron 2.0</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Simple Is Not Easy</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#throw-throw-ex"><span class="nav-number">1.</span> <span class="nav-text">throw &amp; throw ex</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#throw-vs-throw-ex"><span class="nav-number">1.1.</span> <span class="nav-text">throw vs throw ex</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#throw-%E4%B9%9F%E6%9C%83%E5%BD%B1%E9%9F%BF%E5%A0%86%E7%96%8A%E8%BF%BD%E8%B9%A4%E7%9A%84%E5%85%A7%E5%AE%B9-NET-Core-2-1"><span class="nav-number">1.2.</span> <span class="nav-text">throw 也會影響堆疊追蹤的內容 (&lt; .NET Core 2.1)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Inner-Exception"><span class="nav-number">2.</span> <span class="nav-text">Inner Exception</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#System-Runtime-ExceptionServices-ExceptionDispatchInfo"><span class="nav-number">3.</span> <span class="nav-text">System.Runtime.ExceptionServices.ExceptionDispatchInfo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E8%A6%81%E9%87%8D%E6%8B%8B%E4%BE%8B%E5%A4%96"><span class="nav-number">4.</span> <span class="nav-text">不要重拋例外</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B5%90%E8%AB%96"><span class="nav-number">5.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">6.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ron Sun</p>
+  <div class="site-description" itemprop="description">Simple Is Not Easy</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ronsun" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ronsun" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/ronsun/" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;ronsun&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://referencesource.microsoft.com/" title="https:&#x2F;&#x2F;referencesource.microsoft.com&#x2F;" rel="noopener" target="_blank">.Net Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://source.dot.net/" title="https:&#x2F;&#x2F;source.dot.net&#x2F;" rel="noopener" target="_blank">.Net Core Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://notfalse.net/" title="https:&#x2F;&#x2F;notfalse.net&#x2F;" rel="noopener" target="_blank">NotFalse 技術客</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://gist.github.com/ronsun" title="https:&#x2F;&#x2F;gist.github.com&#x2F;ronsun" rel="noopener" target="_blank">放零碎筆記的 Gist</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20180131-correctly-re-throw-exception.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ron Sun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+      <meta itemprop="description" content="Simple Is Not Easy">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="正確重拋例外 | Ron 2.0">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          正確重拋例外
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-01-31 12:37:52" itemprop="dateCreated datePublished" datetime="2018-01-31T12:37:52+08:00">2018-01-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>重拋例外有很多種方式, 包含 <code>throw</code>, <code>throw ex</code>, 使用 inner exception 以及 <code>System.Runtime.ExceptionServices.ExceptionDispatchInfo</code>, 或是不要重拋例外.  </p>
+<p>先總結選擇如下順序:  </p>
+<ol>
+<li>最好不要重拋例外</li>
+<li>重拋優先選 <code>System.Runtime.ExceptionServices.ExceptionDispatchInfo</code></li>
+<li>沒有框架支援則用 Inner Exception</li>
+<li><code>throw</code> 應該沒什麼情境需要用到了</li>
+<li><code>throw ex</code> 是具破壞性的作法, 除非是要<strong>刻意破壞堆疊追蹤</strong></li>
+</ol>
+<p>這篇會整理這幾種方法的使用與優缺, 並且另外提到 <code>throw</code> 和 <code>throw ex</code> 兩種方法對於堆疊追蹤的負面影響.  </p>
+<span id="more"></span>
+
+<h3 id="throw-throw-ex"><a href="#throw-throw-ex" class="headerlink" title="throw &amp; throw ex"></a>throw &amp; throw ex</h3><h4 id="throw-vs-throw-ex"><a href="#throw-vs-throw-ex" class="headerlink" title="throw vs throw ex"></a>throw vs throw ex</h4><p>這兩個最常見也很相似, 所以一起說, 使用 throw 或是 throw ex 都能重拋例外, 但使用 <code>trow</code> 時會保留較完整的堆疊追蹤(stack trace), 而 <code>throw ex</code> 會重置堆疊追蹤, 造成行數顯示在 <code>throw ex</code> 那一行。<br>另外值得注意的是, 用 <code>throw</code> 來重拋例外其實也會漏掉一些堆疊追蹤, 這會在下面展示。</p>
+<p>下面的範例程式中直接使用 <code>throw</code> 重拋例外, 並印出堆疊追蹤內容。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Linq;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> System.Security.Cryptography;</span><br><span class="line"><span class="keyword">using</span> System.IO;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">ronsun.github.io.lab</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] <span class="keyword">args</span></span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                ThrowException();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span>(Exception ex)</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;======= ThrowException() =============&quot;</span>);</span><br><span class="line">                Console.WriteLine(ex);</span><br><span class="line">            &#125;</span><br><span class="line">            Console.ReadLine();</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ThrowException</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                ExceptionHere();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span>(Exception ex)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">throw</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ExceptionHere</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;This is exception message.&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>運行後可以看到堆疊追蹤最後是停在 <code>ExceptionHere()</code> 裡面(41行), 也就是真正引發例外的地方  </p>
+<blockquote>
+<p>這邊有另外一個要注意的地方, 堆疊追蹤的第二行是停在 <code>throw</code> 的地方(35行), 本例看不出大的影響是因為有下一層呼叫可以追蹤, 下一小節會用另一段程式碼展示這個問題.<br>這個問題在 .NET Framework 下重現, 無法在 .NET Core 2.1 以上重現.</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">======= ThrowException() =============</span><br><span class="line">System.Exception: This is exception message.</span><br><span class="line">   at ronsun.github.io.lab.Program.ExceptionHere() in C:\Users\Ron\Desktop\MyProjects\ronsun.github.io\ronsun.github.io.lab\Program.cs:line 41</span><br><span class="line">   at ronsun.github.io.lab.Program.ThrowException() in C:\Users\Ron\Desktop\MyProjects\ronsun.github.io\ronsun.github.io.lab\Program.cs:line 35</span><br><span class="line">   at ronsun.github.io.lab.Program.Main(String[] args) in C:\Users\Ron\Desktop\MyProjects\ronsun.github.io\ronsun.github.io.lab\Program.cs:line 17</span><br></pre></td></tr></table></figure>
+
+<p>但如果在35行使用 <code>throw ex</code> 的話, 堆疊追蹤最後就會停在 <code>ThrowException()</code> 這裡</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">======= ThrowException() =============</span><br><span class="line">System.Exception: This is exception message.</span><br><span class="line">   at ronsun.github.io.lab.Program.ThrowException() in C:\Users\Ron\Desktop\MyProjects\ronsun.github.io\ronsun.github.io.lab\Program.cs:line 35</span><br><span class="line">   at ronsun.github.io.lab.Program.Main(String[] args) in C:\Users\Ron\Desktop\MyProjects\ronsun.github.io\ronsun.github.io.lab\Program.cs:line 17</span><br></pre></td></tr></table></figure>
+
+<h4 id="throw-也會影響堆疊追蹤的內容-NET-Core-2-1"><a href="#throw-也會影響堆疊追蹤的內容-NET-Core-2-1" class="headerlink" title="throw 也會影響堆疊追蹤的內容 (&lt; .NET Core 2.1)"></a>throw 也會影響堆疊追蹤的內容 (&lt; .NET Core 2.1)</h4><p>以下面的程式碼片段為例, 這次不另外呼叫一個引發例外的方法, 而是直接拋出一個例外</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] <span class="keyword">args</span></span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">try</span></span><br><span class="line">    &#123;</span><br><span class="line">        ThrowException();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span>(Exception ex)</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;======= ThrowException() =============&quot;</span>);</span><br><span class="line">        Console.WriteLine(ex);</span><br><span class="line">    &#125;</span><br><span class="line">    Console.ReadLine();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ThrowException</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">try</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;This is exception message.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span>(Exception ex)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而此時的堆疊追蹤最後其實是停在 <code>throw</code> 那一行, 也就是說如果例外是發生在 <code>ThrowException</code> 方法中而不是下一層的呼叫, 且 <code>try</code> 區塊中有很多程式碼的時候, 還是會有難以除錯的困擾.  </p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/dotnet/runtime/issues/9518">官方相關 Issue</a> 顯示這個問題的確存在過也在 <a target="_blank" rel="noopener" href="https://github.com/dotnet/coreclr/pull/16464">Pull Request #16464</a> 修正了.<br>追蹤 Merge 的時間和版本 Tag 交叉比對推測這個問題從 .NET Core 2.1 就被修正了, 可以安心使用 <code>throw;</code>.</p>
+</blockquote>
+<h3 id="Inner-Exception"><a href="#Inner-Exception" class="headerlink" title="Inner Exception"></a>Inner Exception</h3><p>基於前面的說明, 我們知道重拋例外會破壞堆疊追蹤, 所以另外一種做法是在重拋前將原始的例外放進 Inner Exception 中, 如下片段:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span></span><br><span class="line">&#123;</span><br><span class="line">    DoSomething();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (Exception ex)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// handle exception, then...</span></span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;outer&quot;</span>, ex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但這樣做的缺點就是其實是重新包裝了例外, 如果呼叫端沒有往下查看 Inner Exception 的時候就會看不到完整的細節, 即使呼叫端有存取 Inner Exception 也比較麻煩, 是屬於功能正常但不夠優雅的方式.  </p>
+<h3 id="System-Runtime-ExceptionServices-ExceptionDispatchInfo"><a href="#System-Runtime-ExceptionServices-ExceptionDispatchInfo" class="headerlink" title="System.Runtime.ExceptionServices.ExceptionDispatchInfo"></a>System.Runtime.ExceptionServices.ExceptionDispatchInfo</h3><p>靠框架解決, 是目前知道的方法中最漂亮的</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span></span><br><span class="line">&#123;</span><br><span class="line">    DoSomething();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (Exception ex)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// handle exception, then...</span></span><br><span class="line">    ExceptionDispatchInfo.Capture(ex).Throw();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用容易, 看輸出也沒什麼副作用, 唯一的限制就是要依賴框架.  </p>
+<h3 id="不要重拋例外"><a href="#不要重拋例外" class="headerlink" title="不要重拋例外"></a>不要重拋例外</h3><p>這個方法寫在寫在這裡有點奇怪, 但個人來說是非常不喜歡重拋例外的, 比較傾向把所有<strong>不需要特殊處理</strong>的例外都讓全域例外處理機制去處理, 例如: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-6#exception-filters">Exception filters</a>.  </p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>雖然理想上是不要重拋例外, 但如果真的不得已需要, 則使用 <code>System.Runtime.ExceptionServices.ExceptionDispatchInfo</code>, 萬一使用的框架不支援的話, 那至少要使用 Inner Exception 去處理.  </p>
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h3><p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/730250/is-there-a-difference-between-throw-and-throw-ex">Is there a difference between “throw” and “throw ex”?
+</a>  </p>
+<p><a target="_blank" rel="noopener" href="https://blogs.msdn.microsoft.com/jmstall/2007/02/07/catch-rethrow-and-debuggability/">debuggability problems associated with catch &#x2F; rethrow</a>  </p>
+<p><a target="_blank" rel="noopener" href="https://blogs.msdn.microsoft.com/jmstall/2007/02/15/throw-e-vs-throw/">‘throw e;’ vs. ‘throw;’</a>  </p>
+<p><a target="_blank" rel="noopener" href="https://berserkerdotnet.github.io/blog/rethrow-exception-correctly-in-dotnet/">How to rethrow exception correctly in .Net</a>  </p>
+<p><a target="_blank" rel="noopener" href="https://github.com/dotnet/runtime/issues/9518">dotnet runtime issues #9518</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/dotnet/coreclr/pull/16464">dotnet CLR Pull Request #16464</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/content/20171202-httpHelper-with-builder-like.html" rel="prev" title="如何避免大量參數 - 以HttpHelper為例">
+                  <i class="fa fa-angle-left"></i> 如何避免大量參數 - 以HttpHelper為例
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/content/20180304-random-in-csharp.html" rel="next" title="C#中的隨機數">
+                  C#中的隨機數 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2017 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ronsun/ronsun.github.io.utterances","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>

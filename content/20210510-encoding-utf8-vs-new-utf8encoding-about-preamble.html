@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/identicons/ronsun.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ronsun.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Encoding.UTF8 和 new UTF8Encoding() 所建立的物件內容是極其相似的, 甚至有些問答網站是說完全一樣, 但實際上有個小小不同的地方, 雖然多數時候不會造成影響, 但前陣子在寫 xml 序列化的測試的時候就出現結果不同的情境, 所以稍微紀錄一下.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Encoding.UTF8 vs new UTF8Encoding() 和 xml 序列化的可能問題">
+<meta property="og:url" content="https://ronsun.github.io/content/20210510-encoding-utf8-vs-new-utf8encoding-about-preamble.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="Encoding.UTF8 和 new UTF8Encoding() 所建立的物件內容是極其相似的, 甚至有些問答網站是說完全一樣, 但實際上有個小小不同的地方, 雖然多數時候不會造成影響, 但前陣子在寫 xml 序列化的測試的時候就出現結果不同的情境, 所以稍微紀錄一下.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-05-09T17:36:01.000Z">
+<meta property="article:modified_time" content="2026-05-04T09:50:53.398Z">
+<meta property="article:author" content="Ron Sun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ronsun.github.io/content/20210510-encoding-utf8-vs-new-utf8encoding-about-preamble.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://ronsun.github.io/content/20210510-encoding-utf8-vs-new-utf8encoding-about-preamble.html","path":"content/20210510-encoding-utf8-vs-new-utf8encoding-about-preamble.html","title":"Encoding.UTF8 vs new UTF8Encoding() 和 xml 序列化的可能問題"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Encoding.UTF8 vs new UTF8Encoding() 和 xml 序列化的可能問題 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ron 2.0</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Simple Is Not Easy</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%95%8F%E9%A1%8C%E9%BB%9E"><span class="nav-number">1.</span> <span class="nav-text">問題點</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%8B%E7%9C%8B%E5%8E%9F%E5%A7%8B%E7%A2%BC"><span class="nav-number">2.</span> <span class="nav-text">看看原始碼</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Net-Core"><span class="nav-number">2.1.</span> <span class="nav-text">.Net Core</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Net-Framework"><span class="nav-number">2.2.</span> <span class="nav-text">.Net Framework</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B5%90%E8%AB%96"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%83%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">參考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ron Sun</p>
+  <div class="site-description" itemprop="description">Simple Is Not Easy</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ronsun" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ronsun" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/ronsun/" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;ronsun&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://referencesource.microsoft.com/" title="https:&#x2F;&#x2F;referencesource.microsoft.com&#x2F;" rel="noopener" target="_blank">.Net Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://source.dot.net/" title="https:&#x2F;&#x2F;source.dot.net&#x2F;" rel="noopener" target="_blank">.Net Core Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://notfalse.net/" title="https:&#x2F;&#x2F;notfalse.net&#x2F;" rel="noopener" target="_blank">NotFalse 技術客</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://gist.github.com/ronsun" title="https:&#x2F;&#x2F;gist.github.com&#x2F;ronsun" rel="noopener" target="_blank">放零碎筆記的 Gist</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20210510-encoding-utf8-vs-new-utf8encoding-about-preamble.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ron Sun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+      <meta itemprop="description" content="Simple Is Not Easy">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Encoding.UTF8 vs new UTF8Encoding() 和 xml 序列化的可能問題 | Ron 2.0">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Encoding.UTF8 vs new UTF8Encoding() 和 xml 序列化的可能問題
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-05-10 01:36:01" itemprop="dateCreated datePublished" datetime="2021-05-10T01:36:01+08:00">2021-05-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/NET-Core/" itemprop="url" rel="index"><span itemprop="name">.NET Core</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><code>Encoding.UTF8</code> 和 <code>new UTF8Encoding()</code> 所建立的物件內容是極其相似的, 甚至有些問答網站是說完全一樣, 但實際上有個小小不同的地方, 雖然多數時候不會造成影響, 但前陣子在寫 xml 序列化的測試的時候就出現結果不同的情境, 所以稍微紀錄一下.   </p>
+<span id="more"></span>
+
+<h3 id="問題點"><a href="#問題點" class="headerlink" title="問題點"></a>問題點</h3><p>我們用下面的範例來做實驗 (示範用的, 忽略 clean code 的要求), 範例是基於 .Net Core 3.1.  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">FakeClass</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> FakeString &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125; = <span class="string">&quot;A&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] <span class="keyword">args</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> serializer = <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(FakeClass));</span><br><span class="line">        <span class="keyword">var</span> obj = <span class="keyword">new</span> FakeClass();</span><br><span class="line">        <span class="keyword">var</span> xmlWriterSettings = <span class="keyword">new</span> XmlWriterSettings() &#123; Encoding = Encoding.UTF8 &#125;;</span><br><span class="line">        <span class="keyword">var</span> b = Serialize(serializer, xmlWriterSettings, obj);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> xmlWriterSettings2 = <span class="keyword">new</span> XmlWriterSettings() &#123; Encoding = <span class="keyword">new</span> UTF8Encoding() &#125;;</span><br><span class="line">        <span class="keyword">var</span> b2 = Serialize(serializer, xmlWriterSettings2, obj);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="built_in">byte</span>[] <span class="title">Serialize</span>&lt;<span class="title">T</span>&gt;(<span class="params">XmlSerializer serializer, XmlWriterSettings xmlWriterSettings, T obj</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> ms = <span class="keyword">new</span> MemoryStream();</span><br><span class="line">        <span class="keyword">using</span> (<span class="keyword">var</span> xmlWriter = XmlWriter.Create(ms, xmlWriterSettings))</span><br><span class="line">        &#123;</span><br><span class="line">            serializer.Serialize(xmlWriter, obj);</span><br><span class="line">            <span class="keyword">return</span> ms.ToArray();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>從上面的範例可以發現, <code>b</code> 和 <code>b2</code> 的內容是不一樣的, 其中 <code>b</code> (使用<code>Encoding.UTF8</code>) 的最前面多了 BOM (三個 bytes, 內容就是 <code>Encoding.UTF8.GetPreamble()</code>), 雖然看起來沒有問題, 但是如同 <a href="/content/20181203-xml-serialize-deserialize.html" title="XmlSerializer 的序列化&#x2F;反序列化 與 BOM">XmlSerializer 的序列化&#x2F;反序列化 與 BOM</a> 這一篇提到的, 如果合作對象無法反序列化含 BOM 的 xml 時, 在資料交換過程就會有很多阻礙, 且含 BOM 的 XML 在文字編輯器上是無法用肉眼看出來的 (除非有特別設定顯示特殊字元).   </p>
+<p>另外一件有趣的事, 只要 bytes 內容一樣, 兩種方式轉成字串得到的內容是相同的, 亦即 <code>Encoding.UTF8.GetString(b) == new UTF8Encoding().GetString(b)</code> 且 <code>Encoding.UTF8.GetString(b2) == new UTF8Encoding().GetString(b2)</code>.  </p>
+<p>相關內容之前那篇提過, 這篇主要是要稍微將範圍縮小到 <strong>Encoding.UTF8 和 new UTF8Encoding() 不完全一樣</strong> 這件事上.  </p>
+<h3 id="看看原始碼"><a href="#看看原始碼" class="headerlink" title="看看原始碼"></a>看看原始碼</h3><h4 id="Net-Core"><a href="#Net-Core" class="headerlink" title=".Net Core"></a>.Net Core</h4><p>那既然從執行結果知道這兩者不同, 那就令人好奇這兩者的差別到底有多大了, 這時候就需要看看原始碼長怎樣了.  </p>
+<p>先從 <code>Encoding.UTF8</code> 開始, 從 <a target="_blank" rel="noopener" href="https://source.dot.net/#System.Private.CoreLib/Encoding.cs,a10eb90a3d884500">.NET Source Browser</a> 往下追蹤, 可以發現最後使用的是呼叫  <code>UTF8Encoding(bool encoderShouldEmitUTF8Identifier)</code> 這個建構子, 參數帶的是 <code>true</code>, 如下:  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">UTF8Encoding</span>(<span class="params"><span class="built_in">bool</span> encoderShouldEmitUTF8Identifier</span>) :</span></span><br><span class="line"><span class="function">	<span class="title">this</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">	_emitUTF8Identifier = encoderShouldEmitUTF8Identifier;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然後是 <code>new UTF8Encoding()</code>, <a target="_blank" rel="noopener" href="https://source.dot.net/#System.Private.CoreLib/UTF8Encoding.cs,21efe420a875356a,references">.NET Source Browser</a> 往下追蹤, 可以發現呼叫的是 <code>UTF8Encoding()</code> 這個建構子, 如下:  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">UTF8Encoding</span>() :</span></span><br><span class="line"><span class="function">	<span class="title">base</span>(<span class="params">UTF8_CODEPAGE</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到這兩個情境只差別會不會將 <code>_emitUTF8Identifier</code> 設為 <code>true</code> 而已.  </p>
+<h4 id="Net-Framework"><a href="#Net-Framework" class="headerlink" title=".Net Framework"></a>.Net Framework</h4><p>在 .Net Framework 上更簡單, 如下兩段對比一目瞭然<br><a target="_blank" rel="noopener" href="https://referencesource.microsoft.com/#mscorlib/system/text/encoding.cs,a10eb90a3d884500">Encoding.UTF8</a> 對比 <a target="_blank" rel="noopener" href="https://referencesource.microsoft.com/#mscorlib/system/text/utf8encoding.cs,21efe420a875356a,references">new UTF8Encoding()</a>.  </p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>這個差別很隱諱, 而且使用起來雖然大多情境都沒問題, 但遇到問題時容易卡住很久找不到主因, 尤其是跟外部廠商交互過程遇到這種問題真的要靠大量溝通加一點通靈能力才能找到.  </p>
+<p>另外如果沒看錯的話, UTF 系列的只有 UTF8 會有這個小差異, UTF7 和 UTF32 使用 Encoding.UTF7 &#x2F; Encoding.UTF32 都各自和直接透過 UTF7Encoding &#x2F; UTF32Encoding 無參數建構子得到的實例 (instance) 是一樣的.  </p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a target="_blank" rel="noopener" href="https://source.dot.net/">.NET Source Browser</a>  </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/content/20200802-cross-assembly-reflection.html" rel="prev" title="跨組件反射的注意事項">
+                  <i class="fa fa-angle-left"></i> 跨組件反射的注意事項
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/content/20210523-transitive-dependency.html" rel="next" title="傳遞依賴 (transitive dependency)">
+                  傳遞依賴 (transitive dependency) <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2017 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ronsun/ronsun.github.io.utterances","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>

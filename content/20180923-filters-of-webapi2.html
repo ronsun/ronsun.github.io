@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://github.com/identicons/ronsun.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/identicons/ronsun.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ronsun.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="ASP.NET WebApi 2 提供了三個好用的 FilterAttribute 讓開發者可以擴充後將這些 FilterAttribute 套用在 Controller &#x2F; Action 上面, 也可以在 WebApiConfig.cs 或 Global.asax 裡面註冊 , 並在一個 API request 生命週期中的特定時間被執行.這樣做的好處是可以將跟 API 主業務邏輯無關">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebApi 2 中的 FilterAttribute 介紹與應用">
+<meta property="og:url" content="https://ronsun.github.io/content/20180923-filters-of-webapi2.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="ASP.NET WebApi 2 提供了三個好用的 FilterAttribute 讓開發者可以擴充後將這些 FilterAttribute 套用在 Controller &#x2F; Action 上面, 也可以在 WebApiConfig.cs 或 Global.asax 裡面註冊 , 並在一個 API request 生命週期中的特定時間被執行.這樣做的好處是可以將跟 API 主業務邏輯無關">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-09-23T06:30:04.000Z">
+<meta property="article:modified_time" content="2026-05-04T09:50:53.357Z">
+<meta property="article:author" content="Ron Sun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ronsun.github.io/content/20180923-filters-of-webapi2.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://ronsun.github.io/content/20180923-filters-of-webapi2.html","path":"content/20180923-filters-of-webapi2.html","title":"WebApi 2 中的 FilterAttribute 介紹與應用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>WebApi 2 中的 FilterAttribute 介紹與應用 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Ron 2.0</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Simple Is Not Easy</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E7%A8%AE-FilterAttribute-%E4%BB%8B%E7%B4%B9"><span class="nav-number">1.</span> <span class="nav-text">三種 FilterAttribute 介紹</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%92%E9%99%A4%E7%89%B9%E5%AE%9A-Action-%E6%88%96-Controller"><span class="nav-number">1.2.</span> <span class="nav-text">排除特定 Action 或 Controller</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%B7%E8%A1%8C%E9%A0%86%E5%BA%8F"><span class="nav-number">1.3.</span> <span class="nav-text">執行順序</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B5%90%E8%AB%96"><span class="nav-number">2.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%83%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">參考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ron Sun</p>
+  <div class="site-description" itemprop="description">Simple Is Not Easy</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ronsun" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ronsun" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/ronsun/" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;ronsun&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://referencesource.microsoft.com/" title="https:&#x2F;&#x2F;referencesource.microsoft.com&#x2F;" rel="noopener" target="_blank">.Net Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://source.dot.net/" title="https:&#x2F;&#x2F;source.dot.net&#x2F;" rel="noopener" target="_blank">.Net Core Source Code</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://notfalse.net/" title="https:&#x2F;&#x2F;notfalse.net&#x2F;" rel="noopener" target="_blank">NotFalse 技術客</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://gist.github.com/ronsun" title="https:&#x2F;&#x2F;gist.github.com&#x2F;ronsun" rel="noopener" target="_blank">放零碎筆記的 Gist</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20180923-filters-of-webapi2.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ron Sun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+      <meta itemprop="description" content="Simple Is Not Easy">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="WebApi 2 中的 FilterAttribute 介紹與應用 | Ron 2.0">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          WebApi 2 中的 FilterAttribute 介紹與應用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-09-23 14:30:04" itemprop="dateCreated datePublished" datetime="2018-09-23T14:30:04+08:00">2018-09-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/NET/" itemprop="url" rel="index"><span itemprop="name">.NET</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>ASP.NET WebApi 2 提供了三個好用的 FilterAttribute 讓開發者可以擴充後將這些 FilterAttribute 套用在 Controller &#x2F; Action 上面, 也可以在 WebApiConfig.cs 或 Global.asax 裡面註冊 , 並在一個 API request 生命週期中的特定時間被執行.<br>這樣做的好處是可以將跟 API 主業務邏輯無關, 卻又是大部分 API 都要做的事收斂起來, 只需要將 Attribute 套用在正確的地方就能一體適用, 開發者就能更專注在 API 的主要商務邏輯層面.  </p>
+<blockquote>
+<p>在了解 FilterAttribute 的運用之前, 必須先知道  Attribute 是什麼以及如何使用 Attribute.</p>
+</blockquote>
+<span id="more"></span>
+
+<h3 id="三種-FilterAttribute-介紹"><a href="#三種-FilterAttribute-介紹" class="headerlink" title="三種 FilterAttribute 介紹"></a>三種 FilterAttribute 介紹</h3><p>ASP.NET WebApi 2 提供了三個好用的 FilterAttribute, 分別是 <code>AuthorizationFilterAttribute</code>,  <code>ActionFilterAttribute</code> 與 <code>ExceptionFilterAttribute</code> , 要注意的是命名空間都是 <code>System.Web.Http.Filters</code>, ASP.NET MVC 也有提供同名的 FilterAttribute, 但是命名空間不同, 內容也不盡相同.  </p>
+<p>這三個 FilterAttribute 提供的功能各異:  </p>
+<ul>
+<li><code>AuthorizationFilterAttribute</code> 提供的是驗證相關的流程, 能在進 Action 之前就先執行相關的驗證方法.   </li>
+<li><code>ActionFilterAttribute</code> 會分別在 Action 執行前與執行完畢後執行相關方法.  </li>
+<li><code>ExceptionFilterAttribute</code> 在例外(unhandled exception)發生後執行.</li>
+</ul>
+<h4 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h4><p>這三種 FilterAttribute 的使用方式都一樣, 這邊用 <code>ExceptionFilterAttribute</code> 來當作範例. </p>
+<ol>
+<li><strong>繼承對應的 FilterAttribute, 並覆寫父類別中的相關方法.</strong></li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoExceptionFilterAttribute</span> : <span class="title">ExceptionFilterAttribute</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnException</span>(<span class="params">HttpActionExecutedContext actionExecutedContext</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Call base method</span></span><br><span class="line">        <span class="keyword">base</span>.OnException(actionExecutedContext);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Do somthing, ex: logging exception</span></span><br><span class="line">        <span class="comment">// _logger.Info(actionExecutedContext.Exception);</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// Set response information</span></span><br><span class="line">        actionExecutedContext.Response = <span class="keyword">new</span> HttpResponseMessage(HttpStatusCode.InternalServerError);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p><strong>套用 FilterAttribute.</strong></p>
+<ul>
+<li>套用到 Action</li>
+</ul>
+ <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoController</span> : <span class="title">ApiController</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">DemoExceptionFilter</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> IEnumerable&lt;<span class="built_in">string</span>&gt; <span class="title">Get</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Exception();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>套用到特定 ApiController</li>
+</ul>
+ <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">DemoExceptionFilter</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoController</span> : <span class="title">ApiController</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> IEnumerable&lt;<span class="built_in">string</span>&gt; <span class="title">Get</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Exception();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 更進一步, 可以將這些 FilterAttribute 套用在一個共用的 BaseApiController 上, 只要繼承 BaseApiController, 就能直接套用.<br> <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">DemoExceptionFilter</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BaseApiController</span> : <span class="title">ApiController</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoController</span> : <span class="title">BaseApiController</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> IEnumerable&lt;<span class="built_in">string</span>&gt; <span class="title">Get</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Exception();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>套用到所有 ApiController - 從 <code>~/App_Start/WebApiConfig.cs</code></li>
+</ul>
+ <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoController</span> : <span class="title">ApiController</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> IEnumerable&lt;<span class="built_in">string</span>&gt; <span class="title">Get</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Exception();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ~/App_Start/WebApiConfig.cs</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Register</span>(<span class="params">HttpConfiguration config</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    config.Filters.Add(<span class="keyword">new</span> DemoExceptionFilterAttribute());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>套用到所有 ApiController - 從<code>~/Global.asax</code></li>
+</ul>
+ <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoController</span> : <span class="title">ApiController</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> IEnumerable&lt;<span class="built_in">string</span>&gt; <span class="title">Get</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Exception();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ~/Global.asax</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">Application_Start</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    GlobalConfiguration.Configuration.Filters.Add(<span class="keyword">new</span> DemoExceptionFilterAttribute());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<blockquote>
+<ol>
+<li>單獨套用只能套用在 ApiController 的衍生類別或 Action 上, 如果是套用在其他方法(例如: xxxService.Do(), 或 this.Do()), 即使那個方法有被 ApiController 的 Action 呼叫到也是無法讓 FilterAttribute 運作的.  </li>
+<li>重複套用同一個 FilterAttribute 不會壞, 但因為註冊了兩次, 所以也會執行兩次, 所以應該要特別注意套用方式避免重複套用.</li>
+</ol>
+</blockquote>
+<h4 id="排除特定-Action-或-Controller"><a href="#排除特定-Action-或-Controller" class="headerlink" title="排除特定 Action 或 Controller"></a>排除特定 Action 或 Controller</h4><p>如果大部分 API 都需要套用一個 FilterAttribute, 但有少數不套用, 應該要怎麼實作排除機制呢?  </p>
+<ol>
+<li><strong>實作標記為排除的 Attribute</strong></li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">IgnoreFilterAttribute</span> : <span class="title">Attribute</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> Type FilterType &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IgnoreFilterAttribute</span>(<span class="params">Type filterType</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">this</span>.FilterType = filterType;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><strong>擴充 FilterAttribute 以支援排除功能</strong></li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoExceptionFilterAttribute</span> : <span class="title">ExceptionFilterAttribute</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnException</span>(<span class="params">HttpActionExecutedContext actionExecutedContext</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Func&lt;IgnoreFilterAttribute, <span class="built_in">bool</span>&gt; ignoreCheck = (r) =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// ignored type is one of...</span></span><br><span class="line">            <span class="comment">// 1. DemoExceptionFilterAttribute </span></span><br><span class="line">            <span class="comment">// 2. Base types of DemoExceptionFilterAttribute</span></span><br><span class="line">            <span class="keyword">return</span> r.FilterType.IsAssignableFrom(<span class="keyword">typeof</span>(DemoExceptionFilterAttribute));</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> ignoredActions = actionExecutedContext</span><br><span class="line">                                .ActionContext</span><br><span class="line">                                .ActionDescriptor</span><br><span class="line">                                .GetCustomAttributes&lt;IgnoreFilterAttribute&gt;()</span><br><span class="line">                                .Any(ignoreCheck);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> ignoredControllers = actionExecutedContext</span><br><span class="line">                                    .ActionContext</span><br><span class="line">                                    .ControllerContext</span><br><span class="line">                                    .ControllerDescriptor</span><br><span class="line">                                    .GetCustomAttributes&lt;IgnoreFilterAttribute&gt;()</span><br><span class="line">                                    .Any(ignoreCheck);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ignoredActions || ignoredControllers)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><strong>套用標記為排除的 Attribute</strong></li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// apply to Controller</span></span><br><span class="line"><span class="comment">//[IgnoreFilter(typeof(DemoExceptionFilterAttribute))]</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoController</span> : <span class="title">ApiController</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// apply to Action</span></span><br><span class="line">    [<span class="meta">IgnoreFilter(typeof(DemoExceptionFilterAttribute))</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> IEnumerable&lt;<span class="built_in">string</span>&gt; <span class="title">Get</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Exception();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="執行順序"><a href="#執行順序" class="headerlink" title="執行順序"></a>執行順序</h4><p>根據 <a target="_blank" rel="noopener" href="https://exceptionnotfound.net/the-asp-net-web-api-2-http-message-lifecycle-in-43-easy-steps-2/">The ASP.NET Web API 2 HTTP Message Lifecycle in 43 Easy Steps</a> 的說明加上 <a target="_blank" rel="noopener" href="https://www.asp.net/media/4071077/aspnet-web-api-poster.pdf">ASP.NET WEB API 2: HTTP MESSAGE LIFECYLE
+</a> 流程圖的內容來看, <code>AuthorizationFilterAttribute</code> 會先執行, 然後才是 <code>ActionFilterAttribute</code>, 而例外發生時會執行<code>ExceptionFilterAttribute</code>, 至於同種類的多個 FilterAttribute 或是一個 FilterAttribute 中的不同方法執行的順序, 可以從下面的程式碼觀察出結果.  </p>
+<p>首先, 需要 <code>AuthorizationFilterAttribute</code> 和 <code>ActionFilterAttribute</code> 各兩組, 另外一組 <code>ExceptionFilterAttribute</code>, 接著把這些 FilterAttribute 放在 WebApi 專案預設的 Action 上, 且 <code>ExceptionFilterAttribute</code> 刻意插在中間, 而 Action 就簡單的拋出一個例外.  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ValuesController</span> : <span class="title">ApiController</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// GET api/values</span></span><br><span class="line">    [<span class="meta">MyAuth2</span>]</span><br><span class="line">    [<span class="meta">MyAuth1</span>]</span><br><span class="line">    [<span class="meta">MyAction1</span>]</span><br><span class="line">    [<span class="meta">MyException1</span>]</span><br><span class="line">    [<span class="meta">MyAction2</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> IEnumerable&lt;<span class="built_in">string</span>&gt; <span class="title">Get</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Exception();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>實作部分所有 FilterAttribute 並覆寫所有能覆寫的方法, 內容只是單純寫個簡單的歷程記錄到 <code>RouteTracer.Routes</code> 中, 但<code>ExceptionFilterAttribute</code> 需要另外負責回傳正確的狀態與 <code>RouteTracer.Routes</code> 內容, 才能順利觀察執行順序. </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyAuth1</span> : <span class="title">AuthorizationFilterAttribute</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnAuthorization</span>(<span class="params">HttpActionContext actionContext</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        RouteTracer.Routes.Add(<span class="string">&quot;MyAuth1.OnAuthorization&quot;</span>);</span><br><span class="line">        <span class="keyword">base</span>.OnAuthorization(actionContext);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> Task <span class="title">OnAuthorizationAsync</span>(<span class="params">HttpActionContext actionContext, CancellationToken cancellationToken</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        RouteTracer.Routes.Add(<span class="string">&quot;MyAuth1.OnAuthorizationAsync&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">base</span>.OnAuthorizationAsync(actionContext, cancellationToken);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyAuth2</span> : <span class="title">AuthorizationFilterAttribute</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnAuthorization</span>(<span class="params">HttpActionContext actionContext</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        RouteTracer.Routes.Add(<span class="string">&quot;MyAuth2.OnAuthorization&quot;</span>);</span><br><span class="line">        <span class="keyword">base</span>.OnAuthorization(actionContext);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> Task <span class="title">OnAuthorizationAsync</span>(<span class="params">HttpActionContext actionContext, CancellationToken cancellationToken</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        RouteTracer.Routes.Add(<span class="string">&quot;MyAuth2.OnAuthorizationAsync&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">base</span>.OnAuthorizationAsync(actionContext, cancellationToken);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyAction1</span> : <span class="title">ActionFilterAttribute</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnActionExecuted</span>(<span class="params">HttpActionExecutedContext actionExecutedContext</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        RouteTracer.Routes.Add(<span class="string">&quot;MyAction1.OnActionExecuted&quot;</span>);</span><br><span class="line">        <span class="keyword">base</span>.OnActionExecuted(actionExecutedContext);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> Task <span class="title">OnActionExecutedAsync</span>(<span class="params">HttpActionExecutedContext actionExecutedContext, CancellationToken cancellationToken</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        RouteTracer.Routes.Add(<span class="string">&quot;MyAction1.OnActionExecutedAsync&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">base</span>.OnActionExecutedAsync(actionExecutedContext, cancellationToken);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnActionExecuting</span>(<span class="params">HttpActionContext actionContext</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        RouteTracer.Routes.Add(<span class="string">&quot;MyAction1.OnActionExecuting&quot;</span>);</span><br><span class="line">        <span class="keyword">base</span>.OnActionExecuting(actionContext);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> Task <span class="title">OnActionExecutingAsync</span>(<span class="params">HttpActionContext actionContext, CancellationToken cancellationToken</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        RouteTracer.Routes.Add(<span class="string">&quot;MyAction1.OnActionExecutingAsync&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">base</span>.OnActionExecutingAsync(actionContext, cancellationToken);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyAction2</span> : <span class="title">ActionFilterAttribute</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnActionExecuted</span>(<span class="params">HttpActionExecutedContext actionExecutedContext</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        RouteTracer.Routes.Add(<span class="string">&quot;MyAction2.OnActionExecuted&quot;</span>);</span><br><span class="line">        <span class="keyword">base</span>.OnActionExecuted(actionExecutedContext);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> Task <span class="title">OnActionExecutedAsync</span>(<span class="params">HttpActionExecutedContext actionExecutedContext, CancellationToken cancellationToken</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        RouteTracer.Routes.Add(<span class="string">&quot;MyAction2.OnActionExecutedAsync&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">base</span>.OnActionExecutedAsync(actionExecutedContext, cancellationToken);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnActionExecuting</span>(<span class="params">HttpActionContext actionContext</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        RouteTracer.Routes.Add(<span class="string">&quot;MyAction2.OnActionExecuting&quot;</span>);</span><br><span class="line">        <span class="keyword">base</span>.OnActionExecuting(actionContext);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> Task <span class="title">OnActionExecutingAsync</span>(<span class="params">HttpActionContext actionContext, CancellationToken cancellationToken</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        RouteTracer.Routes.Add(<span class="string">&quot;MyAction2.OnActionExecutingAsync&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">base</span>.OnActionExecutingAsync(actionContext, cancellationToken);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyException1</span> : <span class="title">ExceptionFilterAttribute</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnException</span>(<span class="params">HttpActionExecutedContext actionExecutedContext</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        RouteTracer.Routes.Add(<span class="string">&quot;MyException1.OnException&quot;</span>);</span><br><span class="line">        <span class="keyword">base</span>.OnException(actionExecutedContext);</span><br><span class="line">        actionExecutedContext.Response = <span class="keyword">new</span> HttpResponseMessage(HttpStatusCode.OK);</span><br><span class="line">        actionExecutedContext.Response.Content = <span class="keyword">new</span> ObjectContent&lt;List&lt;<span class="built_in">string</span>&gt;&gt;(RouteTracer.Routes, <span class="keyword">new</span> XmlMediaTypeFormatter());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>實際運作後頁面顯示結果如下, 可以看出各種 FilterAttribute 以及其中的方法的執行順序.  </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ArrayOfstring</span> <span class="attr">xmlns:i</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://schemas.microsoft.com/2003/10/Serialization/Arrays&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>MyAuth2.OnAuthorizationAsync<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>MyAuth2.OnAuthorization<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>MyAuth1.OnAuthorizationAsync<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>MyAuth1.OnAuthorization<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>MyAction1.OnActionExecutingAsync<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>MyAction1.OnActionExecuting<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>MyAction2.OnActionExecutingAsync<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>MyAction2.OnActionExecuting<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>MyAction2.OnActionExecutedAsync<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>MyAction2.OnActionExecuted<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>MyAction1.OnActionExecutedAsync<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>MyAction1.OnActionExecuted<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>MyException1.OnException<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ArrayOfstring</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>就執行順序的這部分, 總結來說  </p>
+<ul>
+<li><code>AuthorizationFilterAttribute</code> 先於 <code>ActionFilterAttribute</code> 執行 (從流程圖上來看合理).  </li>
+<li>多個同種類的 FilterAttribute 實作, 會依照套用的順序執行, 但 <code>OnActionExecuted</code> 與 <code>OnActionExecutedAsync</code> 是反序 (從流程圖上來看也合理, 因為 OnActionExecuted 系列方法是在 Action 執行後要 response 時才執行).  </li>
+<li>如果有例外發生的話, <code>ExceptionFilterAttribute</code> 會在最後才執行.  </li>
+<li>一個 FilterAttribute 內部的方法執行順序看起來是非同步方法先於同步方法.</li>
+</ul>
+<blockquote>
+<ol>
+<li>單一測試就下結論其實不穩妥, 所以我後來又做了幾次不一樣的排序實驗, 看起來結果是符合推測的, 但無法完全保證.  </li>
+<li>有些特性可能會隨著版本的變遷改變, 如果實際專案要用, 又真的很在意這些順序或其他細節的話, 還是要再就實際狀況測試一輪.</li>
+</ol>
+</blockquote>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>想像一下, 當有一天團隊要導入 log 收集與分析工具, 需要統一 log 的格式時, 如果當初有用 FilterAtrribute 來印通用訊息就可以省下非常多瑣碎的工, 而例外處理也是同理, 且能避免到處都是為了抓 unhandled exception 而寫的 <code>try-catch</code> 語句.  </p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/9953760/how-to-disable-a-global-filter-in-asp-net-mvc-selectively">How to disable a global filter in ASP.Net MVC selectively</a><br><a target="_blank" rel="noopener" href="https://www.huanlintalk.com/2013/01/aspnet-web-api-exception-filter.html">ASP.NET Web API Exception Filter</a><br><a target="_blank" rel="noopener" href="http://blogs.microsoft.co.il/oric/2011/10/28/exclude-a-filter/">Exclude A Filter</a><br><a target="_blank" rel="noopener" href="https://exceptionnotfound.net/the-asp-net-web-api-2-http-message-lifecycle-in-43-easy-steps-2/">The ASP.NET Web API 2 HTTP Message Lifecycle in 43 Easy Steps</a><br><a target="_blank" rel="noopener" href="https://www.asp.net/media/4071077/aspnet-web-api-poster.pdf">ASP.NET WEB API 2: HTTP MESSAGE LIFECYLE
+</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/content/20180915-use-recursive-safety.html" rel="prev" title="安全的使用遞迴">
+                  <i class="fa fa-angle-left"></i> 安全的使用遞迴
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/content/20181101-xmlwritersettings-encoding-not-working.html" rel="next" title="XmlWriterSettings.Encoding 設定無效">
+                  XmlWriterSettings.Encoding 設定無效 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2017 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ronsun/ronsun.github.io.utterances","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>
