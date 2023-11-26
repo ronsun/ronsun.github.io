@@ -4,511 +4,511 @@
   <url>
     <loc>https://ronsun.github.io/tags/index.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.918Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.901Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/categories/index.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.916Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.900Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230812-write-roslyn-analyzer-and-code-fix.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.909Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.885Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230709-using-partial-class.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.908Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.878Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230720-reference-type-as-dictionary-key.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.907Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.876Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230721-optimistic-vs-pessimistic-lock.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.906Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.875Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230617-large-scale-query-with-orm.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.905Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.874Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230312-use-source-browser.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.904Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.873Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230311-problem-about-exception-from-finally-block-of-using.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.904Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.872Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230114-resolve-url-too-long-exception.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.903Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.870Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230114-auto-delete-jobs-for-hangfire-with-redis.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.902Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.870Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20221115-do-not-let-extension-methods-of-generic-ienumerable-work-with-efcore.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.901Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.869Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20220925-use-some-of-monitors-for-remote.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.901Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.868Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20220924-local-nuget-package-repository.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.899Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20220828-grapheme-cluster-string-2.html</loc>
-    
-    <lastmod>2023-11-26T16:36:29.898Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.864Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20220818-use-measureit-in-roslynpad-for-benchmarking.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.898Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.863Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20220828-grapheme-cluster-string-2.html</loc>
+    
+    <lastmod>2023-11-26T17:01:26.861Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20220626-read-form-body-after-model-binding.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.897Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20220530-xml-serialization-conditional-ignore.html</loc>
-    
-    <lastmod>2023-11-26T16:36:29.896Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.856Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20220606-about-object-and-collection-initializers.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.896Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.856Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20211114-flatten-json.html</loc>
+    <loc>https://ronsun.github.io/content/20220530-xml-serialization-conditional-ignore.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.895Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.855Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20220528-grapheme-cluster-string.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.895Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.854Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20211114-flatten-json.html</loc>
+    
+    <lastmod>2023-11-26T17:01:26.853Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20211031-netcore-inject-multiple-implementation.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.894Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.852Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20210606-use-friend-assembly.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.894Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.852Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20210626-aspnetcore-webapi-read-body.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.893Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.850Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20210523-transitive-dependency.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.892Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.844Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20210510-encoding-utf8-vs-new-utf8encoding-about-preamble.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.891Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.843Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20200802-cross-assembly-reflection.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.890Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.841Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20200606-nunit-one-time-setup-level.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.889Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20200301-dependent-assembly-issue.html</loc>
-    
-    <lastmod>2023-11-26T16:36:29.888Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.840Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20200403-dependency-injection-aggregate-services.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.888Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.838Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20200301-dependent-assembly-issue.html</loc>
+    
+    <lastmod>2023-11-26T17:01:26.837Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20200120-dotnet-command-by-jenkins.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.887Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.835Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20191229-trace-csharp-source-code.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.872Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.819Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20191017-manually-use-sqlite-with-ef.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.871Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.818Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20191126-json-net-trailing-zero-number-problem.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.871Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.818Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20190907-use-sqlite-with-ef-and-vs2017.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.862Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.810Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20190826-handle-multipart-formdata-by-webapi.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.859Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.801Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20190622-dotnetcore-testproject-cs1705.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.856Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.799Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20190518-rsa-by-dotnet.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.855Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.798Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20190526-get-request-in-constructor-of-derived-ApiController.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.854Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.797Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20190317-webapi-response-data-format.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.854Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.795Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20190308-global-exception-handle-in-webapi.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.853Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.792Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20190322-csharp-language-specification-6.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.852Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.791Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20190112-stopwatch-util.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.850Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.789Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20190111-if-directive-and-conditional.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.844Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.778Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20190124-docfx-with-visual-studio-on-github-pages.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.841Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.774Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20190105-bouncycastle-rsa-key-with-leading-zero-to-xml.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.840Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.774Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20181203-xml-serialize-deserialize.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.839Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.773Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20181225-use-xml-schema-definition.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.828Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.764Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20181213-use-task-list-in-visual-studio.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.805Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.750Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20181230-interaction-between-key-and-keysize-in-symmetric-algorithm.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.805Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.748Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20181208-custom-stylecop-rules-and-testing.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.803Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.737Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20181101-xmlwritersettings-encoding-not-working.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.802Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20180915-use-recursive-safety.html</loc>
-    
-    <lastmod>2023-11-26T16:36:29.801Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.732Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20181118-webapi-get-request-body-safety.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.801Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.732Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20180915-use-recursive-safety.html</loc>
+    
+    <lastmod>2023-11-26T17:01:26.731Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20180923-filters-of-webapi2.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.800Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.730Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20180909-auto-implemented-properties.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.799Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.728Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20180819-simplify-if-statement.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.798Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.728Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20180608-handle-querystring-in-csharp.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.797Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.727Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20180618-chain-of-responsibility-like.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.796Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20180519-const-vs-readonly.html</loc>
-    
-    <lastmod>2023-11-26T16:36:29.793Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.726Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20180409-usage-of-partial-in-csharp.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.792Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.725Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180412-anti-switch-case.html</loc>
+    <loc>https://ronsun.github.io/content/20180519-const-vs-readonly.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.791Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.725Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20180304-random-in-csharp.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.791Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.724Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20180412-anti-switch-case.html</loc>
+    
+    <lastmod>2023-11-26T17:01:26.724Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20180131-correctly-re-throw-exception.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.790Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.723Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20171202-httpHelper-with-builder-like.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.789Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.722Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20171014-unmerged-pull-request-to-my-fork.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.788Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.721Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20171009-test-code-coverage-AxoCover.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.780Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20170902-hexo-and-next-fragments.html</loc>
-    
-    <lastmod>2023-11-26T16:36:29.774Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.713Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20170902-xsd-to-document-by-xs3p.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.774Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.707Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20170902-hexo-and-next-fragments.html</loc>
+    
+    <lastmod>2023-11-26T17:01:26.706Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20170924-explicit-implicit-keywords.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.772Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.704Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20170820-mssql-random-string.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.771Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.703Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20170813-HhttpRequest.QueryString-auto-urlDecode.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.770Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.702Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/19000101-tools-and-references.html</loc>
     
-    <lastmod>2023-11-26T16:36:29.770Z</lastmod>
+    <lastmod>2023-11-26T17:01:26.701Z</lastmod>
     
   </url>
   
