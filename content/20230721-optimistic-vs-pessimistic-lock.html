@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="Ron 2.0">
 <meta property="og:description" content="在資料庫操作時，面對多個操作的並行操作，為了避免資料不一致和衝突我們主要有兩種方法可以達成這個目標：樂觀鎖 (Optimistic Lock) 和悲觀鎖 (Pessimistic Lock)。但我們應該如何選擇適合的方法呢？  樂觀鎖和悲觀鎖的實作網路資源太多了，這篇不會特別提。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2023-12-04T16:33:53.823Z">
+<meta property="og:updated_time" content="2023-12-04T16:39:22.772Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="樂觀鎖與悲觀鎖的選擇">
 <meta name="twitter:description" content="在資料庫操作時，面對多個操作的並行操作，為了避免資料不一致和衝突我們主要有兩種方法可以達成這個目標：樂觀鎖 (Optimistic Lock) 和悲觀鎖 (Pessimistic Lock)。但我們應該如何選擇適合的方法呢？  樂觀鎖和悲觀鎖的實作網路資源太多了，這篇不會特別提。">
@@ -412,6 +412,11 @@
 <li><strong>衝突時需要認列後面的操作，但是不能直接寫入而需要重新執行一些商務邏輯再更新才正確時。</strong></li>
 </ol>
 <h3 id="悲觀鎖分析"><a href="#悲觀鎖分析" class="headerlink" title="悲觀鎖分析"></a>悲觀鎖分析</h3><p>悲觀鎖又稱行鎖 (Row Lock)，一開始操作時就先把該筆資料鎖定，防止其他操作修改該資料，解鎖後其他操作會繼續執行，它可以預防衝突，而不是在事後解決衝突。</p>
+<p><strong>特性</strong>  </p>
+<ol>
+<li>由資料庫提供的行鎖。</li>
+<li>衝突時所有操作會排隊在解鎖後依序執行。</li>
+</ol>
 <p><strong>優點</strong>  </p>
 <ol>
 <li>避免事後處理衝突的開銷。</li>
