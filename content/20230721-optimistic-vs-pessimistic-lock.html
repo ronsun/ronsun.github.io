@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="Ron 2.0">
 <meta property="og:description" content="在資料庫操作時，面對多個操作的並行操作，為了避免資料不一致和衝突我們主要有兩種方法可以達成這個目標：樂觀鎖 (Optimistic Lock) 和悲觀鎖 (Pessimistic Lock)。但我們應該如何選擇適合的方法呢？  樂觀鎖和悲觀鎖的實作網路資源太多了，這篇不會特別提。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2023-11-26T17:01:26.875Z">
+<meta property="og:updated_time" content="2023-12-04T16:33:53.823Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="樂觀鎖與悲觀鎖的選擇">
 <meta name="twitter:description" content="在資料庫操作時，面對多個操作的並行操作，為了避免資料不一致和衝突我們主要有兩種方法可以達成這個目標：樂觀鎖 (Optimistic Lock) 和悲觀鎖 (Pessimistic Lock)。但我們應該如何選擇適合的方法呢？  樂觀鎖和悲觀鎖的實作網路資源太多了，這篇不會特別提。">
@@ -392,21 +392,26 @@
 </blockquote>
 <a id="more"></a>
 <h3 id="樂觀鎖分析"><a href="#樂觀鎖分析" class="headerlink" title="樂觀鎖分析"></a>樂觀鎖分析</h3><p>個人經驗來說，會用一個 Version 欄位來記錄版本，在寫入資料時再判斷版本是否因為被其他操作更新過，以此為依據來避免互相覆蓋。  </p>
+<p><strong>特性</strong>  </p>
+<ol>
+<li>由應用程式控制而不是資料庫中真實的鎖。</li>
+<li>衝突時比較晚更新的那個操作會被取消，應用程式中可能會拋出例外。</li>
+</ol>
 <p><strong>優點</strong>  </p>
 <ol>
-<li>Entity Framework Core 和 NHibernate 等 ORM 有支援樂觀鎖，操作上方便。</li>
+<li>Entity Framework Core 和 NHibernate 等 ORM 有支援樂觀鎖，使用方便。</li>
 </ol>
 <p><strong>缺點</strong>  </p>
 <ol>
-<li>衝突時比較晚更新的那個操作會被取消，如果一定要更新就需要有重試機制，當衝突率高時造成的重試開銷會非常驚人，甚至需要多次重試才能成功更新，極端情境就更難以想像了。</li>
-<li>操作取消並重試的機制在效能上必然較差。</li>
+<li>衝突時比較晚更新的那個操作如果一定要更新就需要有重試機制，當衝突率高時重試開銷會很高。</li>
+<li>操作取消並重試的機制在效能上必然較差，重試機制要兼顧資料正確性時較複雜。</li>
 </ol>
 <p><strong>適用情境</strong>  </p>
 <ol>
-<li><strong>衝突情況罕見的情境</strong>，因為當衝突率低時，因為重試機制而造成的成本也會比較低。</li>
-<li><strong>衝突時不需要重試的情境</strong>，因為在程式中搭配使用 ORM 使用很方便，如果不需要重試的話也就不用負擔重試機制造成的成本。</li>
+<li><strong>衝突時只需要認列第一個操作時。</strong></li>
+<li><strong>衝突時需要認列後面的操作，但是不能直接寫入而需要重新執行一些商務邏輯再更新才正確時。</strong></li>
 </ol>
-<h3 id="悲觀鎖分析"><a href="#悲觀鎖分析" class="headerlink" title="悲觀鎖分析"></a>悲觀鎖分析</h3><p>悲觀鎖又稱行鎖 (Row Lock)，一開始操作時就先把該筆資料鎖定，防止其他操作修改該資料，它可以預防衝突，而不是在事後解決衝突。</p>
+<h3 id="悲觀鎖分析"><a href="#悲觀鎖分析" class="headerlink" title="悲觀鎖分析"></a>悲觀鎖分析</h3><p>悲觀鎖又稱行鎖 (Row Lock)，一開始操作時就先把該筆資料鎖定，防止其他操作修改該資料，解鎖後其他操作會繼續執行，它可以預防衝突，而不是在事後解決衝突。</p>
 <p><strong>優點</strong>  </p>
 <ol>
 <li>避免事後處理衝突的開銷。</li>
@@ -418,8 +423,7 @@
 </ol>
 <p><strong>適用情境</strong>  </p>
 <ol>
-<li><strong>衝突情況常見的情境</strong>，與其經常處理衝突，不如一開始就預防。</li>
-<li><strong>無法接受衝突產生的開銷時</strong>。</li>
+<li><strong>衝突時多個操作可依序執行時(例如後面的變更覆蓋之前的變更是正確的時)。</strong></li>
 </ol>
 <h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>這兩種鎖互有優缺，應該要適當的搭配使用。</p>
 <h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p>ChatGPT</p>

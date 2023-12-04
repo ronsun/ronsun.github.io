@@ -101,10 +101,16 @@
 <meta property="og:site_name" content="Ron 2.0">
 <meta property="og:description" content="當我們想知道目前產品的測試程式涵蓋率的時候, 可以使用Visual Studio 2017內建的功能來分析, 但只有企業版支援這個功能, 所以另外找了AxoCover來用看看。">
 <meta property="og:locale" content="en">
+<meta property="og:image" content="https://ronsun.github.io/content/20171009-test-code-coverage-AxoCover/AxoCover-Install.png">
+<meta property="og:image" content="https://ronsun.github.io/content/20171009-test-code-coverage-AxoCover/AxoCover-Installed.png">
+<meta property="og:image" content="https://ronsun.github.io/content/20171009-test-code-coverage-AxoCover/AxoCover-Function-Window.png">
+<meta property="og:image" content="https://ronsun.github.io/content/20171009-test-code-coverage-AxoCover/AxoCover-Report.png">
+<meta property="og:image" content="https://ronsun.github.io/content/20171009-test-code-coverage-AxoCover/AxoCover-Display.png">
 <meta property="og:updated_time" content="2023-11-26T17:01:26.713Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在Visual studio 2017上使用AxoCover顯示測試程式碼涵蓋範圍">
 <meta name="twitter:description" content="當我們想知道目前產品的測試程式涵蓋率的時候, 可以使用Visual Studio 2017內建的功能來分析, 但只有企業版支援這個功能, 所以另外找了AxoCover來用看看。">
+<meta name="twitter:image" content="https://ronsun.github.io/content/20171009-test-code-coverage-AxoCover/AxoCover-Install.png">
 
 
 
@@ -388,9 +394,9 @@
       
         <p>當我們想知道目前產品的測試程式涵蓋率的時候, 可以使用Visual Studio 2017內建的功能來分析, 但只有企業版支援這個功能, 所以另外找了AxoCover來用看看。</p>
 <a id="more"></a>
-<h3 id="AxoCover"><a href="#AxoCover" class="headerlink" title="AxoCover"></a>AxoCover</h3><h4 id="安裝"><a href="#安裝" class="headerlink" title="安裝"></a>安裝</h4><p>打開 Tools &gt; Extensions and Updates, 並找到AxoCover後直接安裝(安裝時需要關閉Visual Studio才能繼續)。<br></p>
-<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><p>安裝完成開啟Visual Studio後, 可在Tool &gt; AxoCover打開功能視窗。<br>   </p>
-<p>一開始的功能視窗看起來什麼都沒有, 照著上面的提示編譯一下專案後, 可以看到完整的功能頁面。<br></p>
+<h3 id="AxoCover"><a href="#AxoCover" class="headerlink" title="AxoCover"></a>AxoCover</h3><h4 id="安裝"><a href="#安裝" class="headerlink" title="安裝"></a>安裝</h4><p>打開 Tools &gt; Extensions and Updates, 並找到AxoCover後直接安裝(安裝時需要關閉Visual Studio才能繼續)。<br><img src="/content/20171009-test-code-coverage-AxoCover/AxoCover-Install.png"></p>
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><p>安裝完成開啟Visual Studio後, 可在Tool &gt; AxoCover打開功能視窗。<br><img src="/content/20171009-test-code-coverage-AxoCover/AxoCover-Installed.png">   </p>
+<p>一開始的功能視窗看起來什麼都沒有, 照著上面的提示編譯一下專案後, 可以看到完整的功能頁面。<br><img src="/content/20171009-test-code-coverage-AxoCover/AxoCover-Function-Window.png"></p>
 <p>接著就幾個主要功能說明一下  </p>
 <ul>
 <li><p><strong>Tests</strong>  </p>
@@ -405,14 +411,14 @@
 </li>
 <li><p><strong>Reposrt</strong><br>這邊可以看到涵蓋率的分析。  </p>
 <ul>
-<li><strong>Reposrt &gt; Export</strong><br>將執行與涵蓋率分析結果分別輸出到<code>~/.axoCover/runs</code> 以及<code>~/.axoCover/reports</code>, 其中<code>~/.axoCover/reports</code>下是用一個精美的靜態網頁來顯示測試涵蓋率報表。   
+<li><strong>Reposrt &gt; Export</strong><br>將執行與涵蓋率分析結果分別輸出到<code>~/.axoCover/runs</code> 以及<code>~/.axoCover/reports</code>, 其中<code>~/.axoCover/reports</code>下是用一個精美的靜態網頁來顯示測試涵蓋率報表。   <img src="/content/20171009-test-code-coverage-AxoCover/AxoCover-Report.png">
 </li>
 </ul>
 </li>
 <li><p>Settings<br>AxoCover的相關設定全在這。  </p>
 </li>
 </ul>
-<p>操作上大致是這樣子的, 接著可以打開程式碼並且清楚的看到有被測試碼涵蓋到的部分是綠色, 沒涵蓋到的部分是紅色, 而部分涵蓋的那一行會有一個很小的黃色圖標。<br></p>
+<p>操作上大致是這樣子的, 接著可以打開程式碼並且清楚的看到有被測試碼涵蓋到的部分是綠色, 沒涵蓋到的部分是紅色, 而部分涵蓋的那一行會有一個很小的黃色圖標。<br><img src="/content/20171009-test-code-coverage-AxoCover/AxoCover-Display.png"></p>
 
       
     </div>
