@@ -2,9 +2,79 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://ronsun.github.io/content/20231216-consistent-webapi-returns.html</loc>
+    
+    <lastmod>2023-12-16T17:00:08.497Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20230812-write-roslyn-analyzer-and-code-fix.html</loc>
+    
+    <lastmod>2023-12-15T17:16:02.164Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://ronsun.github.io/content/20230721-optimistic-vs-pessimistic-lock.html</loc>
     
-    <lastmod>2023-12-04T16:39:22.772Z</lastmod>
+    <lastmod>2023-12-15T17:16:02.132Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20230720-reference-type-as-dictionary-key.html</loc>
+    
+    <lastmod>2023-12-15T17:16:02.093Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20230709-using-partial-class.html</loc>
+    
+    <lastmod>2023-12-15T17:16:02.007Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20230617-large-scale-query-with-orm.html</loc>
+    
+    <lastmod>2023-12-15T17:15:20.773Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20230312-use-source-browser.html</loc>
+    
+    <lastmod>2023-12-15T17:15:20.718Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20230311-problem-about-exception-from-finally-block-of-using.html</loc>
+    
+    <lastmod>2023-12-15T17:15:20.667Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20230114-auto-delete-jobs-for-hangfire-with-redis.html</loc>
+    
+    <lastmod>2023-12-15T17:15:20.609Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20230114-resolve-url-too-long-exception.html</loc>
+    
+    <lastmod>2023-12-15T17:15:20.551Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20221115-do-not-let-extension-methods-of-generic-ienumerable-work-with-efcore.html</loc>
+    
+    <lastmod>2023-12-15T16:51:11.729Z</lastmod>
     
   </url>
   
@@ -19,69 +89,6 @@
     <loc>https://ronsun.github.io/categories/index.html</loc>
     
     <lastmod>2023-11-26T17:01:26.900Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20230812-write-roslyn-analyzer-and-code-fix.html</loc>
-    
-    <lastmod>2023-11-26T17:01:26.885Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20230709-using-partial-class.html</loc>
-    
-    <lastmod>2023-11-26T17:01:26.878Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20230720-reference-type-as-dictionary-key.html</loc>
-    
-    <lastmod>2023-11-26T17:01:26.876Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20230617-large-scale-query-with-orm.html</loc>
-    
-    <lastmod>2023-11-26T17:01:26.874Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20230312-use-source-browser.html</loc>
-    
-    <lastmod>2023-11-26T17:01:26.873Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20230311-problem-about-exception-from-finally-block-of-using.html</loc>
-    
-    <lastmod>2023-11-26T17:01:26.872Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20230114-resolve-url-too-long-exception.html</loc>
-    
-    <lastmod>2023-11-26T17:01:26.870Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20230114-auto-delete-jobs-for-hangfire-with-redis.html</loc>
-    
-    <lastmod>2023-11-26T17:01:26.870Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20221115-do-not-let-extension-methods-of-generic-ienumerable-work-with-efcore.html</loc>
-    
-    <lastmod>2023-11-26T17:01:26.869Z</lastmod>
     
   </url>
   
@@ -149,14 +156,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20211031-netcore-inject-multiple-implementation.html</loc>
+    <loc>https://ronsun.github.io/content/20210606-use-friend-assembly.html</loc>
     
     <lastmod>2023-11-26T17:01:26.852Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20210606-use-friend-assembly.html</loc>
+    <loc>https://ronsun.github.io/content/20211031-netcore-inject-multiple-implementation.html</loc>
     
     <lastmod>2023-11-26T17:01:26.852Z</lastmod>
     
@@ -387,14 +394,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180909-auto-implemented-properties.html</loc>
+    <loc>https://ronsun.github.io/content/20180819-simplify-if-statement.html</loc>
     
     <lastmod>2023-11-26T17:01:26.728Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180819-simplify-if-statement.html</loc>
+    <loc>https://ronsun.github.io/content/20180909-auto-implemented-properties.html</loc>
     
     <lastmod>2023-11-26T17:01:26.728Z</lastmod>
     
@@ -415,14 +422,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180409-usage-of-partial-in-csharp.html</loc>
+    <loc>https://ronsun.github.io/content/20180519-const-vs-readonly.html</loc>
     
     <lastmod>2023-11-26T17:01:26.725Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180519-const-vs-readonly.html</loc>
+    <loc>https://ronsun.github.io/content/20180409-usage-of-partial-in-csharp.html</loc>
     
     <lastmod>2023-11-26T17:01:26.725Z</lastmod>
     

@@ -94,17 +94,17 @@
 
 
 
-<meta name="description" content="Reference Source 是一個非常方便的資源可以用來查看 .NET Framework 的程式碼，而這個網站是利用 SourceBrowser 所建立的。   對於我們自己開發的專案，雖然都有原始碼好像用不到這個工具，但很多時候想快速查看程式碼卻又不想耗費資源在執行 IDE 上的時候(尤其同時維護多專案的時候)，這個工具能提供一個不錯的介面來使用。 官方提供了基本的使用教學，但要開 Vi">
+<meta name="description" content="在我以往的工作經驗中，處理過不少 WebAPI 的維護工作，普遍面臨的一個問題是回傳資料的不一致性。舉例來說，常見的幾種回傳格式包括：  純值： true、100 等，會出現在回傳單一值的 API 中。 物件： {&amp;quot;name&amp;quot;: &amp;quot;Ron&amp;quot;, &amp;quot;gender&amp;quot;: &amp;quot;Male&amp;quot;}，會出現在回傳物件的 API 中。 物件含">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用 SourceBrowser 建立原始碼瀏覽網站">
-<meta property="og:url" content="https://ronsun.github.io/content/20230312-use-source-browser.html">
+<meta property="og:title" content="設計 WebAPI 通用回傳模板">
+<meta property="og:url" content="https://ronsun.github.io/content/20231216-consistent-webapi-returns.html">
 <meta property="og:site_name" content="Ron 2.0">
-<meta property="og:description" content="Reference Source 是一個非常方便的資源可以用來查看 .NET Framework 的程式碼，而這個網站是利用 SourceBrowser 所建立的。   對於我們自己開發的專案，雖然都有原始碼好像用不到這個工具，但很多時候想快速查看程式碼卻又不想耗費資源在執行 IDE 上的時候(尤其同時維護多專案的時候)，這個工具能提供一個不錯的介面來使用。 官方提供了基本的使用教學，但要開 Vi">
+<meta property="og:description" content="在我以往的工作經驗中，處理過不少 WebAPI 的維護工作，普遍面臨的一個問題是回傳資料的不一致性。舉例來說，常見的幾種回傳格式包括：  純值： true、100 等，會出現在回傳單一值的 API 中。 物件： {&amp;quot;name&amp;quot;: &amp;quot;Ron&amp;quot;, &amp;quot;gender&amp;quot;: &amp;quot;Male&amp;quot;}，會出現在回傳物件的 API 中。 物件含">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2023-12-15T17:15:20.718Z">
+<meta property="og:updated_time" content="2023-12-16T17:00:08.497Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用 SourceBrowser 建立原始碼瀏覽網站">
-<meta name="twitter:description" content="Reference Source 是一個非常方便的資源可以用來查看 .NET Framework 的程式碼，而這個網站是利用 SourceBrowser 所建立的。   對於我們自己開發的專案，雖然都有原始碼好像用不到這個工具，但很多時候想快速查看程式碼卻又不想耗費資源在執行 IDE 上的時候(尤其同時維護多專案的時候)，這個工具能提供一個不錯的介面來使用。 官方提供了基本的使用教學，但要開 Vi">
+<meta name="twitter:title" content="設計 WebAPI 通用回傳模板">
+<meta name="twitter:description" content="在我以往的工作經驗中，處理過不少 WebAPI 的維護工作，普遍面臨的一個問題是回傳資料的不一致性。舉例來說，常見的幾種回傳格式包括：  純值： true、100 等，會出現在回傳單一值的 API 中。 物件： {&amp;quot;name&amp;quot;: &amp;quot;Ron&amp;quot;, &amp;quot;gender&amp;quot;: &amp;quot;Male&amp;quot;}，會出現在回傳物件的 API 中。 物件含">
 
 
 
@@ -133,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="https://ronsun.github.io/content/20230312-use-source-browser.html"/>
+  <link rel="canonical" href="https://ronsun.github.io/content/20231216-consistent-webapi-returns.html"/>
 
 
 
 
 
-  <title>使用 SourceBrowser 建立原始碼瀏覽網站 | Ron 2.0</title>
+  <title>設計 WebAPI 通用回傳模板 | Ron 2.0</title>
   
 
 
@@ -300,7 +300,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20230312-use-source-browser.html">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20231216-consistent-webapi-returns.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Ron Sun">
@@ -317,7 +317,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">使用 SourceBrowser 建立原始碼瀏覽網站</h2>
+          <h2 class="post-title" itemprop="name headline">設計 WebAPI 通用回傳模板</h2>
         
 
         <div class="post-meta">
@@ -329,8 +329,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2023-03-12T02:58:01+08:00">
-                2023-03-12
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2023-12-16T23:31:15+08:00">
+                2023-12-16
               </time>
             
 
@@ -352,8 +352,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Tools/" itemprop="url" rel="index">
-                    <span itemprop="name">Tools</span>
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C#</span>
                   </a>
                 </span>
 
@@ -386,22 +386,62 @@
       
 
       
-        <p><a href="https://referencesource.microsoft.com/" target="_blank" rel="noopener">Reference Source</a> 是一個非常方便的資源可以用來查看 .NET Framework 的程式碼，而這個網站是利用 <a href="https://github.com/KirillOsenkov/SourceBrowser" target="_blank" rel="noopener">SourceBrowser</a> 所建立的。  </p>
-<p>對於我們自己開發的專案，雖然都有原始碼好像用不到這個工具，但很多時候想快速查看程式碼卻又不想耗費資源在執行 IDE 上的時候(尤其同時維護多專案的時候)，這個工具能提供一個不錯的介面來使用。</p>
-<p>官方提供了基本的使用教學，但要開 Visual Studio 來編譯 SourceBrowser 專案，比較不方便，所以這邊會使用官方也有提供的 <a href="https://www.nuget.org/packages/SourceBrowser" target="_blank" rel="noopener">NuGet Package</a> 來做，稍微紀錄一下過程，讓之後需要的時候能更快的使用。</p>
+        <p>在我以往的工作經驗中，處理過不少 WebAPI 的維護工作，普遍面臨的一個問題是回傳資料的不一致性。舉例來說，常見的幾種回傳格式包括：</p>
+<ol>
+<li>純值： <code>true</code>、<code>100</code> 等，會出現在回傳單一值的 API 中。</li>
+<li>物件： <code>{&quot;name&quot;: &quot;Ron&quot;, &quot;gender&quot;: &quot;Male&quot;}</code>，會出現在回傳物件的 API 中。</li>
+<li>物件含狀態： <code>{&quot;status&quot;: &quot;1001&quot;, &quot;name&quot;: &quot;Ron&quot;, &quot;gender&quot;: &quot;Male&quot;}</code>，會出現在呼叫端需要知道更多狀態細節時。</li>
+<li>其他變種：除了資料外還有各種狀態、錯誤、訊息等欄位，但格式與名稱不統一。</li>
+</ol>
+<p>這個現象造成的問題就是明明是同一個站台對外提供服務，回傳的狀態訊息卻每個 API 都不一樣，不僅對使用者不友善，也會讓接手維護的人無所適從。</p>
+<p>本篇文章會介紹並分析的幾種解決方案，所有方案都有高一致性與關注點分離的共同優點，但也有些不同的缺點。</p>
 <a id="more"></a>
-<h3 id="基本使用步驟"><a href="#基本使用步驟" class="headerlink" title="基本使用步驟"></a>基本使用步驟</h3><h4 id="下載-NuGet-Package"><a href="#下載-NuGet-Package" class="headerlink" title="下載 NuGet Package"></a>下載 NuGet Package</h4><p>下載  <a href="https://www.nuget.org/packages/SourceBrowser" target="_blank" rel="noopener">NuGet Package</a> 後解壓縮後只留下 tools 資料夾。</p>
-<h4 id="使用-HtmlGenerator-exe-來建立資料"><a href="#使用-HtmlGenerator-exe-來建立資料" class="headerlink" title="使用 HtmlGenerator.exe 來建立資料"></a>使用 HtmlGenerator.exe 來建立資料</h4><p>根據 <a href="https://github.com/KirillOsenkov/SourceBrowser/blob/main/GenerateTestSite.cmd" target="_blank" rel="noopener">GenerateTestSite.cmd</a> 可以知道我們需要用 HtmlGenerator.exe 來解析目標專案並輸出到指定目錄下，如下範例：<br><figure class="highlight ps"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tools\HtmlGenerator.exe <span class="string">"MyGithub\MoreNet.Cryptography\MoreNet.Cryptography.sln"</span> /out:tools\site</span><br></pre></td></tr></table></figure></p>
-<h4 id="將輸出結果佈署到伺服器上"><a href="#將輸出結果佈署到伺服器上" class="headerlink" title="將輸出結果佈署到伺服器上"></a>將輸出結果佈署到伺服器上</h4><p>根據 <a href="https://github.com/KirillOsenkov/SourceBrowser/blob/main/RunTestSite.cmd" target="_blank" rel="noopener">RunTestSite.cmd</a> 可以知道我們需要使用 Microsoft.SourceBrowser.SourceIndexServer.dll 來啟動 SourceBrowser 站台 (也可以直接執行 Microsoft.SourceBrowser.SourceIndexServer.exe)，例如：<br><figure class="highlight ps"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet Microsoft.SourceBrowser.SourceIndexServer.dll</span><br></pre></td></tr></table></figure></p>
-<p>如果是在本機執行，從瀏覽器瀏覽 <a href="http://localhost:5000" target="_blank" rel="noopener">http://localhost:5000</a> 就可以看到結果了，也可以佈署到伺服器上提供線上查詢。</p>
-<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
-<li>相關的指令可以自己寫成 <code>*.bat</code> 檔方便重複使用。</li>
-<li>產生出來的內容至少依賴 dotnet，詳細資訊見官方說明，我本機上環境太雜沒辦法精準驗證需要哪些依賴。</li>
-<li>可能還有其他使用方式和參數，但目前不急著知道所以需要的時候再看 GitHub 就好</li>
+<h3 id="用-Header-表示狀態"><a href="#用-Header-表示狀態" class="headerlink" title="用 Header 表示狀態"></a>用 Header 表示狀態</h3><p>這是個很常見的做法，用 Header 表示狀態，而回傳的 Body 中則只包含資料本身。  </p>
+<p><strong>優點</strong>  </p>
+<ul>
+<li>把狀態和資料徹底區分開，具有高度彈性和相容性，尤其適合於需要回傳非字串類型資料 (如串流、multipart/form-data) 的情境。</li>
 </ul>
-<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>雖然從 GitHub 或其他線上儲存庫就能直接看程式碼，但是 SourceBrowser 提供更強大的功能來查看程式碼之間的參考與依賴關係，還是能讓我們更有效率的查看程式碼。  </p>
-<p>唯一美中不足的是它不是靜態網站且有一些框架的依賴，所以佈署成本滿高的。</p>
-<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://github.com/KirillOsenkov/SourceBrowser" target="_blank" rel="noopener">SourceBrowser</a></p>
+<p><strong>缺點</strong>  </p>
+<ul>
+<li>管理不便<ul>
+<li>需要較多文件輔助。</li>
+<li>需要適當設計來集中來收納各種 Header 的常數，避免到處散落的 Magic String。</li>
+</ul>
+</li>
+<li>較不直覺，開發者和使用者都需要認知到 Header 中有包含狀態訊息。</li>
+</ul>
+<h3 id="用基底類別收納狀態相關欄位"><a href="#用基底類別收納狀態相關欄位" class="headerlink" title="用基底類別收納狀態相關欄位"></a>用基底類別收納狀態相關欄位</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ResponseModelBase</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Status &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Message &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Person</span> : <span class="title">ResponseModelBase</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> Gender Gender &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上面範例，使用 <code>ResponseModelBase</code> 做為基底類別來收納狀態類的資訊，他會被所有 API 的回傳類別繼承，他與使用 Header 的解決方案有著相似的優點並解決了一些 Header 的缺點，但也產生不同面相的缺點。  </p>
+<p><strong>優點</strong>  </p>
+<ul>
+<li>管理稍微容易，只需要提到繼承 <code>ResponseModelBase</code> 即可。</li>
+<li>直覺，狀態就在 Body 中。</li>
+</ul>
+<p><strong>缺點</strong>  </p>
+<ul>
+<li>只支援回傳字串的情境。</li>
+<li>如果衍生類別 (如 Person) 與基底類別 (如 ResponseModelBase) 有同名欄位，會造成命名上的困擾、缺陷或混淆。 由於無法預測未來的規格變化，這種風險難以避免。 (基底類別的欄位用很特殊的命名不算個解法)。</li>
+</ul>
+<h3 id="繼承通用泛型類別"><a href="#繼承通用泛型類別" class="headerlink" title="繼承通用泛型類別"></a>繼承通用泛型類別</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class ResponseModel&lt;T&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Status &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Message &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> T Data &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> Gender Gender &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上範例，借用以包含取代繼承的概念，設計泛型類別取代基底類別，而 API 回傳的型別則會變成 <code>ResponseModel&lt;Person&gt;</code>。</p>
+<p><strong>優點</strong>  </p>
+<ul>
+<li>管理稍微容易，只需要提到 <code>ResponseModel&lt;T&gt;</code> 即可。</li>
+<li>直覺，狀態就在 Body 中。</li>
+<li>基礎類別 (如 Person) 不用擔心和 <code>ResponseModel&lt;T&gt;</code> 中的欄位同名。</li>
+</ul>
+<p><strong>缺點</strong>  </p>
+<ul>
+<li>只支援回傳字串的情境。</li>
+<li>比起繼承，泛型型別在使用時的程式碼比較冗長。</li>
+</ul>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>這幾種方案各有利弊，但至少都能解決文章開頭提到的一致性、維護性和使用者友好度的問題。總結建議如下：</p>
+<ol>
+<li>當預期會回傳非字串型態的 Body 時，選擇 Header 解決方案，但需要注意管理的複雜性。  </li>
+<li>當預期只會回傳字串 Body 時，選擇泛型解決方案。</li>
+<li>不要選擇繼承通用類別的解法，提到他只是要記錄他和泛型型別設計上的差異。  </li>
+</ol>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p>開發經驗。  </p>
 
       
     </div>
@@ -426,8 +466,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/content/20230311-problem-about-exception-from-finally-block-of-using.html" rel="next" title="使用 using 以及當例外從 finally 區塊拋出時的問題">
-                <i class="fa fa-chevron-left"></i> 使用 using 以及當例外從 finally 區塊拋出時的問題
+              <a href="/content/20230812-write-roslyn-analyzer-and-code-fix.html" rel="next" title="客製 .NET 程式碼分析與自動修正">
+                <i class="fa fa-chevron-left"></i> 客製 .NET 程式碼分析與自動修正
               </a>
             
           </div>
@@ -435,10 +475,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/content/20230617-large-scale-query-with-orm.html" rel="prev" title="使用 ORM 做單次大查詢的效能陷阱">
-                使用 ORM 做單次大查詢的效能陷阱 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -486,7 +522,7 @@
           }
           function showGitment() {
             var gitment = new Gitment({
-              id: '1678561081000',
+              id: '1702740675000',
               theme: myTheme,
               owner: 'ronsun',
               repo: 'ronsun.github.io.gitment',
@@ -653,7 +689,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本使用步驟"><span class="nav-number">1.</span> <span class="nav-text">基本使用步驟</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#下載-NuGet-Package"><span class="nav-number">1.1.</span> <span class="nav-text">下載 NuGet Package</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-HtmlGenerator-exe-來建立資料"><span class="nav-number">1.2.</span> <span class="nav-text">使用 HtmlGenerator.exe 來建立資料</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#將輸出結果佈署到伺服器上"><span class="nav-number">1.3.</span> <span class="nav-text">將輸出結果佈署到伺服器上</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">2.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">4.</span> <span class="nav-text">參考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#用-Header-表示狀態"><span class="nav-number">1.</span> <span class="nav-text">用 Header 表示狀態</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用基底類別收納狀態相關欄位"><span class="nav-number">2.</span> <span class="nav-text">用基底類別收納狀態相關欄位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#繼承通用泛型類別"><span class="nav-number">3.</span> <span class="nav-text">繼承通用泛型類別</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">4.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">5.</span> <span class="nav-text">參考</span></a></li></ol></div>
             
 
           </div>
