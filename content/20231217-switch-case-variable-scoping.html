@@ -94,16 +94,17 @@
 
 
 
-<meta name="description" content="Simple Is Not Easy">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Ron 2.0">
-<meta property="og:url" content="https://ronsun.github.io/archives/index.html">
+<meta name="description" content="問題起始於一個情境如下：1234567891011121314switch (cryptoType)&amp;#123;    case CryptoType.AesEncrypt:        var key = &quot;&quot;;        var iv = &quot;&quot;;        break;    case CryptoType.AesDecrypt:        var key = &quot;&quot;;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在 Switch-Case 中使用重名區域變數與延伸探討">
+<meta property="og:url" content="https://ronsun.github.io/content/20231217-switch-case-variable-scoping.html">
 <meta property="og:site_name" content="Ron 2.0">
-<meta property="og:description" content="Simple Is Not Easy">
+<meta property="og:description" content="問題起始於一個情境如下：1234567891011121314switch (cryptoType)&amp;#123;    case CryptoType.AesEncrypt:        var key = &quot;&quot;;        var iv = &quot;&quot;;        break;    case CryptoType.AesDecrypt:        var key = &quot;&quot;;">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2023-12-17T16:53:34.936Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ron 2.0">
-<meta name="twitter:description" content="Simple Is Not Easy">
+<meta name="twitter:title" content="在 Switch-Case 中使用重名區域變數與延伸探討">
+<meta name="twitter:description" content="問題起始於一個情境如下：1234567891011121314switch (cryptoType)&amp;#123;    case CryptoType.AesEncrypt:        var key = &quot;&quot;;        var iv = &quot;&quot;;        break;    case CryptoType.AesDecrypt:        var key = &quot;&quot;;">
 
 
 
@@ -132,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="https://ronsun.github.io/archives/"/>
+  <link rel="canonical" href="https://ronsun.github.io/content/20231217-switch-case-variable-scoping.html"/>
 
 
 
 
 
-  <title>Archive | Ron 2.0</title>
+  <title>在 Switch-Case 中使用重名區域變數與延伸探討 | Ron 2.0</title>
   
 
 
@@ -157,7 +158,7 @@
     
   
 
-  <div class="container sidebar-position-left  page-archive  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -285,410 +286,185 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20231217-switch-case-variable-scoping.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ron Sun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
-         
+          <h2 class="post-title" itemprop="name headline">在 Switch-Case 中使用重名區域變數與延伸探討</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2023-12-17T23:50:27+08:00">
+                2023-12-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        Nice! 73 posts in total. Keep on posting.
-      </span>
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C#</span>
+                  </a>
+                </span>
 
-      
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/Language-Spec/" itemprop="url" rel="index">
+                    <span itemprop="name">Language Spec</span>
+                  </a>
+                </span>
 
-        
-        
-        
-
-        
+                
+                
+              
+            </span>
           
-          <div class="collection-title">
-            <h2 class="archive-year motion-element" id="archive-year-2023">2023</h2>
-          </div>
-        
-        
 
-        
+          
+            
+          
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
 
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/content/20231217-switch-case-variable-scoping.html" itemprop="url">
-              
-                <span itemprop="name">在 Switch-Case 中使用重名區域變數與延伸探討</span>
-              
-            </a>
-        
-      </h3>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2023-12-17T23:50:27+08:00"
-              content="2023-12-17" >
-          12-17
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+        </div>
+      </header>
+    
 
-
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/content/20231216-consistent-webapi-returns.html" itemprop="url">
-              
-                <span itemprop="name">設計 WebAPI 通用回傳模板</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2023-12-16T23:31:15+08:00"
-              content="2023-12-16" >
-          12-16
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/content/20230812-write-roslyn-analyzer-and-code-fix.html" itemprop="url">
-              
-                <span itemprop="name">客製 .NET 程式碼分析與自動修正</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2023-08-12T23:21:55+08:00"
-              content="2023-08-12" >
-          08-12
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <p>問題起始於一個情境如下：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span> (cryptoType)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">case</span> CryptoType.AesEncrypt:</span><br><span class="line">        <span class="keyword">var</span> key = <span class="string">""</span>;</span><br><span class="line">        <span class="keyword">var</span> iv = <span class="string">""</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> CryptoType.AesDecrypt:</span><br><span class="line">        <span class="keyword">var</span> key = <span class="string">""</span>;</span><br><span class="line">        <span class="keyword">var</span> iv = <span class="string">""</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">	<span class="comment">// Others</span></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>這時候因為 case 之間的區域變數名字重複了所以編譯不會通過。</p>
+<blockquote>
+<p>現實情境更複雜，<code>CryptoType</code> 可能有幾十個。  </p>
+<p>這邊要先聲明，理論上這種大量的 switch-case 有很多設計可以管理它，但實務上是一個老舊又缺乏架構的專案，甚至亂到重構後的檔案放哪都只會更亂的程度，而如果只是抽出方法，那一些簡單的情境就會因此被抽出大量小型方法，且都放在同一個類別中也不會比較好。  </p>
+<p>總之，這個例子只是拿來說明區域變數與其作用域和生命週期，不表示例子中的設計是恰當的。</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="使用區塊限定作用域"><a href="#使用區塊限定作用域" class="headerlink" title="使用區塊限定作用域"></a>使用區塊限定作用域</h3><p>在 cases 中建立利用區塊 <code>{}</code> 建立獨立的作用域：  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span> (cryptoType)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">case</span> CryptoType.AesEncrypt:</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> key = <span class="string">""</span>;</span><br><span class="line">            <span class="keyword">var</span> iv = <span class="string">""</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> CryptoType.AesDecrypt:</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> key = <span class="string">""</span>;</span><br><span class="line">            <span class="keyword">var</span> iv = <span class="string">""</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">	<span class="comment">// Others</span></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="區塊-Block-與區域變數生命週期"><a href="#區塊-Block-與區域變數生命週期" class="headerlink" title="區塊 (Block) 與區域變數生命週期"></a>區塊 (Block) 與區域變數生命週期</h3><p>在 C# 中，區塊 <code>{}</code> 不僅是 <code>if</code>、<code>for</code> 等控制流語句的一部分，也是作用域的界定者。在一個區塊內定義的區域變數，其作用域限定在該區塊內。這意味著同一變數名可以在不同區塊中獨立使用，不會相互影響。</p>
+<p>另外如果有必要的時候，使用區塊來限定變數的作用域，不僅有助於解決命名衝突，還可以讓區域變數因為結束區塊而釋放。 但是這樣做會犧牲很大的可讀性與可維護性去得到微乎其微的效益，只能說 “理論上可以這樣做”。</p>
+<p>另外，基於好奇稍微去看了 C# 的語言規格書怎麼描述這種基礎到不知道怎麼描述的語法，才發現其實這些看似基礎的東西，細節還真的不少，例如： <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/variables#929-local-variables" target="_blank" rel="noopener">區域變數</a>、<a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/statements#133-blocks" target="_blank" rel="noopener">區塊</a>。</p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>其實單獨用區塊控制區域變數的生命週期就是一句話的事，實在很猶豫要不要寫成一篇。 但實務上可能還是會遇到要維護肥大的 switch-case 又無法改設計的情境，導致變數名稱常常重複，如果不用區塊分隔開就會出現為了避免區域變數重名而產生冗長難閱讀的變數，也會讓變數命名時還要去考慮現存的 case 中會不會出現相同的名字造成細微卻常態出現的干擾。 想想還是寫一篇紀錄一下好了。</p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/specifications" target="_blank" rel="noopener">C# standard specification</a>  </p>
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/content/20230721-optimistic-vs-pessimistic-lock.html" itemprop="url">
-              
-                <span itemprop="name">樂觀鎖與悲觀鎖的選擇</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2023-07-21T00:47:25+08:00"
-              content="2023-07-21" >
-          07-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/content/20230720-reference-type-as-dictionary-key.html" itemprop="url">
-              
-                <span itemprop="name">參考型別當 Dictionary Key 的注意事項</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2023-07-20T00:13:05+08:00"
-              content="2023-07-20" >
-          07-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/content/20230709-using-partial-class.html" itemprop="url">
-              
-                <span itemprop="name">C# 部分類別 (Partial Class) 的使用建議</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2023-07-09T22:21:32+08:00"
-              content="2023-07-09" >
-          07-09
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/content/20230617-large-scale-query-with-orm.html" itemprop="url">
-              
-                <span itemprop="name">使用 ORM 做單次大查詢的效能陷阱</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2023-06-17T23:44:28+08:00"
-              content="2023-06-17" >
-          06-17
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/content/20230312-use-source-browser.html" itemprop="url">
-              
-                <span itemprop="name">使用 SourceBrowser 建立原始碼瀏覽網站</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2023-03-12T02:58:01+08:00"
-              content="2023-03-12" >
-          03-12
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/content/20230311-problem-about-exception-from-finally-block-of-using.html" itemprop="url">
-              
-                <span itemprop="name">使用 using 以及當例外從 finally 區塊拋出時的問題</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2023-03-11T23:28:28+08:00"
-              content="2023-03-11" >
-          03-11
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/content/20230114-auto-delete-jobs-for-hangfire-with-redis.html" itemprop="url">
-              
-                <span itemprop="name">Hangfire 搭配 Redis 時的資料清理機制</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2023-01-14T22:33:13+08:00"
-              content="2023-01-14" >
-          01-14
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/content/20231216-consistent-webapi-returns.html" rel="next" title="設計 WebAPI 通用回傳模板">
+                <i class="fa fa-chevron-left"></i> 設計 WebAPI 通用回傳模板
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/8/">8</a><a class="extend next" rel="next" href="/archives/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+  </article>
 
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -696,6 +472,42 @@
 
 
           
+  <div class="comments" id="comments">
+    
+        <div id="container" class="gitment_container"></div>
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+        <script>
+          const myTheme = {
+            render(state, instance) {
+              const container = document.createElement('div');
+              container.lang = "en-US";
+              container.className = 'gitment-container gitment-root-container';
+              container.appendChild(instance.renderHeader(state, instance));
+              container.appendChild(instance.renderEditor(state, instance));
+              container.appendChild(instance.renderComments(state, instance));
+              container.appendChild(instance.renderFooter(state, instance));
+              return container;
+            }
+          }
+          function showGitment() {
+            var gitment = new Gitment({
+              id: '1702828227000',
+              theme: myTheme,
+              owner: 'ronsun',
+              repo: 'ronsun.github.io.gitment',
+              oauth: {
+                client_id: '749fee720f2039efbbde',
+                client_secret: '3104dc228340ec2814ce1a11a7457d4f2d1effa6'
+              }
+            });
+            gitment.render('container');
+          }
+          showGitment();
+        </script>
+  </div>
+
+
         </div>
         
           
@@ -715,8 +527,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -828,6 +649,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用區塊限定作用域"><span class="nav-number">1.</span> <span class="nav-text">使用區塊限定作用域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#區塊-Block-與區域變數生命週期"><span class="nav-number">2.</span> <span class="nav-text">區塊 (Block) 與區域變數生命週期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">4.</span> <span class="nav-text">參考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -954,11 +791,9 @@
 
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
 
 
   
