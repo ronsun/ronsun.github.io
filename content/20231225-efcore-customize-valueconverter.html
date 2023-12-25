@@ -94,17 +94,17 @@
 
 
 
-<meta name="description" content="之前在 WebAPI 安全的取得 Request Body 這篇文章有提到讀取 Request Body 的方式, Response 的部分其實大同小異, 且在 ASP.NET Core 中也是相同邏輯(即使實作可能不同), 但有個不同的地方是 ASP.NET Core 中的 request body 預設是讀完無法回捲的(也就是讀完後指標會在 stream 最後面, 無法重複讀取), 且 res">
+<meta name="description" content="關於 EF Core 中的值轉換 (Value Conversion)，官方文件已經展示的非常詳細，但這樣的實作使得值轉換和 DbContext 高度相依，在中小型專案中這樣已經足夠，但在複雜的產品群中，如果需要基於 EF Core 建立內部共用的套件，就會難以將這些客製化的 ValueConverter 從套件中抽離，也難以讓應用程式自行擴充自己特殊的 ValueConverter，本文主要提供">
 <meta property="og:type" content="article">
-<meta property="og:title" content="基於 ASP.NET Core WebAPI 讀取 Request &#x2F; Response Body">
-<meta property="og:url" content="https://ronsun.github.io/content/20210626-aspnetcore-webapi-read-body.html">
+<meta property="og:title" content="在 EF Core 中自定義 ValueConverter">
+<meta property="og:url" content="https://ronsun.github.io/content/20231225-efcore-customize-valueconverter.html">
 <meta property="og:site_name" content="Ron 2.0">
-<meta property="og:description" content="之前在 WebAPI 安全的取得 Request Body 這篇文章有提到讀取 Request Body 的方式, Response 的部分其實大同小異, 且在 ASP.NET Core 中也是相同邏輯(即使實作可能不同), 但有個不同的地方是 ASP.NET Core 中的 request body 預設是讀完無法回捲的(也就是讀完後指標會在 stream 最後面, 無法重複讀取), 且 res">
+<meta property="og:description" content="關於 EF Core 中的值轉換 (Value Conversion)，官方文件已經展示的非常詳細，但這樣的實作使得值轉換和 DbContext 高度相依，在中小型專案中這樣已經足夠，但在複雜的產品群中，如果需要基於 EF Core 建立內部共用的套件，就會難以將這些客製化的 ValueConverter 從套件中抽離，也難以讓應用程式自行擴充自己特殊的 ValueConverter，本文主要提供">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2023-11-26T17:01:26.850Z">
+<meta property="og:updated_time" content="2023-12-25T15:17:23.854Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="基於 ASP.NET Core WebAPI 讀取 Request &#x2F; Response Body">
-<meta name="twitter:description" content="之前在 WebAPI 安全的取得 Request Body 這篇文章有提到讀取 Request Body 的方式, Response 的部分其實大同小異, 且在 ASP.NET Core 中也是相同邏輯(即使實作可能不同), 但有個不同的地方是 ASP.NET Core 中的 request body 預設是讀完無法回捲的(也就是讀完後指標會在 stream 最後面, 無法重複讀取), 且 res">
+<meta name="twitter:title" content="在 EF Core 中自定義 ValueConverter">
+<meta name="twitter:description" content="關於 EF Core 中的值轉換 (Value Conversion)，官方文件已經展示的非常詳細，但這樣的實作使得值轉換和 DbContext 高度相依，在中小型專案中這樣已經足夠，但在複雜的產品群中，如果需要基於 EF Core 建立內部共用的套件，就會難以將這些客製化的 ValueConverter 從套件中抽離，也難以讓應用程式自行擴充自己特殊的 ValueConverter，本文主要提供">
 
 
 
@@ -133,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="https://ronsun.github.io/content/20210626-aspnetcore-webapi-read-body.html"/>
+  <link rel="canonical" href="https://ronsun.github.io/content/20231225-efcore-customize-valueconverter.html"/>
 
 
 
 
 
-  <title>基於 ASP.NET Core WebAPI 讀取 Request / Response Body | Ron 2.0</title>
+  <title>在 EF Core 中自定義 ValueConverter | Ron 2.0</title>
   
 
 
@@ -300,7 +300,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20210626-aspnetcore-webapi-read-body.html">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20231225-efcore-customize-valueconverter.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Ron Sun">
@@ -317,7 +317,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">基於 ASP.NET Core WebAPI 讀取 Request / Response Body</h2>
+          <h2 class="post-title" itemprop="name headline">在 EF Core 中自定義 ValueConverter</h2>
         
 
         <div class="post-meta">
@@ -329,8 +329,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-06-26T00:59:20+08:00">
-                2021-06-26
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2023-12-25T21:49:57+08:00">
+                2023-12-25
               </time>
             
 
@@ -352,19 +352,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C#</span>
-                  </a>
-                </span>
-
-                
-                
-                  , 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/NET-Core/" itemprop="url" rel="index">
-                    <span itemprop="name">.NET Core</span>
+                  <a href="/categories/Tools/" itemprop="url" rel="index">
+                    <span itemprop="name">Tools</span>
                   </a>
                 </span>
 
@@ -397,11 +386,27 @@
       
 
       
-        <p>之前在 <a href="/content/20181118-webapi-get-request-body-safety.html" title="WebAPI 安全的取得 Request Body">WebAPI 安全的取得 Request Body</a> 這篇文章有提到讀取 Request Body 的方式, Response 的部分其實大同小異, 且在 ASP.NET Core 中也是相同邏輯(即使實作可能不同), 但有個不同的地方是 ASP.NET Core 中的 request body 預設是讀完無法回捲的(也就是讀完後指標會在 stream 最後面, 無法重複讀取), 且 response body 是唯寫 (WriteOnly) 的, 所以無法讀取, 就需要一點小技巧.  </p>
+        <p>關於 EF Core 中的值轉換 (Value Conversion)，官方文件已經展示的非常詳細，但這樣的實作使得值轉換和 <code>DbContext</code> 高度相依，在中小型專案中這樣已經足夠，但在複雜的產品群中，如果需要基於 EF Core 建立內部共用的套件，就會難以將這些客製化的 <code>ValueConverter</code> 從套件中抽離，也難以讓應用程式自行擴充自己特殊的 <code>ValueConverter</code>，本文主要提供另外一個面向的實作來達到更低的耦合度與更高的可擴充性。</p>
 <a id="more"></a>
-<h3 id="程式碼"><a href="#程式碼" class="headerlink" title="程式碼"></a>程式碼</h3><p>這邊直接實作在 Middleware 為例:<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">RequestResponseMiddleware</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> RequestDelegate _next;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RequestResponseMiddleware</span>(<span class="params">RequestDelegate next</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        _next = next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">InvokeAsync</span>(<span class="params">HttpContext httpContext</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="meta">#<span class="meta-keyword">region</span> Request part</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> request = httpContext.Request;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 重要, 才能允許回捲 (request.Body.Seek(0, SeekOrigin.Begin))</span></span><br><span class="line">        request.EnableBuffering();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">using</span> <span class="keyword">var</span> requestReader = <span class="keyword">new</span> StreamReader(request.Body, leaveOpen: <span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">var</span> body = <span class="keyword">await</span> requestReader.ReadToEndAsync();</span><br><span class="line">        request.Body.Seek(<span class="number">0</span>, SeekOrigin.Begin);</span><br><span class="line"></span><br><span class="line">        Debug.WriteLine(body);</span><br><span class="line"></span><br><span class="line">        <span class="meta">#<span class="meta-keyword">endregion</span></span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> response = httpContext.Response;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> originalStream = response.Body;</span><br><span class="line">        <span class="keyword">using</span> (<span class="keyword">var</span> readableBodyStream = <span class="keyword">new</span> MemoryStream())</span><br><span class="line">        &#123;</span><br><span class="line">            response.Body = readableBodyStream;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">await</span> _next(httpContext);</span><br><span class="line"></span><br><span class="line">            response.Body.Seek(<span class="number">0</span>, SeekOrigin.Begin);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">using</span> <span class="keyword">var</span> responseReader = <span class="keyword">new</span> StreamReader(response.Body, leaveOpen: <span class="literal">true</span>);</span><br><span class="line">            <span class="keyword">var</span> responseBody = <span class="keyword">await</span> responseReader.ReadToEndAsync();</span><br><span class="line"></span><br><span class="line">            Debug.WriteLine(responseBody);</span><br><span class="line"></span><br><span class="line">            response.Body.Seek(<span class="number">0</span>, SeekOrigin.Begin);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">await</span> readableBodyStream.CopyToAsync(originalStream);</span><br><span class="line">            <span class="comment">// 即使沒有換回原本的物件, 得到的回傳仍然不會有錯, 猜測是回傳的內容是直接參考 response.Body 所指的物件,</span></span><br><span class="line">            <span class="comment">// 因此 response.Body 被換掉不會影響結果(反而上面的 stream copy 才是必要的), 但為了完整還是會把它換回來. </span></span><br><span class="line">            response.Body = originalStream;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">#<span class="meta-keyword">region</span> Response part</span></span><br><span class="line"></span><br><span class="line">        <span class="meta">#<span class="meta-keyword">endregion</span></span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上面來說, Request 部分就 <code>request.EnableBuffering()</code> 最重要, 不然讀完回無法回捲, Response 的話 <code>await readableBodyStream.CopyToAsync(originalStream)</code> 和 <code>response.Body = originalStream</code> 這兩行算是比較特別的, 如註解中所述.  </p>
-<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>細節很多很難解釋, 只好貼 code 解決, 希望不會以後自己看不懂… </p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>通常我們不需要自己客製化 Value Converters，但實務環境總是不會這麼單純。  </p>
+<p>以一個實務的例子來說，舊的資料庫在將真假值欄位的值存成 1 代表 false，2 代表 true，然後在程式中用一個列舉 <code>TrueFalseEnum</code> 來表達時，而同一個資料庫又有正常的真假值欄位是存成 0 代表 false 而 1 代表 true，並在程式中轉成 <code>bool</code>。 當有機會重整舊系統時，想要統一這種真假值的型別但又因為要避免未重整部分出錯而不能直接修正資料庫的資料時，就需要在 EF Core 轉換過程直接透過不同的 <code>ValueConverter</code> 來讓這兩種情境都能和 <code>bool</code> 互相轉換。  </p>
+<p>或是另外一種資料庫設計不當的情境，例如一張表將時間區間欄位設計成數字代表小時，另外一張表的時間區間欄位可能是代表分，這種不一致很容易造成程式中操作的困難，維護的工程師常常需要分心想現在這個數字代表的是時、分還是秒，也容易不小心弄錯產生 bug。 這時候不管是新專案還是重整舊系統，都會面臨到資料庫欄位變更困難但又不想讓程式遷就資料庫不當設計的兩難。 這時候也很適合用不同的 Value Converters 來轉換數字和 <code>TimeSpan</code> 之類的一致的型別，提升程式碼的可維護性。  </p>
+<p>抽象來說，就是當資料庫和程式中的型別無法用預設機制轉換時，就可以考慮客製化 Value Converters.</p>
+<h3 id="實作"><a href="#實作" class="headerlink" title="實作"></a>實作</h3><h4 id="另外繼承並實作-ValueConverter-lt-gt"><a href="#另外繼承並實作-ValueConverter-lt-gt" class="headerlink" title="另外繼承並實作 ValueConverter&lt;&gt;"></a>另外繼承並實作 <code>ValueConverter&lt;&gt;</code></h4><p>首先我們可以參考 EF Core 內建的各種 Value Converters 來實作，例如：<a href="https://github.com/dotnet/efcore/blob/main/src/EFCore/Storage/ValueConversion/DateTimeToTicksConverter.cs" target="_blank" rel="noopener">DateTimeToTicksConverter.cs</a>。  </p>
+<h4 id="提供一個客製的-Attribute"><a href="#提供一個客製的-Attribute" class="headerlink" title="提供一個客製的 Attribute"></a>提供一個客製的 Attribute</h4><p>提供一個 <code>ValueConverterAttribute</code>，讓使用者可以放在 Entity Domain Model 中如下：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">Table(<span class="meta-string">"PERSON"</span>)</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">Column(<span class="meta-string">"WHATEVER"</span>)</span>]</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">bool</span> Whatever &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">Column(<span class="meta-string">"IS_DELETED"</span>)</span>]</span><br><span class="line">	[<span class="meta">ValueConverter(typeof(BooleanToTrueFalse))</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">bool</span> IsDeleted &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>Whatever</code> 欄位就是正常的布林值 (0 和 1)，而 <code>IsDeleted</code> 標記套用 <code>BooleanToTrueFalse</code> 這個 Value Converter 來適應資料庫中不當的真假值 (1 和 2)，在程式中我們可以一致的操作 <code>bool</code>，而資料庫的整理則可以等程式整理完後再另外分案處理。  </p>
+<h4 id="DbContext-中的實作"><a href="#DbContext-中的實作" class="headerlink" title="DbContext 中的實作"></a><code>DbContext</code> 中的實作</h4><p>這是非常重要的一部份，如果我們照官方文件的作法，會讓 <code>DbContext</code> 和 <code>ValueConverter</code> 直接且高度依賴，這邊我們透過 <code>ValueConverterAttribute</code> 來解除他們的依賴，程式碼範例如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyDbContext</span> : <span class="title">DbContext</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">string</span> _entityAssemblyName;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyDbContext</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">        DbContextOptions&lt;MyDbContext&gt; options,</span></span></span><br><span class="line"><span class="function"><span class="params">        Setting settings</span>)</span></span><br><span class="line"><span class="function">        : <span class="title">base</span>(<span class="params">options</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        _entityAssemblyName = settings.EntityAssemblyName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnModelCreating</span>(<span class="params">ModelBuilder modelBuilder</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> entityTypes = Assembly.Load(_entityAssemblyName).GetTypes();</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">var</span> type <span class="keyword">in</span> entityTypes)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> entity = modelBuilder.Entity(type);</span><br><span class="line">            <span class="keyword">foreach</span> (<span class="keyword">var</span> property <span class="keyword">in</span> type.GetProperties())</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">var</span> converterAttribute = property.GetCustomAttribute&lt;ValueConverterAttribute&gt;();</span><br><span class="line">                <span class="keyword">if</span> (converterAttribute != <span class="literal">null</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">var</span> converter = (ValueConverter)Activator.CreateInstance(converterAttribute.Type);</span><br><span class="line">                    entity.Property(property.Name).HasConversion(converter);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我們可以在 <code>OnModelCreating</code> 中透過偵測 <code>ValueConverterAttribute</code> 以及反射來設定 Value Conversions。 要注意這個只是用來展示概念，細節部分還需要視情況仔細設計。  </p>
+<h3 id="其他應用"><a href="#其他應用" class="headerlink" title="其他應用"></a>其他應用</h3><p>這種設計不限於本文提到的 Value Converters 的情境，只要是會在 <code>MyDbContext</code> 中的各方法中和外部 (例如 Entity Domain Model) 產生直接依賴的情境，都可以用這種設計來解耦。  </p>
+<h3 id="注意事項"><a href="#注意事項" class="headerlink" title="注意事項"></a>注意事項</h3><p>以下是一些重要的注意事項：  </p>
+<ol>
+<li>直接搜尋組件來找出標有特定 Attribute 的成員是效能很差的做法，在本例中可以接受是因為 <code>OnModelCreating</code> 只會在初始化時執行一次，整體效能影響不大，加上我遇到的是非常重視解耦與彈性的情境，所以是利大於弊的。</li>
+<li>這種設計不適用於無跨專案共用需求的 <code>DbContext</code>。</li>
+</ol>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>基礎用法其實官方文件都有，但是實務上往往比文件上的範例複雜，這時候就需要變通並試著找出其他更適合的解決方案，但也要了解到不同的機制各有不同的缺點，需要謹慎評估。</p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://learn.microsoft.com/en-us/ef/core/modeling/value-conversions?tabs=data-annotations" target="_blank" rel="noopener">Value Conversions</a>  </p>
+<p><a href="https://github.com/dotnet/efcore/tree/main/src/EFCore/Storage/ValueConversion" target="_blank" rel="noopener">ValueConversion on GitHub</a></p>
 
       
     </div>
@@ -426,8 +431,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/content/20210606-use-friend-assembly.html" rel="next" title="使用 Friend Assembly">
-                <i class="fa fa-chevron-left"></i> 使用 Friend Assembly
+              <a href="/content/20231217-switch-case-variable-scoping.html" rel="next" title="在 Switch-Case 中使用重名區域變數與延伸探討">
+                <i class="fa fa-chevron-left"></i> 在 Switch-Case 中使用重名區域變數與延伸探討
               </a>
             
           </div>
@@ -435,10 +440,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/content/20211031-netcore-inject-multiple-implementation.html" rel="prev" title=".NET Core 中單一介面多實作搭配依賴注入的幾種方式">
-                .NET Core 中單一介面多實作搭配依賴注入的幾種方式 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -486,7 +487,7 @@
           }
           function showGitment() {
             var gitment = new Gitment({
-              id: '1624640360000',
+              id: '1703512197000',
               theme: myTheme,
               owner: 'ronsun',
               repo: 'ronsun.github.io.gitment',
@@ -653,7 +654,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#程式碼"><span class="nav-number">1.</span> <span class="nav-text">程式碼</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">2.</span> <span class="nav-text">結論</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#實作"><span class="nav-number">2.</span> <span class="nav-text">實作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#另外繼承並實作-ValueConverter-lt-gt"><span class="nav-number">2.1.</span> <span class="nav-text">另外繼承並實作 ValueConverter&lt;&gt;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#提供一個客製的-Attribute"><span class="nav-number">2.2.</span> <span class="nav-text">提供一個客製的 Attribute</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DbContext-中的實作"><span class="nav-number">2.3.</span> <span class="nav-text">DbContext 中的實作</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他應用"><span class="nav-number">3.</span> <span class="nav-text">其他應用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意事項"><span class="nav-number">4.</span> <span class="nav-text">注意事項</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">5.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">6.</span> <span class="nav-text">參考</span></a></li></ol></div>
             
 
           </div>

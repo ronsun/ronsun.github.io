@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[在 EF Core 中自定義 ValueConverter]]></title>
+    <url>%2Fcontent%2F20231225-efcore-customize-valueconverter.html</url>
+    <content type="text"><![CDATA[關於 EF Core 中的值轉換 (Value Conversion)，官方文件已經展示的非常詳細，但這樣的實作使得值轉換和 DbContext 高度相依，在中小型專案中這樣已經足夠，但在複雜的產品群中，如果需要基於 EF Core 建立內部共用的套件，就會難以將這些客製化的 ValueConverter 從套件中抽離，也難以讓應用程式自行擴充自己特殊的 ValueConverter，本文主要提供另外一個面向的實作來達到更低的耦合度與更高的可擴充性。 前言通常我們不需要自己客製化 Value Converters，但實務環境總是不會這麼單純。 以一個實務的例子來說，舊的資料庫在將真假值欄位的值存成 1 代表 false，2 代表 true，然後在程式中用一個列舉 TrueFalseEnum 來表達時，而同一個資料庫又有正常的真假值欄位是存成 0 代表 false 而 1 代表 true，並在程式中轉成 bool。 當有機會重整舊系統時，想要統一這種真假值的型別但又因為要避免未重整部分出錯而不能直接修正資料庫的資料時，就需要在 EF Core 轉換過程直接透過不同的 ValueConverter 來讓這兩種情境都能和 bool 互相轉換。 或是另外一種資料庫設計不當的情境，例如一張表將時間區間欄位設計成數字代表小時，另外一張表的時間區間欄位可能是代表分，這種不一致很容易造成程式中操作的困難，維護的工程師常常需要分心想現在這個數字代表的是時、分還是秒，也容易不小心弄錯產生 bug。 這時候不管是新專案還是重整舊系統，都會面臨到資料庫欄位變更困難但又不想讓程式遷就資料庫不當設計的兩難。 這時候也很適合用不同的 Value Converters 來轉換數字和 TimeSpan 之類的一致的型別，提升程式碼的可維護性。 抽象來說，就是當資料庫和程式中的型別無法用預設機制轉換時，就可以考慮客製化 Value Converters. 實作另外繼承並實作 ValueConverter&lt;&gt;首先我們可以參考 EF Core 內建的各種 Value Converters 來實作，例如：DateTimeToTicksConverter.cs。 提供一個客製的 Attribute提供一個 ValueConverterAttribute，讓使用者可以放在 Entity Domain Model 中如下：12345678910[Table("PERSON")]public class Person&#123; [Column("WHATEVER")] public bool Whatever &#123; get; set; &#125; [Column("IS_DELETED")] [ValueConverter(typeof(BooleanToTrueFalse))] public bool IsDeleted &#123; get; set; &#125;&#125; Whatever 欄位就是正常的布林值 (0 和 1)，而 IsDeleted 標記套用 BooleanToTrueFalse 這個 Value Converter 來適應資料庫中不當的真假值 (1 和 2)，在程式中我們可以一致的操作 bool，而資料庫的整理則可以等程式整理完後再另外分案處理。 DbContext 中的實作這是非常重要的一部份，如果我們照官方文件的作法，會讓 DbContext 和 ValueConverter 直接且高度依賴，這邊我們透過 ValueConverterAttribute 來解除他們的依賴，程式碼範例如下： 123456789101112131415161718192021222324252627282930public class MyDbContext : DbContext&#123; private string _entityAssemblyName; public MyDbContext( DbContextOptions&lt;MyDbContext&gt; options, Setting settings) : base(options) &#123; _entityAssemblyName = settings.EntityAssemblyName; &#125; protected override void OnModelCreating(ModelBuilder modelBuilder) &#123; var entityTypes = Assembly.Load(_entityAssemblyName).GetTypes(); foreach (var type in entityTypes) &#123; var entity = modelBuilder.Entity(type); foreach (var property in type.GetProperties()) &#123; var converterAttribute = property.GetCustomAttribute&lt;ValueConverterAttribute&gt;(); if (converterAttribute != null) &#123; var converter = (ValueConverter)Activator.CreateInstance(converterAttribute.Type); entity.Property(property.Name).HasConversion(converter); &#125; &#125; &#125; &#125;&#125; 我們可以在 OnModelCreating 中透過偵測 ValueConverterAttribute 以及反射來設定 Value Conversions。 要注意這個只是用來展示概念，細節部分還需要視情況仔細設計。 其他應用這種設計不限於本文提到的 Value Converters 的情境，只要是會在 MyDbContext 中的各方法中和外部 (例如 Entity Domain Model) 產生直接依賴的情境，都可以用這種設計來解耦。 注意事項以下是一些重要的注意事項： 直接搜尋組件來找出標有特定 Attribute 的成員是效能很差的做法，在本例中可以接受是因為 OnModelCreating 只會在初始化時執行一次，整體效能影響不大，加上我遇到的是非常重視解耦與彈性的情境，所以是利大於弊的。 這種設計不適用於無跨專案共用需求的 DbContext。 結論基礎用法其實官方文件都有，但是實務上往往比文件上的範例複雜，這時候就需要變通並試著找出其他更適合的解決方案，但也要了解到不同的機制各有不同的缺點，需要謹慎評估。 參考Value Conversions ValueConversion on GitHub]]></content>
+      <categories>
+        <category>Tools</category>
+      </categories>
+  </entry>
+  <entry>
     <title><![CDATA[在 Switch-Case 中使用重名區域變數與延伸探討]]></title>
     <url>%2Fcontent%2F20231217-switch-case-variable-scoping.html</url>
     <content type="text"><![CDATA[問題起始於一個情境如下：1234567891011121314switch (cryptoType)&#123; case CryptoType.AesEncrypt: var key = ""; var iv = ""; break; case CryptoType.AesDecrypt: var key = ""; var iv = ""; break; // Others default: break;&#125; 這時候因為 case 之間的區域變數名字重複了所以編譯不會通過。 現實情境更複雜，CryptoType 可能有幾十個。 這邊要先聲明，理論上這種大量的 switch-case 有很多設計可以管理它，但實務上是一個老舊又缺乏架構的專案，甚至亂到重構後的檔案放哪都只會更亂的程度，而如果只是抽出方法，那一些簡單的情境就會因此被抽出大量小型方法，且都放在同一個類別中也不會比較好。 總之，這個例子只是拿來說明區域變數與其作用域和生命週期，不表示例子中的設計是恰當的。 使用區塊限定作用域在 cases 中建立利用區塊 {} 建立獨立的作用域： 123456789101112131415161718switch (cryptoType)&#123; case CryptoType.AesEncrypt: &#123; var key = ""; var iv = ""; &#125; break; case CryptoType.AesDecrypt: &#123; var key = ""; var iv = ""; &#125; break; // Others default: break;&#125; 區塊 (Block) 與區域變數生命週期在 C# 中，區塊 {} 不僅是 if、for 等控制流語句的一部分，也是作用域的界定者。在一個區塊內定義的區域變數，其作用域限定在該區塊內。這意味著同一變數名可以在不同區塊中獨立使用，不會相互影響。 另外如果有必要的時候，使用區塊來限定變數的作用域，不僅有助於解決命名衝突，還可以讓區域變數因為結束區塊而釋放。 但是這樣做會犧牲很大的可讀性與可維護性去得到微乎其微的效益，只能說 “理論上可以這樣做”。 另外，基於好奇稍微去看了 C# 的語言規格書怎麼描述這種基礎到不知道怎麼描述的語法，才發現其實這些看似基礎的東西，細節還真的不少，例如： 區域變數、區塊。 結論其實單獨用區塊控制區域變數的生命週期就是一句話的事，實在很猶豫要不要寫成一篇。 但實務上可能還是會遇到要維護肥大的 switch-case 又無法改設計的情境，導致變數名稱常常重複，如果不用區塊分隔開就會出現為了避免區域變數重名而產生冗長難閱讀的變數，也會讓變數命名時還要去考慮現存的 case 中會不會出現相同的名字造成細微卻常態出現的干擾。 想想還是寫一篇紀錄一下好了。 參考C# standard specification]]></content>
@@ -638,13 +646,13 @@
       </categories>
   </entry>
   <entry>
-    <title><![CDATA[categories]]></title>
-    <url>%2Fcategories%2Findex.html</url>
+    <title><![CDATA[tags]]></title>
+    <url>%2Ftags%2Findex.html</url>
     <content type="text"></content>
   </entry>
   <entry>
-    <title><![CDATA[tags]]></title>
-    <url>%2Ftags%2Findex.html</url>
+    <title><![CDATA[categories]]></title>
+    <url>%2Fcategories%2Findex.html</url>
     <content type="text"></content>
   </entry>
 </search>
