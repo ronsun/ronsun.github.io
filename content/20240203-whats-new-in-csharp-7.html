@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA" />
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://github.com/identicons/ronsun.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="C# 各版本新特性摘要，包含自己的想法與實務上的偏好。 C# 7 系列比較特殊，總共經過 7.0、7.1、7.2、7.3 四個版本，且範圍有高度重疊，所以這邊不分開看，直接依照 2021 年版官方整合過的文件將 C# 7 的新特性一起看。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# 語言特性更新 - C# 7">
+<meta property="og:url" content="https://ronsun.github.io/content/20240203-whats-new-in-csharp-7.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="C# 各版本新特性摘要，包含自己的想法與實務上的偏好。 C# 7 系列比較特殊，總共經過 7.0、7.1、7.2、7.3 四個版本，且範圍有高度重疊，所以這邊不分開看，直接依照 2021 年版官方整合過的文件將 C# 7 的新特性一起看。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2024-03-24T14:32:37.827Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C# 語言特性更新 - C# 7">
+<meta name="twitter:description" content="C# 各版本新特性摘要，包含自己的想法與實務上的偏好。 C# 7 系列比較特殊，總共經過 7.0、7.1、7.2、7.3 四個版本，且範圍有高度重疊，所以這邊不分開看，直接依照 2021 年版官方整合過的文件將 C# 7 的新特性一起看。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://ronsun.github.io/content/20240203-whats-new-in-csharp-7.html"/>
+
+
+
+
+
+  <title>C# 語言特性更新 - C# 7 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ron 2.0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">Simple Is Not Easy</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Searching..." spellcheck="false"
+             type="text" id="local-search-input" />
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20240203-whats-new-in-csharp-7.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ron Sun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">C# 語言特性更新 - C# 7</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-02-03T01:22:57+08:00">
+                2024-02-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C#</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/Language-Spec/" itemprop="url" rel="index">
+                    <span itemprop="name">Language Spec</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>C# 各版本新特性摘要，包含自己的想法與實務上的偏好。</p>
+<p>C# 7 系列比較特殊，總共經過 7.0、7.1、7.2、7.3 四個版本，且範圍有高度重疊，所以這邊不分開看，直接依照 2021 年版官方整合過的文件將 C# 7 的新特性一起看。</p>
+<a id="more"></a>
+<h3 id="Tuples-和-Discards"><a href="#Tuples-和-Discards" class="headerlink" title="Tuples 和 Discards"></a>Tuples 和 Discards</h3><h4 id="具名-Tuple"><a href="#具名-Tuple" class="headerlink" title="具名 Tuple"></a>具名 Tuple</h4><p>以前的 Tuple 沒辦法具名，所以會產生很多 <code>tuple.Item1</code> 這類的呼叫，嚴重影響程式碼的可讀性，具名 Tuple 出現後很大程度解決了這個問題，如下範例：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> (<span class="keyword">int</span> Id, <span class="keyword">string</span> Name) GetPerson()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="number">1</span>, <span class="string">"Ron"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Caller</span></span><br><span class="line"><span class="keyword">var</span> user = GetPerson();</span><br><span class="line"><span class="string">$"ID: <span class="subst">&#123;user.Id&#125;</span>, Name: <span class="subst">&#123;user.Name&#125;</span>"</span>.Dump(); <span class="comment">// ID: 1, Name: Ron</span></span><br></pre></td></tr></table></figure></p>
+<p>但這也衍生出另外一個問題就是命名風格，這邊我建議依照呼叫端的使用方式來決定，以本例來說，呼叫端使用上像是將他視為屬性，因此使用雙駝峰。但如果像下面的情境，就應該使用單駝峰，因為呼叫端使用上像是區域變數：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">var</span> id, <span class="keyword">var</span> name) = (<span class="number">1</span>, <span class="string">"Ron"</span>);</span><br><span class="line"><span class="string">$"ID: <span class="subst">&#123;id&#125;</span>, Name: <span class="subst">&#123;name&#125;</span>"</span>.Dump(); <span class="comment">// ID: 1, Name: Ron</span></span><br></pre></td></tr></table></figure></p>
+<p>另外還要注意這種風格的 Tuple 其實背後是編譯成 <code>System.ValueTuple</code> 而不是傳統的 <code>System.Tuple</code>，<a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-tuples#tuples-vs-systemtuple" target="_blank" rel="noopener">這兩種型別有一些差異</a>。  </p>
+<h4 id="Discards"><a href="#Discards" class="headerlink" title="Discards"></a>Discards</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> (<span class="keyword">int</span> Id, <span class="keyword">string</span> Name, <span class="keyword">string</span> Address) GetPerson()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="number">1</span>, <span class="string">"Ron"</span>, <span class="string">"My Home"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Caller, discard the Address</span></span><br><span class="line">(<span class="keyword">var</span> id, <span class="keyword">var</span> name, _) = GetPerson();</span><br><span class="line"><span class="string">$"ID: <span class="subst">&#123;id&#125;</span>, Name: <span class="subst">&#123;name&#125;</span>"</span>.Dump(); <span class="comment">// ID: 1, Name: Ron</span></span><br></pre></td></tr></table></figure>
+<p>如上範例，用不到的變數可以用一個底線 <code>_</code> 取代，可以讓維護的人不用關注無用的資訊。但這也不是他唯一的使用情境，詳細情境參考<a href="https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/functional/discards" target="_blank" rel="noopener"> Discards 官方文件</a>。</p>
+<h4 id="C-怎麼處理-Tuple-的名字"><a href="#C-怎麼處理-Tuple-的名字" class="headerlink" title="C# 怎麼處理 Tuple 的名字?"></a>C# 怎麼處理 Tuple 的名字?</h4><p>將一段簡單的程式碼編譯後，透過反組譯工具反組譯回低版本的 C# 可以發現，最後還是呼叫 <code>Item1</code>、<code>Item2</code>，所以具名 Tuple 其實是一種編譯時期的語法糖。</p>
+<h4 id="解構-Deconstruction"><a href="#解構-Deconstruction" class="headerlink" title="解構 (Deconstruction)"></a>解構 (Deconstruction)</h4><p>雖然解構看起來是另外一個主題了，但可能是因為 Tuple、Discards、解構，三者太常互相搭配使用，官方文件中是將他和 Discards 放在一起的，解構不只能套用到 Tuple 還能透過實作 <code>Deconstruct</code> 方法套用到其他型別上。  </p>
+<p>直接看 <a href="https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/functional/discards" target="_blank" rel="noopener">Discards</a> 和 <a href="https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/functional/deconstruct" target="_blank" rel="noopener">Deconstructing tuples and other types</a> 來了解會更全面。  </p>
+<p>這邊要注意一下，寫這篇文章時 C# 已經更新到 12 版了，官方的規格介紹中會夾很多後面版本新增的特性。  </p>
+<h3 id="模式比對-Pattern-matching"><a href="#模式比對-Pattern-matching" class="headerlink" title="模式比對 (Pattern matching)"></a>模式比對 (Pattern matching)</h3><p>這個功能比較像是為了可讀性的擴充，主要用途在於用 <code>is</code> 關鍵字來做型別確認與轉換；用 <code>when</code> 關鍵字來做附加條件判斷；額外搭配 <code>switch</code> 來透過簡單的語法達到複雜的運用。</p>
+<h4 id="is-關鍵字"><a href="#is-關鍵字" class="headerlink" title="is 關鍵字"></a><code>is</code> 關鍵字</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Do</span>(<span class="params"><span class="keyword">object</span> obj</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (obj <span class="keyword">is</span> <span class="keyword">int</span> i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Do somthing using i.</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (obj <span class="keyword">is</span> <span class="keyword">string</span> s)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Do somthing using s.</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>從上述範例可以看到以前需要先透過 <code>is</code> 判斷型別後再轉型 (或使用 <code>as</code> 後再判斷空值後處理)，現在可以將兩個行為合一讓可維護性提高很多。</p>
+<h4 id="switch"><a href="#switch" class="headerlink" title="switch"></a><code>switch</code></h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Do</span>(<span class="params"><span class="keyword">object</span> obj</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (obj)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="keyword">int</span> i:</span><br><span class="line">            <span class="comment">// Do somthing using i.</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="keyword">string</span> s:</span><br><span class="line">            <span class="comment">// Do somthing using s.</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> DateTime dt when dt.Year == <span class="number">2021</span>:</span><br><span class="line">            <span class="comment">// Do somthing using dt which contains Year is 2021.</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="literal">null</span>:</span><br><span class="line">            <span class="comment">// Do somthing for null scenario.</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="comment">// Default behavior.</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>從上述範例可以看到，<code>switch</code> 關鍵字在使用上能更有彈性的設定條件了。  </p>
+<p>這個規格依然是編譯時期的語法糖， <code>switch</code> 本身的限制並沒有改變，上面的範例編譯後其實是 <code>if</code>、<code>else if</code>、<code>else</code> 條件式的組合。</p>
+<h3 id="Async-main"><a href="#Async-main" class="headerlink" title="Async main"></a>Async main</h3><p>在 Main 上可以加上 <code>async</code> 關鍵字了。<br>比較意外的是這也是語法糖，<a href="https://blog.miniasp.com/post/2019/04/03/Deep-Dive-CSharp-71-async-Main-method" target="_blank" rel="noopener">保哥有一篇文章提供詳細的說明</a>。</p>
+<h3 id="區域函式-Local-functions"><a href="#區域函式-Local-functions" class="headerlink" title="區域函式 (Local functions)"></a>區域函式 (Local functions)</h3><p>區域函式允許一個方法中包含另外一個方法，而區域函式只能被包含他的方法呼叫。這個設計主要用於迭代器和非同步方法中。  </p>
+<h4 id="實務使用情境"><a href="#實務使用情境" class="headerlink" title="實務使用情境"></a>實務使用情境</h4><p>而在實務上，在滿足以下條件下，也可考慮使用區域函式：</p>
+<ul>
+<li><strong>有足夠的理由將該區塊抽離：</strong> 通常這種情境下如果不抽離的話，原方法會過於肥大，以前常見的作法是用 <code>#region</code> 包覆起來，但這種做法對維護沒有太大的幫助。</li>
+<li><strong>該方法做為私有方法仍然過於特殊：</strong> 很多時候會有程式碼區塊內容過於特殊，離開主方法後無法封裝成一個方法。  </li>
+</ul>
+<h4 id="使用注意事項"><a href="#使用注意事項" class="headerlink" title="使用注意事項"></a>使用注意事項</h4><p>區域函式不宜濫用，如果濫用會發現主要方法仍然很肥大，且會增加排版的難度。關於區域函式排版上我自己有幾個建議要點：</p>
+<ol>
+<li>區域函式集中放在最下方且要在 <code>return</code> 後，這樣區域函式才不會穿插在呼叫端的程式碼中造成更大的混亂。</li>
+<li>即使方法無回傳也要在區域函式前加上 <code>return;</code>，用以更明確的區隔呼叫端程式碼和區域函式部分。</li>
+</ol>
+<p>如下範例：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Do</span>(<span class="params"><span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">bool</span> c</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> a2 = LocalFunction(a);</span><br><span class="line">    <span class="keyword">int</span> ans = c ? LocalFunction(a2 + b) : LocalFunction(a * b);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Always return at the last line of primary implementation.</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Local functions</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">LocalFunction</span>(<span class="params"><span class="keyword">int</span> num</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> num * <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>區域函式也是編譯時期的語法糖且有很多細節要說，尤其是參數傳遞的部分，這部分之後再另外寫一篇來詳細說明。  </p>
+<h3 id="更多成員支援運算式主體-More-expression-bodied-members"><a href="#更多成員支援運算式主體-More-expression-bodied-members" class="headerlink" title="更多成員支援運算式主體 (More expression-bodied members)"></a>更多成員支援運算式主體 (More expression-bodied members)</h3><p>運算式主體套用到更多成員上，包含建構子、Finalizer、以及在屬性和索引子上的 <code>get</code> 與 <code>set</code> 存取子，範例如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyContainer</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> List&lt;<span class="keyword">string</span>&gt; items = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">string</span> label;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Expression-bodied constructor</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyContainer</span>(<span class="params"><span class="keyword">string</span> initialLabel</span>) </span>=&gt; Label = initialLabel;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Expression-bodied finalizer</span></span><br><span class="line">    ~MyContainer() =&gt; Console.WriteLine(<span class="string">"Finalizing or cleaning up MyContainer."</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Expression-bodied property get and set accessors</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Label</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span> =&gt; label;</span><br><span class="line">        <span class="keyword">set</span> =&gt; label = <span class="keyword">value</span> ?? <span class="string">"Default label"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Expression-bodied indexer</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> <span class="keyword">this</span>[<span class="keyword">int</span> index]</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span> =&gt; items[index];</span><br><span class="line">        <span class="keyword">set</span> =&gt; items[index] = <span class="keyword">value</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>要注意的是 <a href="https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/finalizers" target="_blank" rel="noopener">Finalizer，舊稱 Destructor</a> 的語法 <code>~</code> 實際上是個語法糖，編譯後其實是 <code>Finalize()</code> 方法。</p>
+<h3 id="throw-運算式-Throw-expressions"><a href="#throw-運算式-Throw-expressions" class="headerlink" title="throw 運算式 (Throw expressions)"></a>throw 運算式 (Throw expressions)</h3><p><code>throw</code> 一直都是陳述式 (Statement) 而非運算式 (Expression)，也因此以前很多運算式中無法包含 <code>throw</code> (例如在三元運算子中)，而在 C# 7.0 中新增的 <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/exception-handling-statements#the-throw-expression" target="_blank" rel="noopener">throw 運算式</a> 解決了這個限制。  </p>
+<h3 id="預設常值運算式-Default-literal-expressions"><a href="#預設常值運算式-Default-literal-expressions" class="headerlink" title="預設常值運算式 (Default literal expressions)"></a>預設常值運算式 (Default literal expressions)</h3><p><a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/default#default-literal" target="_blank" rel="noopener">擴大 <code>default</code> 運算子的適用範圍到運算式上</a>  </p>
+<h3 id="數值常值的語法增強功能-Numeric-literal-syntax-improvements"><a href="#數值常值的語法增強功能-Numeric-literal-syntax-improvements" class="headerlink" title="數值常值的語法增強功能 (Numeric literal syntax improvements)"></a>數值常值的語法增強功能 (Numeric literal syntax improvements)</h3><p>允許利用 <code>_</code> 符號來分隔數字而不影響數值本身，類似於千分位符號的功能且同時能套用到二進位數值上，範例如下：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> binary = <span class="number">0</span>b001_0000;</span><br><span class="line"><span class="keyword">int</span> number = <span class="number">10</span>_000_000;</span><br><span class="line"><span class="keyword">decimal</span> money = <span class="number">1</span>_000<span class="number">.123</span>_456;</span><br></pre></td></tr></table></figure></p>
+<h3 id="out-變數-out-variables"><a href="#out-變數-out-variables" class="headerlink" title="out 變數 (out variables)"></a><code>out</code> 變數 (<code>out</code> variables)</h3><p>可以把 <code>out</code> 變數的宣告和傳遞寫在一起，如下：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>.TryParse(str, <span class="keyword">out</span> <span class="keyword">int</span> number);</span><br></pre></td></tr></table></figure></p>
+<p>這個特性雖然看起來不起眼，但是在實務上對於維護是有非常大的幫助的，他能避免讓變數的宣告和使用的位置距離太遠，如下面範例是實務上常見的痛點。<br>首先看這段程式碼，因為維護或各種關係導致變數 <code>number</code> 和 <code>decimal</code> 的宣告遠離第一次被使用的位置，進而造成閱讀時必須同時關注這麼一大段程式碼並忽略中間穿插的各種雜訊。<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> number;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Unrelated code, making it hard to track 'number'</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">    Console.WriteLine(<span class="string">"Loop 1: "</span> + i);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">string</span> temp = <span class="string">"Hello"</span>;</span><br><span class="line">Console.WriteLine(temp.ToUpper());</span><br><span class="line"><span class="keyword">bool</span> flag = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">if</span> (flag) &#123;</span><br><span class="line">    Console.WriteLine(<span class="string">"Flag is true"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">decimal</span> money;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Unrelated code, making it hard to track 'money'</span></span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt; &#123; <span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span> &#125;) &#123;</span><br><span class="line">    Console.WriteLine(<span class="string">"Item: "</span> + item);</span><br><span class="line">&#125;</span><br><span class="line">DateTime now = DateTime.Now;</span><br><span class="line">Console.WriteLine(<span class="string">"Current time: "</span> + now);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Usage of 'number' and 'money' is separated from its declaration</span></span><br><span class="line"><span class="keyword">int</span>.TryParse(str, <span class="keyword">out</span> number);</span><br><span class="line"><span class="keyword">decimal</span>.TryParse(str2, <span class="keyword">out</span> money);</span><br></pre></td></tr></table></figure></p>
+<p>但套用這個特性，維護過程我們就不用關注那些雜訊而能直接鎖定在真正的目標上。<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>.TryParse(str, <span class="keyword">out</span> <span class="keyword">int</span> number);</span><br><span class="line"><span class="keyword">decimal</span>.TryParse(str2, <span class="keyword">out</span> <span class="keyword">decimal</span> money);</span><br></pre></td></tr></table></figure></p>
+<p>這個問題的主因是不好的開發習慣，但長期多人開發的專案很難完全避免這個現象。重構和 Code Reivew 能緩解這個問題，但終究是額外的成本，因此從語言特性上直接避免是更理想的。</p>
+<h3 id="非後置具名引數-Non-trailing-named-arguments"><a href="#非後置具名引數-Non-trailing-named-arguments" class="headerlink" title="非後置具名引數 (Non-trailing named arguments)"></a>非後置具名引數 (Non-trailing named arguments)</h3><p>具名引數非必要放在最後，例如：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// In C# 7.1 and earlier, named arguments should be trailing.</span></span><br><span class="line">DisplayPersonDetails(<span class="number">35</span>, <span class="string">"Ron"</span>, city: <span class="string">"New York"</span>);</span><br><span class="line"><span class="comment">// In C# 7.2 and later, named arguments do not necessarily have to be trailing.</span></span><br><span class="line">DisplayPersonDetails(age: <span class="number">35</span>, <span class="string">"Ron"</span>, city: <span class="string">"New York"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>這讓我們可以不用為了遷就前排的具名引數而將其後所有引數具名，但從另外一個角度來看，使用具名引數時提高可讀性前應該先思考方法參數列的設計是否需要改善。  </p>
+<h3 id="private-protected-存取修飾詞-private-protected-access-modifier"><a href="#private-protected-存取修飾詞-private-protected-access-modifier" class="headerlink" title="private protected 存取修飾詞 (private protected access modifier)"></a><code>private protected</code> 存取修飾詞 (<code>private protected</code> access modifier)</h3><p>限制存取範圍在 <strong><code>protected</code> AND <code>internal</code></strong>，比 <code>protected internal</code> 代表的 <strong><code>protected</code> OR <code>internal</code></strong> 存取範圍更狹窄。  </p>
+<h3 id="改善選擇多載的規則-Improved-overload-candidates"><a href="#改善選擇多載的規則-Improved-overload-candidates" class="headerlink" title="改善選擇多載的規則 (Improved overload candidates)"></a>改善選擇多載的規則 (Improved overload candidates)</h3><p>增加三個解析規則來讓更明確的選擇多載。  </p>
+<p>老實說我不想特別去記這些複雜的規則，因為這些規則是建立在呼叫多載方法時會混淆的前提，通常這代表多載設計得不夠好，應該優先考慮改善多載方法的設計。</p>
+<h3 id="擴充安全程式碼的能力-Enabling-more-efficient-safe-code"><a href="#擴充安全程式碼的能力-Enabling-more-efficient-safe-code" class="headerlink" title="擴充安全程式碼的能力 (Enabling more efficient safe code)"></a>擴充安全程式碼的能力 (Enabling more efficient safe code)</h3><p>幾乎都是沒用過的特性，所以直接看官方文件，沒甚麼好說的。</p>
+<h3 id="套用-ref-到區域變數和回傳值上-ref-條件運算式-Ref-locals-and-returns-Conditional-ref-expressions"><a href="#套用-ref-到區域變數和回傳值上-ref-條件運算式-Ref-locals-and-returns-Conditional-ref-expressions" class="headerlink" title="套用 ref 到區域變數和回傳值上 / ref 條件運算式 (Ref locals and returns / Conditional ref expressions)"></a>套用 <code>ref</code> 到區域變數和回傳值上 / <code>ref</code> 條件運算式 (Ref locals and returns / Conditional <code>ref</code> expressions)</h3><p>允許傳址給區域變數，例如：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] numbers = &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> &#125;;</span><br><span class="line">        <span class="keyword">ref</span> <span class="keyword">int</span> two = <span class="keyword">ref</span> numbers[<span class="number">1</span>];</span><br><span class="line">        </span><br><span class="line">        two = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        Console.WriteLine(two); <span class="comment">// 0</span></span><br><span class="line">        Console.WriteLine(numbers[<span class="number">1</span>]); <span class="comment">// 0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>允許回傳時傳址，例如：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] numbers = &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> &#125;;</span><br><span class="line">        <span class="keyword">ref</span> <span class="keyword">var</span> two = <span class="function"><span class="keyword">ref</span> <span class="title">GetTwo</span>(<span class="params">numbers</span>)</span>;</span><br><span class="line"></span><br><span class="line">        two = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        Console.WriteLine(two); <span class="comment">// 0</span></span><br><span class="line">        Console.WriteLine(numbers[<span class="number">1</span>]); <span class="comment">// 0</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">ref</span> <span class="keyword">int</span> <span class="title">GetTwo</span>(<span class="params"><span class="keyword">int</span>[] numbers</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">ref</span> numbers[<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>ref</code> 條件運算式，例如：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ref</span> <span class="keyword">var</span> i = <span class="keyword">ref</span> (numbers1 != <span class="literal">null</span> ? <span class="keyword">ref</span> numbers1[<span class="number">0</span>] : <span class="keyword">ref</span> numbers2[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure></p>
+<p>除非很必要否則我不用 <code>ref</code> 的，因為對於開發、維護人員來說門檻較高且容易被濫用，且到目前為止工作上可以使用 <code>ref</code> 的情境其實都有其他成本不高且低副作用的替代方案。 當然也不是說 <code>ref</code> 不好，相信他在一些效能極度敏感的情境是很有用的。  </p>
+<h3 id="in-參數修飾詞"><a href="#in-參數修飾詞" class="headerlink" title="in 參數修飾詞"></a><code>in</code> 參數修飾詞</h3><p>補充現有的 <code>ref</code> 和 <code>out</code>。<br><code>ref</code> 傳址，被呼叫的方法不一定要為其賦值；<code>out</code> 傳址，被呼叫的方法一定要為其賦值，代表這個引數在傳入前賦值通常是沒意義的；<code>in</code> 傳址，被呼叫的方法不能為其賦值。<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Do</span>(<span class="params"><span class="keyword">ref</span> <span class="keyword">string</span> a, <span class="keyword">out</span> <span class="keyword">string</span> b, <span class="keyword">in</span> <span class="keyword">string</span> c</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// Must to have</span></span><br><span class="line">    b = <span class="string">"B"</span>;</span><br><span class="line">    <span class="comment">// Can not assign to "in" parameter.</span></span><br><span class="line">    <span class="comment">// c = "C";</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">string</span> s1 = <span class="string">"a"</span>;</span><br><span class="line"><span class="comment">// Bad, assignment here generally doesn't make sense.</span></span><br><span class="line"><span class="keyword">string</span> s2 = <span class="string">"b"</span>;</span><br><span class="line"><span class="comment">// Need to have value generally.</span></span><br><span class="line"><span class="keyword">string</span> s3 = <span class="string">"c"</span>;</span><br><span class="line">Do(<span class="keyword">ref</span> s1, <span class="keyword">out</span> s2, <span class="keyword">in</span> s3);</span><br></pre></td></tr></table></figure></p>
+<h3 id="更多型別支援-fixed-陳述式-More-types-support-the-fixed-statement"><a href="#更多型別支援-fixed-陳述式-More-types-support-the-fixed-statement" class="headerlink" title="更多型別支援 fixed 陳述式 (More types support the fixed statement)"></a>更多型別支援 <code>fixed</code> 陳述式 (More types support the <code>fixed</code> statement)</h3><p>在 C# 7.3 之後，所有包含 <code>GetPinnableReference()</code> 方法且回傳 <code>ref T</code> 或 <code>ref readonly T</code> 的型別都能套用 <code>fixed</code>。</p>
+<h3 id="fixed-索引欄位不需要釘選-Indexing-fixed-fields-does-not-require-pinning"><a href="#fixed-索引欄位不需要釘選-Indexing-fixed-fields-does-not-require-pinning" class="headerlink" title="fixed 索引欄位不需要釘選 (Indexing fixed fields does not require pinning)"></a><code>fixed</code> 索引欄位不需要釘選 (Indexing <code>fixed</code> fields does not require pinning)</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">unsafe</span> <span class="keyword">struct</span> MyStruct</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">fixed</span> <span class="keyword">int</span> FixedArray[<span class="number">10</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Example</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        MyStruct myStruct = <span class="keyword">new</span> MyStruct();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Before C# 7, pinning required</span></span><br><span class="line">        <span class="keyword">fixed</span> (<span class="keyword">int</span>* ptr = myStruct.FixedArray)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                ptr[i] = i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// After C# 7, no pinning required</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// Direct indexing is now allowed</span></span><br><span class="line">            myStruct.FixedArray[i] = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="stackalloc-陣列支援初始設定式-stackalloc-arrays-support-initializers"><a href="#stackalloc-陣列支援初始設定式-stackalloc-arrays-support-initializers" class="headerlink" title="stackalloc 陣列支援初始設定式 (stackalloc arrays support initializers)"></a><code>stackalloc</code> 陣列支援初始設定式 (<code>stackalloc</code> arrays support initializers)</h3><p>C# 7.3 之前：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>* arr = <span class="keyword">stackalloc</span> <span class="keyword">int</span>[<span class="number">3</span>];</span><br><span class="line"></span><br><span class="line">arr[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">arr[<span class="number">1</span>] = <span class="number">3</span>;</span><br><span class="line">arr[<span class="number">2</span>] = <span class="number">5</span>;</span><br></pre></td></tr></table></figure></p>
+<p>C# 7.3 之後：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>* arr = <span class="keyword">stackalloc</span> <span class="keyword">int</span>[<span class="number">3</span>] &#123; <span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span> &#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="擴充泛型限制"><a href="#擴充泛型限制" class="headerlink" title="擴充泛型限制"></a>擴充泛型限制</h3><p>可以限制 <code>System.Enum</code> 或 <code>System.Delegate</code> 做為泛型型別的限制；也可以用 <code>unmanaged</code> 限制為不可空的非託管型別。  </p>
+<p>最有感的是 <code>System.Enum</code> 以前要限制泛型型別只能用 <code>struct</code> 再加上一些驗證程式碼，沒辦法在編譯時期精準限制列舉為泛型型別。</p>
+<h3 id="新的編譯選項"><a href="#新的編譯選項" class="headerlink" title="新的編譯選項"></a>新的編譯選項</h3><p>這部分沒用過，就<a href="https://web.archive.org/web/20211114194546/https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-7#new-compiler-options" target="_blank" rel="noopener">留個連結備查</a>。</p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>C# 7 多了很多東西，最明顯的是各種語法糖，面對語法糖，應該找時間更仔細的研究他們編譯後實際的樣子避免誤用。</p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://web.archive.org/web/20211114194546/https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-7" target="_blank" rel="noopener">What’s new in C# 7.0 through C# 7.3 (原文件已經被刪除，這是 Archive 網站的存檔)</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/content/20240122-reuseable-xml-documentation-comments.html" rel="next" title="可重用的 XML 文件註解">
+                <i class="fa fa-chevron-left"></i> 可重用的 XML 文件註解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+        <div id="container" class="gitment_container"></div>
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+        <script>
+          const myTheme = {
+            render(state, instance) {
+              const container = document.createElement('div');
+              container.lang = "en-US";
+              container.className = 'gitment-container gitment-root-container';
+              container.appendChild(instance.renderHeader(state, instance));
+              container.appendChild(instance.renderEditor(state, instance));
+              container.appendChild(instance.renderComments(state, instance));
+              container.appendChild(instance.renderFooter(state, instance));
+              return container;
+            }
+          }
+          function showGitment() {
+            var gitment = new Gitment({
+              id: '1706894577000',
+              theme: myTheme,
+              owner: 'ronsun',
+              repo: 'ronsun.github.io.gitment',
+              oauth: {
+                client_id: '749fee720f2039efbbde',
+                client_secret: '3104dc228340ec2814ce1a11a7457d4f2d1effa6'
+              }
+            });
+            gitment.render('container');
+          }
+          showGitment();
+        </script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ron Sun" />
+          <p class="site-author-name" itemprop="name">Ron Sun</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">76</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ronsun" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.linkedin.com/in/ronsun/" target="_blank" title="Linkedin">
+                  
+                    <i class="fa fa-fw fa-linkedin"></i>
+                  
+                    
+                      Linkedin
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Resources
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://referencesource.microsoft.com/" title=".Net Source Code" target="_blank">.Net Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://source.dot.net/" title=".Net Core Source Code" target="_blank">.Net Core Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notfalse.net/" title="NotFalse 技術客" target="_blank">NotFalse 技術客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gist.github.com/ronsun" title="放零碎筆記的 Gist" target="_blank">放零碎筆記的 Gist</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tuples-和-Discards"><span class="nav-number">1.</span> <span class="nav-text">Tuples 和 Discards</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#具名-Tuple"><span class="nav-number">1.1.</span> <span class="nav-text">具名 Tuple</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Discards"><span class="nav-number">1.2.</span> <span class="nav-text">Discards</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C-怎麼處理-Tuple-的名字"><span class="nav-number">1.3.</span> <span class="nav-text">C# 怎麼處理 Tuple 的名字?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解構-Deconstruction"><span class="nav-number">1.4.</span> <span class="nav-text">解構 (Deconstruction)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模式比對-Pattern-matching"><span class="nav-number">2.</span> <span class="nav-text">模式比對 (Pattern matching)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#is-關鍵字"><span class="nav-number">2.1.</span> <span class="nav-text">is 關鍵字</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#switch"><span class="nav-number">2.2.</span> <span class="nav-text">switch</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Async-main"><span class="nav-number">3.</span> <span class="nav-text">Async main</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#區域函式-Local-functions"><span class="nav-number">4.</span> <span class="nav-text">區域函式 (Local functions)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#實務使用情境"><span class="nav-number">4.1.</span> <span class="nav-text">實務使用情境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用注意事項"><span class="nav-number">4.2.</span> <span class="nav-text">使用注意事項</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更多成員支援運算式主體-More-expression-bodied-members"><span class="nav-number">5.</span> <span class="nav-text">更多成員支援運算式主體 (More expression-bodied members)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#throw-運算式-Throw-expressions"><span class="nav-number">6.</span> <span class="nav-text">throw 運算式 (Throw expressions)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#預設常值運算式-Default-literal-expressions"><span class="nav-number">7.</span> <span class="nav-text">預設常值運算式 (Default literal expressions)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#數值常值的語法增強功能-Numeric-literal-syntax-improvements"><span class="nav-number">8.</span> <span class="nav-text">數值常值的語法增強功能 (Numeric literal syntax improvements)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#out-變數-out-variables"><span class="nav-number">9.</span> <span class="nav-text">out 變數 (out variables)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非後置具名引數-Non-trailing-named-arguments"><span class="nav-number">10.</span> <span class="nav-text">非後置具名引數 (Non-trailing named arguments)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#private-protected-存取修飾詞-private-protected-access-modifier"><span class="nav-number">11.</span> <span class="nav-text">private protected 存取修飾詞 (private protected access modifier)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改善選擇多載的規則-Improved-overload-candidates"><span class="nav-number">12.</span> <span class="nav-text">改善選擇多載的規則 (Improved overload candidates)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#擴充安全程式碼的能力-Enabling-more-efficient-safe-code"><span class="nav-number">13.</span> <span class="nav-text">擴充安全程式碼的能力 (Enabling more efficient safe code)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#套用-ref-到區域變數和回傳值上-ref-條件運算式-Ref-locals-and-returns-Conditional-ref-expressions"><span class="nav-number">14.</span> <span class="nav-text">套用 ref 到區域變數和回傳值上 / ref 條件運算式 (Ref locals and returns / Conditional ref expressions)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#in-參數修飾詞"><span class="nav-number">15.</span> <span class="nav-text">in 參數修飾詞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更多型別支援-fixed-陳述式-More-types-support-the-fixed-statement"><span class="nav-number">16.</span> <span class="nav-text">更多型別支援 fixed 陳述式 (More types support the fixed statement)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fixed-索引欄位不需要釘選-Indexing-fixed-fields-does-not-require-pinning"><span class="nav-number">17.</span> <span class="nav-text">fixed 索引欄位不需要釘選 (Indexing fixed fields does not require pinning)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stackalloc-陣列支援初始設定式-stackalloc-arrays-support-initializers"><span class="nav-number">18.</span> <span class="nav-text">stackalloc 陣列支援初始設定式 (stackalloc arrays support initializers)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#擴充泛型限制"><span class="nav-number">19.</span> <span class="nav-text">擴充泛型限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新的編譯選項"><span class="nav-number">20.</span> <span class="nav-text">新的編譯選項</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">21.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">22.</span> <span class="nav-text">參考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

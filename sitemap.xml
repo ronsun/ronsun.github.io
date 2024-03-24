@@ -2,79 +2,86 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://ronsun.github.io/content/20240203-whats-new-in-csharp-7.html</loc>
+    
+    <lastmod>2024-03-24T14:32:37.827Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://ronsun.github.io/content/20240122-reuseable-xml-documentation-comments.html</loc>
     
-    <lastmod>2024-01-22T16:37:21.241Z</lastmod>
+    <lastmod>2024-03-24T14:32:37.793Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20231225-efcore-customize-valueconverter.html</loc>
     
-    <lastmod>2023-12-25T15:17:23.854Z</lastmod>
+    <lastmod>2024-03-24T14:32:37.754Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20231217-switch-case-variable-scoping.html</loc>
     
-    <lastmod>2023-12-17T16:53:34.936Z</lastmod>
+    <lastmod>2024-03-24T14:32:37.713Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20231216-consistent-webapi-returns.html</loc>
     
-    <lastmod>2023-12-16T17:00:08.497Z</lastmod>
+    <lastmod>2024-03-24T14:32:37.668Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230812-write-roslyn-analyzer-and-code-fix.html</loc>
     
-    <lastmod>2023-12-15T17:16:02.164Z</lastmod>
+    <lastmod>2024-03-24T14:32:33.988Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230721-optimistic-vs-pessimistic-lock.html</loc>
     
-    <lastmod>2023-12-15T17:16:02.132Z</lastmod>
+    <lastmod>2024-03-24T14:32:30.418Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230720-reference-type-as-dictionary-key.html</loc>
     
-    <lastmod>2023-12-15T17:16:02.093Z</lastmod>
+    <lastmod>2024-03-24T14:32:26.392Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230709-using-partial-class.html</loc>
     
-    <lastmod>2023-12-15T17:16:02.007Z</lastmod>
+    <lastmod>2024-03-24T14:32:22.242Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230617-large-scale-query-with-orm.html</loc>
     
-    <lastmod>2023-12-15T17:15:20.773Z</lastmod>
+    <lastmod>2024-03-24T14:32:18.051Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230312-use-source-browser.html</loc>
     
-    <lastmod>2023-12-15T17:15:20.718Z</lastmod>
+    <lastmod>2024-03-24T14:32:13.960Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20230311-problem-about-exception-from-finally-block-of-using.html</loc>
     
-    <lastmod>2023-12-15T17:15:20.667Z</lastmod>
+    <lastmod>2024-03-24T14:31:59.789Z</lastmod>
     
   </url>
   
@@ -338,14 +345,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20190124-docfx-with-visual-studio-on-github-pages.html</loc>
+    <loc>https://ronsun.github.io/content/20190105-bouncycastle-rsa-key-with-leading-zero-to-xml.html</loc>
     
     <lastmod>2023-11-26T17:01:26.774Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20190105-bouncycastle-rsa-key-with-leading-zero-to-xml.html</loc>
+    <loc>https://ronsun.github.io/content/20190124-docfx-with-visual-studio-on-github-pages.html</loc>
     
     <lastmod>2023-11-26T17:01:26.774Z</lastmod>
     
@@ -443,14 +450,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180409-usage-of-partial-in-csharp.html</loc>
+    <loc>https://ronsun.github.io/content/20180519-const-vs-readonly.html</loc>
     
     <lastmod>2023-11-26T17:01:26.725Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180519-const-vs-readonly.html</loc>
+    <loc>https://ronsun.github.io/content/20180409-usage-of-partial-in-csharp.html</loc>
     
     <lastmod>2023-11-26T17:01:26.725Z</lastmod>
     
