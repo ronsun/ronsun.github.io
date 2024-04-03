@@ -94,17 +94,16 @@
 
 
 
-<meta name="description" content="Switch-case 是一個經常被使用到的語句, 但當條件/情境過多的時候, 他會變得很肥大, 某種程度上造成維護上的困擾, 網路上也有不少人提出針對過大的 switch-case 語句的重構技巧, 例如: 策略模式.但是策略模式會長出很多新的類別, 如果每個 case 的實作內容都很小, 這樣做似乎是有點複雜了, 所以這邊提供其他的替代方案(但會有一些限制).">
-<meta property="og:type" content="article">
-<meta property="og:title" content="消除switch-case">
-<meta property="og:url" content="https://ronsun.github.io/content/20180412-anti-switch-case.html">
+<meta name="description" content="Simple Is Not Easy">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ron 2.0">
+<meta property="og:url" content="https://ronsun.github.io/archives/2024/03/index.html">
 <meta property="og:site_name" content="Ron 2.0">
-<meta property="og:description" content="Switch-case 是一個經常被使用到的語句, 但當條件/情境過多的時候, 他會變得很肥大, 某種程度上造成維護上的困擾, 網路上也有不少人提出針對過大的 switch-case 語句的重構技巧, 例如: 策略模式.但是策略模式會長出很多新的類別, 如果每個 case 的實作內容都很小, 這樣做似乎是有點複雜了, 所以這邊提供其他的替代方案(但會有一些限制).">
+<meta property="og:description" content="Simple Is Not Easy">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2023-11-26T17:01:26.724Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="消除switch-case">
-<meta name="twitter:description" content="Switch-case 是一個經常被使用到的語句, 但當條件/情境過多的時候, 他會變得很肥大, 某種程度上造成維護上的困擾, 網路上也有不少人提出針對過大的 switch-case 語句的重構技巧, 例如: 策略模式.但是策略模式會長出很多新的類別, 如果每個 case 的實作內容都很小, 這樣做似乎是有點複雜了, 所以這邊提供其他的替代方案(但會有一些限制).">
+<meta name="twitter:title" content="Ron 2.0">
+<meta name="twitter:description" content="Simple Is Not Easy">
 
 
 
@@ -133,13 +132,13 @@
 
 
 
-  <link rel="canonical" href="https://ronsun.github.io/content/20180412-anti-switch-case.html"/>
+  <link rel="canonical" href="https://ronsun.github.io/archives/2024/03/"/>
 
 
 
 
 
-  <title>消除switch-case | Ron 2.0</title>
+  <title>Archive | Ron 2.0</title>
   
 
 
@@ -158,7 +157,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail ">
+  <div class="container sidebar-position-left  page-archive  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -286,187 +285,73 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
-    
+  
+  
+  
+  <div class="post-block archive">
+    <div id="posts" class="posts-collapse">
+      <span class="archive-move-on"></span>
 
-  
+      <span class="archive-page-counter">
+        
+        
+         
+          
+        Nice! 77 posts in total. Keep on posting.
+      </span>
 
-  
-  
-  
+      
+
+        
+        
+        
+
+        
+          
+          <div class="collection-title">
+            <h2 class="archive-year motion-element" id="archive-year-2024">2024</h2>
+          </div>
+        
+        
+
+        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20180412-anti-switch-case.html">
+    <header class="post-header">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ron Sun">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ron 2.0">
-    </span>
-
-    
-      <header class="post-header">
-
+      <h3 class="post-title">
         
+            <a class="post-title-link" href="/content/20240324-whats-new-in-csharp-8.html" itemprop="url">
+              
+                <span itemprop="name">C# 語言特性更新 - C# 8</span>
+              
+            </a>
         
-          <h2 class="post-title" itemprop="name headline">消除switch-case</h2>
-        
+      </h3>
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-12T23:51:21+08:00">
-                2018-04-12
-              </time>
-            
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2024-03-24T22:38:17+08:00"
+              content="2024-03-24" >
+          03-24
+        </time>
+      </div>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C#</span>
-                  </a>
-                </span>
-
-                
-                
-                  , 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/Clean-Code/" itemprop="url" rel="index">
-                    <span itemprop="name">Clean Code</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <p>Switch-case 是一個經常被使用到的語句, 但當條件/情境過多的時候, 他會變得很肥大, 某種程度上造成維護上的困擾, 網路上也有不少人提出針對過大的 switch-case 語句的重構技巧, 例如: 策略模式.<br>但是策略模式會長出很多新的類別, 如果每個 case 的實作內容都很小, 這樣做似乎是有點複雜了, 所以這邊提供其他的替代方案(但會有一些限制).  </p>
-<a id="more"></a>
-<h3 id="switch-case的問題"><a href="#switch-case的問題" class="headerlink" title="switch-case的問題"></a>switch-case的問題</h3><p>先看一段程式碼<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">Convert</span>(<span class="params">StringConverter converter, <span class="keyword">string</span> input</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (converter)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">case</span> StringConverter.Rule1:</span><br><span class="line">            <span class="keyword">return</span> DoByRule1(input);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> StringConverter.Rule2:</span><br><span class="line">            <span class="keyword">return</span> DoByRule2(input);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> StringConverter.Rule3:</span><br><span class="line">            <span class="keyword">return</span> DoByRule3(input);</span><br><span class="line">        <span class="comment">//以下省略100種</span></span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">string</span>.Empty;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">string</span> result = Convert(StringConverter.Rule1, <span class="string">"this is input"</span>);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上面的程式碼是經過最初步整理的樣子, 至少每個case都提取出一個方法, 但是如果情境持續增加, 這個switch-case語句仍然會繼續成長下去, 似乎還能做一些改善.</p>
-<h3 id="用-Dictionary-搭配-Func-或-Action-解決"><a href="#用-Dictionary-搭配-Func-或-Action-解決" class="headerlink" title="用 Dictionary 搭配 Func 或 Action 解決"></a>用 Dictionary 搭配 Func 或 Action 解決</h3><p>從原本的 switch-case 可以看出功能其實很單純, 固定傳入一個字串, 經過某種演算過程, 回傳另外一個字串, 只不過根據列舉(enum)的不同, 要做的事也不同, 這種情境就很適合用 <code>Dictionary&lt;TKey, Func&lt;&gt;&gt;</code> 來處理.</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Dictionary&lt;StringConverter, Func&lt;<span class="keyword">string</span>, <span class="keyword">string</span>&gt;&gt; allRules =</span><br><span class="line">    <span class="keyword">new</span> Dictionary&lt;StringConverter, Func&lt;<span class="keyword">string</span>, <span class="keyword">string</span>&gt;&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">StringConverter.Rule1</span>] = (input) =&gt; &#123; <span class="keyword">return</span> DoByRule1(input); &#125;,</span><br><span class="line">        [<span class="meta">StringConverter.Rule2</span>] = (input) =&gt; &#123; <span class="keyword">return</span> DoByRule2(input); &#125;,</span><br><span class="line">        [<span class="meta">StringConverter.Rule3</span>] = (input) =&gt; &#123; <span class="keyword">return</span> DoByRule3(input); &#125;</span><br><span class="line">        <span class="comment">//以下省略100種</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">var</span> rule = allRules[StringConverter.Rule1];</span><br><span class="line">    <span class="keyword">string</span> result = rule(<span class="string">"this is input"</span>);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>經過整理後, 我們將列舉與行為的配對抽出來成為一個 <code>Dictionary&lt;StringConverter, Func&lt;string, string&gt;&gt;</code>, 可讀性提高了不少(尤其 case 很多的時候會更明顯).<br>但是這種方式是有一些限制的, 所有情境必須有相同的參數與回傳型別, 才能把他們全部放到一個 <code>Dictionary</code> 中, 如果不幸的所些情境參數或回傳型別不同, 那就要考慮是否另外封裝共用的物件作為參數與回傳型別, 此舉是有副作用的(共用的參數與回傳型別中的成員是所有情境的聯集, 可能會很多或很亂), 因此也應該考慮這樣做的效益是否大於副作用.  </p>
-<p>搭配 Action 概念跟上一個例子一樣, 不過是用無參數的 Action.  </p>
-<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>技巧跟手法有好處就有副作用, 所以不是所有 switch-case 的情境都適合這樣處理, 有些情境可能維持原本的 switch-case 會更好.  </p>
-<blockquote>
-<p>類似的技巧還有用 <code>List&lt;Func&lt;&gt;&gt;</code> 搭配 <code>foreach</code>, 可用來達成依序執行一系列的行為的目的, 也是很不錯</p>
-</blockquote>
-<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://www.codeproject.com/Articles/1192465/Abolishing-Switch-Case-Statement-and-Pattern-Match" target="_blank" rel="noopener">Abolishing Switch-Case Statement and Pattern Matching in C# 7.0</a></p>
-
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/content/20180409-usage-of-partial-in-csharp.html" rel="next" title="C# 修飾詞 - partial">
-                <i class="fa fa-chevron-left"></i> C# 修飾詞 - partial
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/content/20180519-const-vs-readonly.html" rel="prev" title="const 和 readonly 特性與使用時機">
-                const 和 readonly 特性與使用時機 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
+    </header>
   </article>
 
 
 
-    <div class="post-spread">
       
+
     </div>
   </div>
+  
+  
+  
+
+  
+
 
 
           </div>
@@ -474,42 +359,6 @@
 
 
           
-  <div class="comments" id="comments">
-    
-        <div id="container" class="gitment_container"></div>
-        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
-        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
-        <script>
-          const myTheme = {
-            render(state, instance) {
-              const container = document.createElement('div');
-              container.lang = "en-US";
-              container.className = 'gitment-container gitment-root-container';
-              container.appendChild(instance.renderHeader(state, instance));
-              container.appendChild(instance.renderEditor(state, instance));
-              container.appendChild(instance.renderComments(state, instance));
-              container.appendChild(instance.renderFooter(state, instance));
-              return container;
-            }
-          }
-          function showGitment() {
-            var gitment = new Gitment({
-              id: '1523548281000',
-              theme: myTheme,
-              owner: 'ronsun',
-              repo: 'ronsun.github.io.gitment',
-              oauth: {
-                client_id: '749fee720f2039efbbde',
-                client_secret: '3104dc228340ec2814ce1a11a7457d4f2d1effa6'
-              }
-            });
-            gitment.render('container');
-          }
-          showGitment();
-        </script>
-  </div>
-
-
         </div>
         
           
@@ -529,17 +378,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            Overview
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -651,22 +491,6 @@
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#switch-case的問題"><span class="nav-number">1.</span> <span class="nav-text">switch-case的問題</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用-Dictionary-搭配-Func-或-Action-解決"><span class="nav-number">2.</span> <span class="nav-text">用 Dictionary 搭配 Func 或 Action 解決</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">4.</span> <span class="nav-text">參考</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
@@ -793,9 +617,11 @@
 
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
-
+  
+    <script type="text/javascript" id="motion.page.archive">
+      $('.archive-year').velocity('transition.slideLeftIn');
+    </script>
+  
 
 
   
