@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Entity Framework Core 預熱]]></title>
+    <url>%2Fcontent%2F20240512-ef-core-warmup.html</url>
+    <content type="text"><![CDATA[在使用 Entity Framework Core (EF Core) 進行資料存取操作時，初次查詢時會有耗時較長的現象。這種延遲主要是因為 EF Core 在第一次執行查詢時需要進行一系列的初始化步驟。這些步驟造成的延遲可能會對效能敏感的應用程式造成不利的影響。例如在 WebAPI 服務中，如果初始化花費太多時間可能造成連線超時。而且在效能監測時，這種初始化所造成的延遲可能會產生極端的執行時間資料影響到效能的解讀。 為了解決這個問題，通常會在應用程式啟動階段加入一些預熱的操作，以提前完成一些必要的初始化步驟。這篇文章會介紹兩種預熱解法，要注意的是這兩個解法不是針對所有的初始化步驟，目的只是要達到觸發 DbContext.OnModelCreating() 的效果來降低首次查詢的延遲時間。 解法一： dbContext.Set&lt;T&gt;以 ASP.NET Core 來說，在 Startup.cs 中的 Configure 方法中注入 DbContext 來達到效果是最常見的作法，如下： 12345public void Configure(IApplicationBuilder app, DbContext dbContext)&#123; // Warmup operation, trigger DbContext.OnModelCreating() to reduce the initialization delay on first query. dbContext.Set&lt;Blog&gt;().FirstOrDefault();&#125; 這是最簡單的解法，但特定的 Model 進而產生額外的依賴這個缺點會帶來幾個風險和限制： 該 Model 被移除時看似無關的預熱功能也需要一併修改而使用其他 Model。 會需要特別寫註解說明目的，否則後期維護時很可能被誤當成多餘的程式碼而刪除，最麻煩的是刪除後短期內可能還不會產生明顯的問題。 難以通用化，例如公司內部如果有通用套件時，會因為依賴特定資料庫對應的 Model 而無法將預熱功能加入其中。 解法二： ExecuteSqlRaw()為了避免解法一所產生的副作用，可以用執行一個和資料表無關的查詢達到效果，如下： 12345public void Configure(IApplicationBuilder app, DbContext dbContext)&#123; // Warmup operation, trigger DbContext.OnModelCreating() to reduce the initialization delay on first query. dbContext.Database.ExecuteSqlRaw("SELECT 1 FROM DUAL");&#125; 這個解法解決了依賴特定的 Model，這個優點帶來了很大的通用性。以我遇到的情境來說，能輕易的將預熱功能抽離到內部套件中提供跨部門同事使用，如下範例： 1234567891011// In internal library.public namespace MyCompany.EFCoreEnhancement&#123; public static class DbContextExtension &#123; public static void Warmup(this DbContext context) &#123; context.Database.ExecuteSqlRaw("SELECT 1 FROM DUAL"); &#125; &#125;&#125; 12345// In application using the internal library.public void Configure(IApplicationBuilder app, DbContext dbContext)&#123; dbContext.Warmup();&#125; 結論一般來說除非已有現成 API 可用，否則不建議一開始就做預熱功能。如果要做則是視使用情境，單一專案或存取單一資料庫的情境解法一加註解就很夠用了。解法二則是基於最大化通用性的考量設計的，這個方案在把預熱功能抽離到通用套件時才有明顯的優勢。]]></content>
+      <categories>
+        <category>C#</category>
+        <category>Packages</category>
+      </categories>
+  </entry>
+  <entry>
     <title><![CDATA[為什麼陣列索引的存取是常數時間複雜度 O(1)]]></title>
     <url>%2Fcontent%2F20240427-why-access-array-index-constant-time.html</url>
     <content type="text"><![CDATA[可能只有我不知道，但是不記下來又覺得需要解釋的時候會解釋不出來。 陣列是在程式設計中常見的資料結構，將多個固定大小的元素存放在連續的記憶體位址中，而這段記憶體的起始位址是已知的。當要存取陣列中的某個元素時就能透過起始位址加上偏移量來計算出目標元素的記憶體位址，而不需要一個一個的走訪所有元素去找出目標元素。 另外，Why is indexing faster than binary search 這篇文章提到這件事背後與硬體運作有關。 計算目標元素的記憶體位置公式如下：1元素位址 = 起始位址 + (目標索引 × 元素大小) 由於計算元素位址的過程不依賴於陣列的大小，而僅涉及一次計算操作，因此無論索引大小如何，這個操作的時間都是固定的。這就是為什麼說陣列索引的存取時間複雜度是 O(1)，即常數時間複雜度。 結論這是個很小的知識點，寫出來比較像是備忘並幫助我理清思緒，而需要回答這個問題時也能比較順暢的回答。 另一方面參考資料中有很多圖文並茂且深入的講解，透過連結記錄起來需要時也能更深入的了解。 參考How accessing an array element is constant time ?Why does accessing an Array element take O(1) time?Why is Array Access Constant TimeWhy is indexing faster than binary search]]></content>

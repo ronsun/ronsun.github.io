@@ -94,17 +94,17 @@
 
 
 
-<meta name="description" content="在開發過程中，我們經常需要透過 ORM　(我是使用 EF Core) 從資料庫中取得資訊，在查詢很複雜的時候我通常都會盡量透過一個查詢就把資料準備好，並轉換成巢狀的資料結構以便於應用程式進行操作，這樣可以避免多次查詢造成的效能風險。　　 但前陣子在開發過程檢查 ORM 產生的 SQL 時意外發現我的認知不一定是對的。">
+<meta name="description" content="在使用 Entity Framework Core (EF Core) 進行資料存取操作時，初次查詢時會有耗時較長的現象。這種延遲主要是因為 EF Core 在第一次執行查詢時需要進行一系列的初始化步驟。這些步驟造成的延遲可能會對效能敏感的應用程式造成不利的影響。例如在 WebAPI 服務中，如果初始化花費太多時間可能造成連線超時。而且在效能監測時，這種初始化所造成的延遲可能會產生極端的執行時間資">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用 ORM 做單次大查詢的效能陷阱">
-<meta property="og:url" content="https://ronsun.github.io/content/20230617-large-scale-query-with-orm.html">
+<meta property="og:title" content="Entity Framework Core 預熱">
+<meta property="og:url" content="https://ronsun.github.io/content/20240512-ef-core-warmup.html">
 <meta property="og:site_name" content="Ron 2.0">
-<meta property="og:description" content="在開發過程中，我們經常需要透過 ORM　(我是使用 EF Core) 從資料庫中取得資訊，在查詢很複雜的時候我通常都會盡量透過一個查詢就把資料準備好，並轉換成巢狀的資料結構以便於應用程式進行操作，這樣可以避免多次查詢造成的效能風險。　　 但前陣子在開發過程檢查 ORM 產生的 SQL 時意外發現我的認知不一定是對的。">
+<meta property="og:description" content="在使用 Entity Framework Core (EF Core) 進行資料存取操作時，初次查詢時會有耗時較長的現象。這種延遲主要是因為 EF Core 在第一次執行查詢時需要進行一系列的初始化步驟。這些步驟造成的延遲可能會對效能敏感的應用程式造成不利的影響。例如在 WebAPI 服務中，如果初始化花費太多時間可能造成連線超時。而且在效能監測時，這種初始化所造成的延遲可能會產生極端的執行時間資">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2024-03-24T14:32:18.051Z">
+<meta property="og:updated_time" content="2024-05-11T17:34:26.228Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用 ORM 做單次大查詢的效能陷阱">
-<meta name="twitter:description" content="在開發過程中，我們經常需要透過 ORM　(我是使用 EF Core) 從資料庫中取得資訊，在查詢很複雜的時候我通常都會盡量透過一個查詢就把資料準備好，並轉換成巢狀的資料結構以便於應用程式進行操作，這樣可以避免多次查詢造成的效能風險。　　 但前陣子在開發過程檢查 ORM 產生的 SQL 時意外發現我的認知不一定是對的。">
+<meta name="twitter:title" content="Entity Framework Core 預熱">
+<meta name="twitter:description" content="在使用 Entity Framework Core (EF Core) 進行資料存取操作時，初次查詢時會有耗時較長的現象。這種延遲主要是因為 EF Core 在第一次執行查詢時需要進行一系列的初始化步驟。這些步驟造成的延遲可能會對效能敏感的應用程式造成不利的影響。例如在 WebAPI 服務中，如果初始化花費太多時間可能造成連線超時。而且在效能監測時，這種初始化所造成的延遲可能會產生極端的執行時間資">
 
 
 
@@ -133,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="https://ronsun.github.io/content/20230617-large-scale-query-with-orm.html"/>
+  <link rel="canonical" href="https://ronsun.github.io/content/20240512-ef-core-warmup.html"/>
 
 
 
 
 
-  <title>使用 ORM 做單次大查詢的效能陷阱 | Ron 2.0</title>
+  <title>Entity Framework Core 預熱 | Ron 2.0</title>
   
 
 
@@ -300,7 +300,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20230617-large-scale-query-with-orm.html">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20240512-ef-core-warmup.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Ron Sun">
@@ -317,7 +317,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">使用 ORM 做單次大查詢的效能陷阱</h2>
+          <h2 class="post-title" itemprop="name headline">Entity Framework Core 預熱</h2>
         
 
         <div class="post-meta">
@@ -329,8 +329,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2023-06-17T23:44:28+08:00">
-                2023-06-17
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-05-12T00:19:21+08:00">
+                2024-05-12
               </time>
             
 
@@ -352,8 +352,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Others/" itemprop="url" rel="index">
-                    <span itemprop="name">Others</span>
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C#</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/Packages/" itemprop="url" rel="index">
+                    <span itemprop="name">Packages</span>
                   </a>
                 </span>
 
@@ -386,69 +397,23 @@
       
 
       
-        <p>在開發過程中，我們經常需要透過 ORM　(我是使用 EF Core) 從資料庫中取得資訊，在查詢很複雜的時候我通常都會盡量透過一個查詢就把資料準備好，並轉換成巢狀的資料結構以便於應用程式進行操作，這樣可以避免多次查詢造成的效能風險。　　</p>
-<p>但前陣子在開發過程檢查 ORM 產生的 SQL 時意外發現我的認知不一定是對的。  </p>
+        <p>在使用 Entity Framework Core (EF Core) 進行資料存取操作時，初次查詢時會有耗時較長的現象。這種延遲主要是因為 EF Core 在第一次執行查詢時需要進行一系列的初始化步驟。這些步驟造成的延遲可能會對效能敏感的應用程式造成不利的影響。例如在 WebAPI 服務中，如果初始化花費太多時間可能造成連線超時。而且在效能監測時，這種初始化所造成的延遲可能會產生極端的執行時間資料影響到效能的解讀。</p>
+<p>為了解決這個問題，通常會在應用程式啟動階段加入一些預熱的操作，以提前完成一些必要的初始化步驟。這篇文章會介紹兩種預熱解法，<strong>要注意的是這兩個解法不是針對所有的初始化步驟，目的只是要達到觸發 <code>DbContext.OnModelCreating()</code> 的效果來降低首次查詢的延遲時間</strong>。</p>
 <a id="more"></a>
-<h3 id="問題"><a href="#問題" class="headerlink" title="問題"></a>問題</h3><p>因為單次大查詢雖然能避免多次來回查詢的成本，但是當遇到巢狀的資料結構的時候，單次大查詢轉換出來的 SQL 可能會非常糟，問題主要可以分成兩個方向。</p>
-<p>這邊先附上一個複雜的 LINQ 查詢與透過 EF Core 轉化出來的 SQL 作為下面說明的參考資料：</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> courseDetails = _dbContext.Set&lt;Course&gt;()</span><br><span class="line">    .Where(c =&gt; c.Id == id)</span><br><span class="line">    .Select(c =&gt; <span class="keyword">new</span> Detail</span><br><span class="line">    &#123;</span><br><span class="line">        Id = c.Id,</span><br><span class="line">        Name = c.Name,</span><br><span class="line">        Teacher = c.Teacher.Name,</span><br><span class="line">        Students = c.Students.Select(s =&gt; <span class="keyword">new</span> Student</span><br><span class="line">        &#123;</span><br><span class="line">            Id = s.Id,</span><br><span class="line">            Name = s.Name,</span><br><span class="line">            Grade = s.Grades.FirstOrDefault(g =&gt; g.CourseId == c.Id).Grade,</span><br><span class="line">            PersonalInfo = <span class="keyword">new</span> PersonalInfo</span><br><span class="line">            &#123;</span><br><span class="line">                Address = s.PersonalInfo.Address,</span><br><span class="line">                PhoneNumber = s.PersonalInfo.PhoneNumber,</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).ToList(),</span><br><span class="line">    &#125;)</span><br><span class="line">    .SingleOrDefault();</span><br></pre></td></tr></table></figure>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">    <span class="string">"c"</span>.<span class="string">"Id"</span>, </span><br><span class="line">    <span class="string">"c"</span>.<span class="string">"Name"</span>, </span><br><span class="line">    <span class="string">"t"</span>.<span class="string">"Name"</span>, </span><br><span class="line">    <span class="string">"s"</span>.<span class="string">"Id"</span>, </span><br><span class="line">    <span class="string">"s"</span>.<span class="string">"Name"</span>, </span><br><span class="line">    (<span class="keyword">SELECT</span> <span class="string">"g"</span>.<span class="string">"Grade"</span> <span class="keyword">FROM</span> <span class="string">"Grades"</span> <span class="keyword">AS</span> <span class="string">"g"</span> <span class="keyword">WHERE</span> (<span class="string">"g"</span>.<span class="string">"CourseId"</span> = <span class="string">"c"</span>.<span class="string">"Id"</span>) <span class="keyword">AND</span> (<span class="string">"g"</span>.<span class="string">"StudentId"</span> = <span class="string">"s"</span>.<span class="string">"Id"</span>) <span class="keyword">FETCH</span> <span class="keyword">FIRST</span> <span class="keyword">ROW</span> <span class="keyword">ONLY</span>),</span><br><span class="line">    <span class="string">"p"</span>.<span class="string">"Address"</span>, </span><br><span class="line">    <span class="string">"p"</span>.<span class="string">"PhoneNumber"</span></span><br><span class="line"><span class="keyword">FROM</span> </span><br><span class="line">    <span class="string">"Courses"</span> <span class="keyword">AS</span> <span class="string">"c"</span> </span><br><span class="line">    <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> <span class="string">"Teachers"</span> <span class="keyword">AS</span> <span class="string">"t"</span> <span class="keyword">ON</span> <span class="string">"c"</span>.<span class="string">"Id"</span> = <span class="string">"t"</span>.<span class="string">"CourseId"</span></span><br><span class="line">    <span class="keyword">JOIN</span> (</span><br><span class="line">        <span class="keyword">SELECT</span> <span class="string">"s"</span>.*, <span class="string">"cs"</span>.<span class="string">"CourseId"</span> </span><br><span class="line">        <span class="keyword">FROM</span> <span class="string">"Students"</span> <span class="keyword">AS</span> <span class="string">"s"</span></span><br><span class="line">        <span class="keyword">INNER</span> <span class="keyword">JOIN</span> <span class="string">"CourseStudents"</span> <span class="keyword">AS</span> <span class="string">"cs"</span> <span class="keyword">ON</span> <span class="string">"s"</span>.<span class="string">"Id"</span> = <span class="string">"cs"</span>.<span class="string">"StudentId"</span></span><br><span class="line">        <span class="keyword">ORDER</span> <span class="keyword">BY</span> <span class="string">"cs"</span>.<span class="string">"CourseId"</span></span><br><span class="line">    ) <span class="keyword">AS</span> <span class="string">"s"</span> <span class="keyword">ON</span> <span class="string">"c"</span>.<span class="string">"Id"</span> = <span class="string">"s"</span>.<span class="string">"CourseId"</span></span><br><span class="line">    <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> <span class="string">"PersonalInfos"</span> <span class="keyword">AS</span> <span class="string">"p"</span> <span class="keyword">ON</span> <span class="string">"s"</span>.<span class="string">"Id"</span> = <span class="string">"p"</span>.<span class="string">"StudentId"</span></span><br><span class="line"><span class="keyword">WHERE</span> </span><br><span class="line">    <span class="string">"c"</span>.<span class="string">"Id"</span> = :<span class="keyword">id</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> </span><br><span class="line">    <span class="string">"c"</span>.<span class="string">"Id"</span>, </span><br><span class="line">    <span class="string">"s"</span>.<span class="string">"CourseId"</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>這個問題是工作上遇到的也<strong>已經確認過問題的確存在</strong>，但當然不能拿公司實際資料當範例，所以這邊用 ChatGPT 產生 LINQ 和 SQL 來當範例，因為是機器產生的和實際運作產生的 SQL 不一定會相同甚至無法運作，<strong>但作為展示概念的參考資料已經足夠了</strong>。</p>
-</blockquote>
-<h4 id="大量多餘的資料"><a href="#大量多餘的資料" class="headerlink" title="大量多餘的資料"></a>大量多餘的資料</h4><p>這部分可以用 SQL 搜尋出來的資料是一個表格為出發點去理解，因為透過 SQL 沒辦法直接搜尋出一個巢狀的資料結構，所以在查到的資料到應用程式的巢狀類別中間勢必要經過轉化，而這個轉化是發生在應用程式中的。  </p>
-<p>從上面的範例來看，我們可以看到他產生的 SQL 因為包含大量的 JOIN 所以搜尋出來的資料筆數可能會極大，然後才在應用程式中分組整合。</p>
-<p><strong>而重點在於這大量的資料中的多數欄位都是重複的內容。</strong>  </p>
-<blockquote>
-<p>以實際遇到的情境來說，我只是要搜尋一筆主資料，但因為關聯到很多其他資料表所以實際上搜尋出幾千筆的資料，然後在應用程式中將幾千筆資料分組整合成一個巢狀類別。  </p>
-</blockquote>
-<p>這會造成的問題有：  </p>
+<h3 id="解法一：-dbContext-Set-lt-T-gt"><a href="#解法一：-dbContext-Set-lt-T-gt" class="headerlink" title="解法一： dbContext.Set&lt;T&gt;"></a>解法一： <code>dbContext.Set&lt;T&gt;</code></h3><p>以 ASP.NET Core 來說，在 <code>Startup.cs</code> 中的 <code>Configure</code> 方法中注入 <code>DbContext</code> 來達到效果是最常見的作法，如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Configure</span>(<span class="params">IApplicationBuilder app, DbContext dbContext</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// Warmup operation, trigger DbContext.OnModelCreating() to reduce the initialization delay on first query.</span></span><br><span class="line">    dbContext.Set&lt;Blog&gt;().FirstOrDefault();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>這是最簡單的解法，但特定的 Model 進而產生額外的依賴這個缺點會帶來幾個風險和限制：</p>
 <ul>
-<li><strong>無謂的記憶體消耗，甚至 GC 的負擔</strong><br>透過上面描述，可想而知這幾千筆中重複的內容會造成多少無謂的記憶體消耗，如果資料夠大還可能會進一步造成 GC 的負擔。</li>
-<li><strong>提高對 CPU 的負擔</strong><br>這點也很好理解，大量資料的轉化需要很多運算資源。</li>
+<li>該 Model 被移除時看似無關的預熱功能也需要一併修改而使用其他 Model。</li>
+<li>會需要特別寫註解說明目的，否則後期維護時很可能被誤當成多餘的程式碼而刪除，最麻煩的是刪除後短期內可能還不會產生明顯的問題。</li>
+<li>難以通用化，例如公司內部如果有通用套件時，會因為依賴特定資料庫對應的 Model 而無法將預熱功能加入其中。</li>
 </ul>
-<h4 id="不必要的排序"><a href="#不必要的排序" class="headerlink" title="不必要的排序"></a>不必要的排序</h4><p>另外一個就是不必要的排序，從前面的範例可以發現所產生的不必要的排序，這個排序會使得 SQL 本身的查詢成本大幅提高。  </p>
-<blockquote>
-<p>至於為什麼會排序，根據 ChatGPT 的說法是：<br>Entity Framework Core 在產生 SQL 語句時，會在某些情況下插入排序操作，以確保返回的資料符合 C# 的 LINQ 查詢的順序。這通常發生在涉及集合導航屬性的查詢中，因為 EF Core 需要保證資料的順序與原始查詢相符。<br>這種排序操作是 EF Core 為了處理導航集合屬性（如 c.Students）而添加的。它需要按照外鍵（在這裡是 CourseId）的順序來獲取相關的 Students，以便能夠正確地建立回傳的物件。</p>
-</blockquote>
-<h3 id="解決方案"><a href="#解決方案" class="headerlink" title="解決方案"></a>解決方案</h3><p>解決方式其實就是把單次大查詢轉化成多次小查詢，如下範例。</p>
-<pre><code class="csharp"><span class="keyword">var</span> courseDetails = _dbContext.Set&lt;Course&gt;()
-    .Where(c =&gt; c.Id == id)
-    .Select(c =&gt; <span class="keyword">new</span> Detail
-    {
-        Id = c.Id,
-        Name = c.Name,
-        Teacher = c.Teacher.Name,
-    })
-    .SingleOrDefault();
-
-courseDetails.Students = _dbContext.Set&lt;Student&gt;()
-    .Where(s =&gt; s.Courses.Any(c =&gt; c.Id == courseDetails.Id))
-    .Select(s =&gt; <span class="keyword">new</span> Student
-    {
-        Id = s.Id,
-        Name = s.Name,
-        Grade = s.Grades.FirstOrDefault(g =&gt; g.CourseId == courseDetails.Id).Grade,
-        PersonalInfo = <span class="keyword">new</span> PersonalInfo
-        {
-            Address = s.PersonalInfo.Address,
-            PhoneNumber = s.PersonalInfo.PhoneNumber,
-        }
-    }).ToList();
-</code></pre>
-<p>因為被拆成幾段小查詢，所以每一段查詢都會降低 JOIN 的數量 (甚至沒有)，因此就能避免單次大查詢的效能陷阱了。</p>
-<blockquote>
-<p>但這邊還是要注意，不是把巢狀拆掉分開就是好的，如果 JOIN 後的資料量很小，多次小查詢的效能是可能比單次查詢要差的，這部分就變成要因地制宜來判定了。</p>
-</blockquote>
-<h3 id="總結"><a href="#總結" class="headerlink" title="總結"></a>總結</h3><p>以前總是覺得多個小查詢查資料效能比較差，沒想到其實不一定。  </p>
-<p>總結一下巢狀物件的查詢心得：  </p>
-<ol>
-<li>看到巢狀物件考慮拆成多個小查詢。</li>
-<li>巢狀部分的資料量很大或預期會快速成長時，拆成小查詢可能比較好。</li>
-<li>巢狀部分的資料量很小且幾乎不會增長時，不拆可能程式碼會比較整潔。</li>
-<li>拆與不拆之間，要綜合考量可讀性、效能差異幅度、資料是否會增長…等多個要素，也可將 ORM 所產生的 SQL 印出來後分析以協助判斷。</li>
-</ol>
-<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p>ChatGPT</p>
+<h3 id="解法二：-ExecuteSqlRaw"><a href="#解法二：-ExecuteSqlRaw" class="headerlink" title="解法二： ExecuteSqlRaw()"></a>解法二： <code>ExecuteSqlRaw()</code></h3><p>為了避免解法一所產生的副作用，可以用執行一個和資料表無關的查詢達到效果，如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Configure</span>(<span class="params">IApplicationBuilder app, DbContext dbContext</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// Warmup operation, trigger DbContext.OnModelCreating() to reduce the initialization delay on first query.</span></span><br><span class="line">    dbContext.Database.ExecuteSqlRaw(<span class="string">"SELECT 1 FROM DUAL"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>這個解法解決了依賴特定的 Model，這個優點帶來了很大的通用性。以我遇到的情境來說，能輕易的將預熱功能抽離到內部套件中提供跨部門同事使用，如下範例：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// In internal library.</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">namespace</span> <span class="title">MyCompany.EFCoreEnhancement</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">DbContextExtension</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Warmup</span>(<span class="params"><span class="keyword">this</span> DbContext context</span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            context.Database.ExecuteSqlRaw(<span class="string">"SELECT 1 FROM DUAL"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// In application using the internal library.</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Configure</span>(<span class="params">IApplicationBuilder app, DbContext dbContext</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    dbContext.Warmup();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>一般來說除非已有現成 API 可用，否則不建議一開始就做預熱功能。如果要做則是視使用情境，單一專案或存取單一資料庫的情境解法一加註解就很夠用了。解法二則是基於最大化通用性的考量設計的，這個方案在把預熱功能抽離到通用套件時才有明顯的優勢。</p>
 
       
     </div>
@@ -473,8 +438,8 @@ courseDetails.Students = _dbContext.Set&lt;Student&gt;()
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/content/20230312-use-source-browser.html" rel="next" title="使用 SourceBrowser 建立原始碼瀏覽網站">
-                <i class="fa fa-chevron-left"></i> 使用 SourceBrowser 建立原始碼瀏覽網站
+              <a href="/content/20240427-why-access-array-index-constant-time.html" rel="next" title="為什麼陣列索引的存取是常數時間複雜度 O(1)">
+                <i class="fa fa-chevron-left"></i> 為什麼陣列索引的存取是常數時間複雜度 O(1)
               </a>
             
           </div>
@@ -482,10 +447,6 @@ courseDetails.Students = _dbContext.Set&lt;Student&gt;()
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/content/20230709-using-partial-class.html" rel="prev" title="C# 部分類別 (Partial Class) 的使用建議">
-                C# 部分類別 (Partial Class) 的使用建議 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -533,7 +494,7 @@ courseDetails.Students = _dbContext.Set&lt;Student&gt;()
           }
           function showGitment() {
             var gitment = new Gitment({
-              id: '1687016668000',
+              id: '1715444361000',
               theme: myTheme,
               owner: 'ronsun',
               repo: 'ronsun.github.io.gitment',
@@ -700,7 +661,7 @@ courseDetails.Students = _dbContext.Set&lt;Student&gt;()
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#問題"><span class="nav-number">1.</span> <span class="nav-text">問題</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#大量多餘的資料"><span class="nav-number">1.1.</span> <span class="nav-text">大量多餘的資料</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不必要的排序"><span class="nav-number">1.2.</span> <span class="nav-text">不必要的排序</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解決方案"><span class="nav-number">2.</span> <span class="nav-text">解決方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#總結"><span class="nav-number">3.</span> <span class="nav-text">總結</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">4.</span> <span class="nav-text">參考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#解法一：-dbContext-Set-lt-T-gt"><span class="nav-number">1.</span> <span class="nav-text">解法一： dbContext.Set&lt;T&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解法二：-ExecuteSqlRaw"><span class="nav-number">2.</span> <span class="nav-text">解法二： ExecuteSqlRaw()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li></ol></div>
             
 
           </div>
