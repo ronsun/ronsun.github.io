@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://ronsun.github.io/content/20240622-concurrent-dictionary.html</loc>
+    
+    <lastmod>2024-06-22T16:37:08.952Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://ronsun.github.io/content/20240526-identify-and-solve-slow-data-queries.html</loc>
     
     <lastmod>2024-05-26T18:05:03.484Z</lastmod>
