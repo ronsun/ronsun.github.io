@@ -94,17 +94,17 @@
 
 
 
-<meta name="description" content="HttpRequest.QueryString[“q”] 在用來取得query string的值是很方便, 但是會自動將query string先做過UrlDecode, 這在query string 有某些特殊字元的時候產生問題">
+<meta name="description" content="在之前的專案中，我們遇到了一個情境，在需要處理多個非同步操作，例如多個網絡請求或文件處理時，需要設定一個總和的超時時間，當超過這個時間時，只回傳成功執行的非同步操作結果，並放棄還沒做完的部分。這篇文章會說明如何應對這種特殊需求。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="HttpRequest.QueryString 的自動 UrlDecode 問題">
-<meta property="og:url" content="https://ronsun.github.io/content/20170813-HhttpRequest.QueryString-auto-urlDecode.html">
+<meta property="og:title" content="在 C# 中控制非同步操作的總超時時間">
+<meta property="og:url" content="https://ronsun.github.io/content/20240623-async-batch-timedout.html">
 <meta property="og:site_name" content="Ron 2.0">
-<meta property="og:description" content="HttpRequest.QueryString[“q”] 在用來取得query string的值是很方便, 但是會自動將query string先做過UrlDecode, 這在query string 有某些特殊字元的時候產生問題">
+<meta property="og:description" content="在之前的專案中，我們遇到了一個情境，在需要處理多個非同步操作，例如多個網絡請求或文件處理時，需要設定一個總和的超時時間，當超過這個時間時，只回傳成功執行的非同步操作結果，並放棄還沒做完的部分。這篇文章會說明如何應對這種特殊需求。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2023-11-26T17:01:26.702Z">
+<meta property="og:updated_time" content="2024-06-23T16:35:21.947Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="HttpRequest.QueryString 的自動 UrlDecode 問題">
-<meta name="twitter:description" content="HttpRequest.QueryString[“q”] 在用來取得query string的值是很方便, 但是會自動將query string先做過UrlDecode, 這在query string 有某些特殊字元的時候產生問題">
+<meta name="twitter:title" content="在 C# 中控制非同步操作的總超時時間">
+<meta name="twitter:description" content="在之前的專案中，我們遇到了一個情境，在需要處理多個非同步操作，例如多個網絡請求或文件處理時，需要設定一個總和的超時時間，當超過這個時間時，只回傳成功執行的非同步操作結果，並放棄還沒做完的部分。這篇文章會說明如何應對這種特殊需求。">
 
 
 
@@ -133,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="https://ronsun.github.io/content/20170813-HhttpRequest.QueryString-auto-urlDecode.html"/>
+  <link rel="canonical" href="https://ronsun.github.io/content/20240623-async-batch-timedout.html"/>
 
 
 
 
 
-  <title>HttpRequest.QueryString 的自動 UrlDecode 問題 | Ron 2.0</title>
+  <title>在 C# 中控制非同步操作的總超時時間 | Ron 2.0</title>
   
 
 
@@ -300,7 +300,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20170813-HhttpRequest.QueryString-auto-urlDecode.html">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20240623-async-batch-timedout.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Ron Sun">
@@ -317,7 +317,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">HttpRequest.QueryString 的自動 UrlDecode 問題</h2>
+          <h2 class="post-title" itemprop="name headline">在 C# 中控制非同步操作的總超時時間</h2>
         
 
         <div class="post-meta">
@@ -329,8 +329,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-13T01:33:03+08:00">
-                2017-08-13
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-06-23T23:53:35+08:00">
+                2024-06-23
               </time>
             
 
@@ -354,17 +354,6 @@
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/C/" itemprop="url" rel="index">
                     <span itemprop="name">C#</span>
-                  </a>
-                </span>
-
-                
-                
-                  , 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/NET/" itemprop="url" rel="index">
-                    <span itemprop="name">.NET</span>
                   </a>
                 </span>
 
@@ -397,10 +386,13 @@
       
 
       
-        <p>HttpRequest.QueryString[“q”] 在用來取得query string的值是很方便, 但是會自動將query string先做過UrlDecode, 這在query string 有某些特殊字元的時候產生問題</p>
+        <p>在之前的專案中，我們遇到了一個情境，在需要處理多個非同步操作，例如多個網絡請求或文件處理時，需要設定一個總和的超時時間，當超過這個時間時，只回傳成功執行的非同步操作結果，並放棄還沒做完的部分。這篇文章會說明如何應對這種特殊需求。</p>
 <a id="more"></a>
-<p>直接上Demo</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ActionResult <span class="title">Index</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//sample query string (plain text): q=aaa$bbb+ccc</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//q = "aaa$bbb ccc"</span></span><br><span class="line">    <span class="keyword">string</span> q = <span class="keyword">this</span>.Request.QueryString[<span class="string">"q"</span>];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// solution 1: encode after get query string</span></span><br><span class="line">    <span class="comment">//             useful if query string not contain other characters can be encode</span></span><br><span class="line">    <span class="comment">//q = "aaa%24bbb+ccc" in this case</span></span><br><span class="line">    <span class="keyword">string</span> q2 = HttpUtility.UrlEncode(<span class="keyword">this</span>.Request.QueryString[<span class="string">"q"</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// solution 2: split string to get value</span></span><br><span class="line">    <span class="comment">//             if query string contain charactors can be encode, this is safety way</span></span><br><span class="line">    List&lt;<span class="keyword">string</span>&gt; queryStrings = <span class="keyword">this</span>.Request.Url.Query.Replace(<span class="string">"?"</span>, <span class="string">""</span>).Split(<span class="string">'&amp;'</span>).ToList();</span><br><span class="line">    <span class="comment">//q3 = "aaa$bbb+ccc"</span></span><br><span class="line">    <span class="keyword">string</span> q3 = queryStrings.Where(r =&gt; r.Split(<span class="string">'='</span>)[<span class="number">0</span>] == <span class="string">"q"</span>).Select(r =&gt; r.Split(<span class="string">'='</span>)[<span class="number">1</span>]).FirstOrDefault();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> View();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="問題細節說明"><a href="#問題細節說明" class="headerlink" title="問題細節說明"></a>問題細節說明</h3><p>對於批次非同步操作，一般有兩種策略：一是使用 <code>Task.WhenAll</code> 在所有操作都完成時繼續；二是使用 <code>Task.WhenAny</code> 在任一操作完成時繼續。但這兩種策略都不能解決這個問題：在特定時間範圍內只處理已完成的操作。</p>
+<h3 id="解決方案"><a href="#解決方案" class="headerlink" title="解決方案"></a>解決方案</h3><p>使用 <code>Task.WhenAny</code> 搭配一個計時用的 Task 來達到目標。  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AsyncTimeoutExample</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">async</span> Task&lt;List&lt;<span class="keyword">string</span>&gt;&gt; ProcessTasksWithTimeout(IEnumerable&lt;Task&lt;<span class="keyword">string</span>&gt;&gt; tasks, TimeSpan timeout)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// The key point is the timer task.</span></span><br><span class="line">        <span class="keyword">var</span> timeoutTask = Task.Delay(timeout);</span><br><span class="line">        <span class="keyword">var</span> taskList = <span class="keyword">new</span> List&lt;Task&lt;<span class="keyword">string</span>&gt;&gt;(tasks) &#123; timeoutTask &#125;;</span><br><span class="line">        <span class="keyword">var</span> results = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (taskList.Count &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Task completedTask = <span class="keyword">await</span> Task.WhenAny(taskList);</span><br><span class="line">            <span class="comment">// Timed out, stop then return completed results.</span></span><br><span class="line">            <span class="keyword">if</span> (completedTask == timeoutTask)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            taskList.Remove(completedTask);</span><br><span class="line">            <span class="keyword">if</span> (completedTask <span class="keyword">is</span> Task&lt;<span class="keyword">string</span>&gt; resultTask)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// A task completed in time.</span></span><br><span class="line">                <span class="comment">// Keep the result and continue until timeout or every tasks are completed.</span></span><br><span class="line">                results.Add(<span class="keyword">await</span> resultTask);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> results;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>這個需求其實很特殊，一般情境下不會遇到，但使用一個計時用的 Task 搭配 <code>Task.WhenAny</code> 的策略很有趣，所以記錄一下，供未來參考。</p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p>ChatGPT</p>
 
       
     </div>
@@ -425,8 +417,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/content/19000101-tools-and-references.html" rel="next" title="置底 - 工具箱與優質傳送門">
-                <i class="fa fa-chevron-left"></i> 置底 - 工具箱與優質傳送門
+              <a href="/content/20240622-concurrent-dictionary.html" rel="next" title="在非同步情境下使用 ConcurrentDictionary">
+                <i class="fa fa-chevron-left"></i> 在非同步情境下使用 ConcurrentDictionary
               </a>
             
           </div>
@@ -434,10 +426,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/content/20170820-mssql-random-string.html" rel="prev" title="新增一個使用者定義函數提供亂數字串">
-                新增一個使用者定義函數提供亂數字串 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -485,7 +473,7 @@
           }
           function showGitment() {
             var gitment = new Gitment({
-              id: '1502559183000',
+              id: '1719158015000',
               theme: myTheme,
               owner: 'ronsun',
               repo: 'ronsun.github.io.gitment',
@@ -520,8 +508,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -633,6 +630,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#問題細節說明"><span class="nav-number">1.</span> <span class="nav-text">問題細節說明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解決方案"><span class="nav-number">2.</span> <span class="nav-text">解決方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">4.</span> <span class="nav-text">參考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
