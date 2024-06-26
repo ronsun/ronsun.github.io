@@ -2,51 +2,58 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://ronsun.github.io/content/20240624-whats-new-in-csharp-9.html</loc>
+    
+    <lastmod>2024-06-26T16:11:23.471Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://ronsun.github.io/content/20240623-async-batch-timedout.html</loc>
     
-    <lastmod>2024-06-24T15:48:20.345Z</lastmod>
+    <lastmod>2024-06-26T16:11:23.431Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20240622-concurrent-dictionary.html</loc>
     
-    <lastmod>2024-06-24T15:48:20.303Z</lastmod>
+    <lastmod>2024-06-26T16:11:23.379Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20240526-identify-and-solve-slow-data-queries.html</loc>
     
-    <lastmod>2024-06-24T15:48:20.261Z</lastmod>
+    <lastmod>2024-06-26T16:11:23.317Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20240512-ef-core-warmup.html</loc>
     
-    <lastmod>2024-05-11T17:34:26.228Z</lastmod>
+    <lastmod>2024-06-26T16:11:23.239Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20240427-why-access-array-index-constant-time.html</loc>
     
-    <lastmod>2024-04-27T15:15:36.676Z</lastmod>
+    <lastmod>2024-06-26T16:11:23.177Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20240404-fluent-chain-of-responsibility.html</loc>
     
-    <lastmod>2024-04-05T14:02:14.866Z</lastmod>
+    <lastmod>2024-06-26T16:11:23.117Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://ronsun.github.io/content/20240324-whats-new-in-csharp-8.html</loc>
     
-    <lastmod>2024-04-03T17:00:15.232Z</lastmod>
+    <lastmod>2024-06-26T16:11:23.052Z</lastmod>
     
   </url>
   
@@ -310,14 +317,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20191126-json-net-trailing-zero-number-problem.html</loc>
+    <loc>https://ronsun.github.io/content/20191017-manually-use-sqlite-with-ef.html</loc>
     
     <lastmod>2023-11-26T17:01:26.818Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20191017-manually-use-sqlite-with-ef.html</loc>
+    <loc>https://ronsun.github.io/content/20191126-json-net-trailing-zero-number-problem.html</loc>
     
     <lastmod>2023-11-26T17:01:26.818Z</lastmod>
     
@@ -499,14 +506,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180409-usage-of-partial-in-csharp.html</loc>
+    <loc>https://ronsun.github.io/content/20180519-const-vs-readonly.html</loc>
     
     <lastmod>2023-11-26T17:01:26.725Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180519-const-vs-readonly.html</loc>
+    <loc>https://ronsun.github.io/content/20180409-usage-of-partial-in-csharp.html</loc>
     
     <lastmod>2023-11-26T17:01:26.725Z</lastmod>
     
