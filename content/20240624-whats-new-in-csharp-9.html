@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="Ron 2.0">
 <meta property="og:description" content="C# 各版本新特性摘要，包含自己的想法與實務上的偏好。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2024-06-26T16:16:25.783Z">
+<meta property="og:updated_time" content="2024-06-29T17:05:15.165Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C# 語言特性更新 - C# 9">
 <meta name="twitter:description" content="C# 各版本新特性摘要，包含自己的想法與實務上的偏好。">
@@ -413,7 +413,7 @@
 <li>繼承的限制 (Inheritance)，Record 之間可以繼承，但 Record 和 class 互相不能繼承。  </li>
 </ul>
 <blockquote>
-<p>整體看起來除了簡化語法外，另外也想用參考型別來模擬實質型別的特性，來得到兩者的優點。並且提供一些預設特性來達到方便使用的效果，但因為這些設計造成他和一般類別有種非常相似卻又有很多不同的情況，之後需要就 Record 這個主題另外深入探討。</p>
+<p>整體看起來除了簡化語法外，另外也想用參考型別來模擬實值型別的特性，來得到兩者的優點。並且提供一些預設特性來達到方便使用的效果，但因為這些設計造成他和一般類別有種非常相似卻又有很多不同的情況，之後需要就 Record 這個主題另外深入探討。</p>
 </blockquote>
 <h3 id="僅供初始化的-Setter-Init-only-setters"><a href="#僅供初始化的-Setter-Init-only-setters" class="headerlink" title="僅供初始化的 Setter (Init only setters)"></a>僅供初始化的 Setter (Init only setters)</h3><p>精確來說是屬性只能在建構子中賦值，一旦離開建構子就不能再賦值了。  </p>
 <p>使用初始設定式可以賦值 (初始設定式編譯後是在建構子中賦值)：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> FirstName &#123; <span class="keyword">get</span>; init; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> LastName &#123; <span class="keyword">get</span>; init; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> Age &#123; <span class="keyword">get</span>; init; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> ron = <span class="keyword">new</span> Person</span><br><span class="line">&#123;</span><br><span class="line">   FirstName = <span class="string">"Ron"</span>,</span><br><span class="line">   LastName = <span class="string">"Sun"</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
@@ -477,6 +477,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/content/20240629-whats-new-in-csharp-10.html" rel="prev" title="C# 語言特性更新 - C# 10">
+                C# 語言特性更新 - C# 10 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -584,7 +588,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-count">85</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

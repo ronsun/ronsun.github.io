@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://ronsun.github.io/content/20240629-whats-new-in-csharp-10.html</loc>
+    
+    <lastmod>2024-06-29T17:05:15.204Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://ronsun.github.io/content/20240624-whats-new-in-csharp-9.html</loc>
     
-    <lastmod>2024-06-26T16:16:25.783Z</lastmod>
+    <lastmod>2024-06-29T17:05:15.165Z</lastmod>
     
   </url>
   
@@ -205,14 +212,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20220606-about-object-and-collection-initializers.html</loc>
+    <loc>https://ronsun.github.io/content/20220626-read-form-body-after-model-binding.html</loc>
     
     <lastmod>2023-11-26T17:01:26.856Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20220626-read-form-body-after-model-binding.html</loc>
+    <loc>https://ronsun.github.io/content/20220606-about-object-and-collection-initializers.html</loc>
     
     <lastmod>2023-11-26T17:01:26.856Z</lastmod>
     
@@ -240,14 +247,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20211031-netcore-inject-multiple-implementation.html</loc>
+    <loc>https://ronsun.github.io/content/20210606-use-friend-assembly.html</loc>
     
     <lastmod>2023-11-26T17:01:26.852Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20210606-use-friend-assembly.html</loc>
+    <loc>https://ronsun.github.io/content/20211031-netcore-inject-multiple-implementation.html</loc>
     
     <lastmod>2023-11-26T17:01:26.852Z</lastmod>
     
@@ -317,14 +324,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20191017-manually-use-sqlite-with-ef.html</loc>
+    <loc>https://ronsun.github.io/content/20191126-json-net-trailing-zero-number-problem.html</loc>
     
     <lastmod>2023-11-26T17:01:26.818Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20191126-json-net-trailing-zero-number-problem.html</loc>
+    <loc>https://ronsun.github.io/content/20191017-manually-use-sqlite-with-ef.html</loc>
     
     <lastmod>2023-11-26T17:01:26.818Z</lastmod>
     
@@ -520,14 +527,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180304-random-in-csharp.html</loc>
+    <loc>https://ronsun.github.io/content/20180412-anti-switch-case.html</loc>
     
     <lastmod>2023-11-26T17:01:26.724Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180412-anti-switch-case.html</loc>
+    <loc>https://ronsun.github.io/content/20180304-random-in-csharp.html</loc>
     
     <lastmod>2023-11-26T17:01:26.724Z</lastmod>
     

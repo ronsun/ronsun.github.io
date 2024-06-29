@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA" />
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://github.com/identicons/ronsun.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="C# 各版本新特性摘要，包含自己的想法與實務上的偏好。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# 語言特性更新 - C# 10">
+<meta property="og:url" content="https://ronsun.github.io/content/20240629-whats-new-in-csharp-10.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="C# 各版本新特性摘要，包含自己的想法與實務上的偏好。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2024-06-29T17:05:15.204Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C# 語言特性更新 - C# 10">
+<meta name="twitter:description" content="C# 各版本新特性摘要，包含自己的想法與實務上的偏好。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://ronsun.github.io/content/20240629-whats-new-in-csharp-10.html"/>
+
+
+
+
+
+  <title>C# 語言特性更新 - C# 10 | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ron 2.0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">Simple Is Not Easy</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Searching..." spellcheck="false"
+             type="text" id="local-search-input" />
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20240629-whats-new-in-csharp-10.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ron Sun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">C# 語言特性更新 - C# 10</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-06-29T22:37:12+08:00">
+                2024-06-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C#</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/Language-Spec/" itemprop="url" rel="index">
+                    <span itemprop="name">Language Spec</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>C# 各版本新特性摘要，包含自己的想法與實務上的偏好。</p>
+<a id="more"></a>
+<h3 id="實值型別的-Record-Record-structs"><a href="#實值型別的-Record-Record-structs" class="headerlink" title="實值型別的 Record (Record structs)"></a>實值型別的 Record (Record structs)</h3><p>用 <code>record struct</code> 或是 <code>readonly record struct</code> 來定義實值型別的 Record。  </p>
+<h3 id="struct-型別的改善"><a href="#struct-型別的改善" class="headerlink" title="struct 型別的改善"></a><code>struct</code> 型別的改善</h3><p>可以在結構類型上加上無參數建構子並在其中初始化欄位或屬性。且 <code>with</code> 左邊的型別可以是結構型別或是匿名參考型別。</p>
+<h3 id="插補字串處理常式-Interpolated-string-handler"><a href="#插補字串處理常式-Interpolated-string-handler" class="headerlink" title="插補字串處理常式 (Interpolated string handler)"></a>插補字串處理常式 (Interpolated string handler)</h3><p>沒用過，但從 ChatGPT 的說明看起來，像是可以把字串插補轉換成特定的 handler 並輸出客製化結果而不是預設的字串。但值得注意他背後的機制不像是轉型，而是編譯器在特定情境(以字串插補為引數傳入時)才會將其編譯成呼叫 <code>CustomInterpolatedStringHandler</code>。  </p>
+<p>以 ChatGPT 的範例展示如下：  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Runtime.CompilerServices;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"></span><br><span class="line">[<span class="meta">InterpolatedStringHandler</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">ref</span> <span class="keyword">struct</span> CustomInterpolatedStringHandler</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> StringBuilder _builder;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CustomInterpolatedStringHandler</span>(<span class="params"><span class="keyword">int</span> literalLength, <span class="keyword">int</span> formattedCount</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        _builder = <span class="keyword">new</span> StringBuilder(literalLength);</span><br><span class="line">        Console.WriteLine(<span class="string">$"Literal length: <span class="subst">&#123;literalLength&#125;</span>, formatted count: <span class="subst">&#123;formattedCount&#125;</span>"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">AppendLiteral</span>(<span class="params"><span class="keyword">string</span> literal</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        _builder.Append(literal);</span><br><span class="line">        Console.WriteLine(<span class="string">$"Appended literal: <span class="subst">&#123;literal&#125;</span>"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> AppendFormatted&lt;T&gt;(T <span class="keyword">value</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        _builder.Append(<span class="keyword">value</span>?.ToString());</span><br><span class="line">        Console.WriteLine(<span class="string">$"Appended formatted: <span class="subst">&#123;<span class="keyword">value</span>&#125;</span>"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> AppendFormatted&lt;T&gt;(T <span class="keyword">value</span>, <span class="keyword">string</span> format) <span class="keyword">where</span> T : IFormattable</span><br><span class="line">    &#123;</span><br><span class="line">        _builder.Append(<span class="keyword">value</span>?.ToString(format, <span class="literal">null</span>));</span><br><span class="line">        Console.WriteLine(<span class="string">$"Appended formatted with format: <span class="subst">&#123;<span class="keyword">value</span>&#125;</span> with format <span class="subst">&#123;format&#125;</span>"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">AppendFormatted</span>(<span class="params"><span class="keyword">string</span> <span class="keyword">value</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        _builder.Append(<span class="keyword">value</span>);</span><br><span class="line">        Console.WriteLine(<span class="string">$"Appended formatted string: <span class="subst">&#123;<span class="keyword">value</span>&#125;</span>"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">AppendFormatted</span>(<span class="params"><span class="keyword">string</span> <span class="keyword">value</span>, <span class="keyword">int</span> alignment</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        _builder.Append(<span class="keyword">value</span>.PadRight(alignment));</span><br><span class="line">        Console.WriteLine(<span class="string">$"Appended formatted string with alignment: <span class="subst">&#123;<span class="keyword">value</span>&#125;</span> with alignment <span class="subst">&#123;alignment&#125;</span>"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> AppendFormatted&lt;T&gt;(T <span class="keyword">value</span>, <span class="keyword">int</span> alignment) <span class="keyword">where</span> T : IFormattable</span><br><span class="line">    &#123;</span><br><span class="line">        _builder.Append(<span class="keyword">value</span>?.ToString()?.PadRight(alignment));</span><br><span class="line">        Console.WriteLine(<span class="string">$"Appended formatted with alignment: <span class="subst">&#123;<span class="keyword">value</span>&#125;</span> with alignment <span class="subst">&#123;alignment&#125;</span>"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> AppendFormatted&lt;T&gt;(T <span class="keyword">value</span>, <span class="keyword">int</span> alignment, <span class="keyword">string</span> format) <span class="keyword">where</span> T : IFormattable</span><br><span class="line">    &#123;</span><br><span class="line">        _builder.Append(<span class="keyword">value</span>?.ToString(format, <span class="literal">null</span>)?.PadRight(alignment));</span><br><span class="line">        Console.WriteLine(<span class="string">$"Appended formatted with alignment and format: <span class="subst">&#123;<span class="keyword">value</span>&#125;</span> with alignment <span class="subst">&#123;alignment&#125;</span> and format <span class="subst">&#123;format&#125;</span>"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">string</span> <span class="title">ToString</span>(<span class="params"></span>) </span>=&gt; _builder.ToString();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">CustomLogger</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Log</span>(<span class="params">CustomInterpolatedStringHandler handler</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Console.WriteLine(handler.ToString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        CustomLogger.Log(<span class="string">$"Hello, <span class="subst">&#123;Environment.UserName&#125;</span>. Today is <span class="subst">&#123;DateTime.Now:MMMM dd, yyyy&#125;</span>."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>輸出是像這樣：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Literal length: 7, formatted count: 2</span><br><span class="line">Appended literal: Hello, </span><br><span class="line">Appended formatted: Ron</span><br><span class="line">Appended literal: . Today is </span><br><span class="line">Appended formatted with format: 29 June, 2024 with format MMMM dd, yyyy</span><br><span class="line">Hello, Ron. Today is 29 June, 2024.</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p><code>CustomInterpolatedStringHandler</code> 類似於 duck typing 的概念，依賴於實現特定的方法，但我個人不太喜歡這種風格，因為沒有實作介面或繼承父類別時所能得到的相關方法的提示，只能靠記憶或查文件去寫，維護的時候也會多出很多需要記憶的細節。<br>另外這個轉換行為太隱晦，看來是需要搭配完整的文件說明才能使用的特性，不然維護的人會很難意識到有客製化的字串插補。  </p>
+</blockquote>
+<h3 id="全域-using-指示詞-Global-using-directives"><a href="#全域-using-指示詞-Global-using-directives" class="headerlink" title="全域 using 指示詞 (Global using directives)"></a>全域 <code>using</code> 指示詞 (Global using directives)</h3><p>用 <code>global using</code> 語法來讓整個專案預設引入常用命名空間，減少單一個 <code>*.cs</code> 檔案中的 <code>using</code>。  </p>
+<blockquote>
+<p>如果有使用夠完善的 IDE 下看起來弊大於利，方便沒多少但容易衍生更多的維護成本，全域的命名空間和各檔案間命名空間下同名類別混淆的情況會更難排查，要避免的話全域的 <code>using</code> 還得經過嚴謹的設計、規範與程式碼審查制度，會增加不少維護成本。  </p>
+</blockquote>
+<h3 id="檔案範圍的命名空間宣告-File-scoped-namespace-declaration"><a href="#檔案範圍的命名空間宣告-File-scoped-namespace-declaration" class="headerlink" title="檔案範圍的命名空間宣告 (File-scoped namespace declaration)"></a>檔案範圍的命名空間宣告 (File-scoped namespace declaration)</h3><p>就省掉一個縮排而已。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Just save 1 indention</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">MyNamespace</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">A</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// ....</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">B</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// ....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>初步看來是個幫助很小的功能，預設有套用就用，沒套用的話也沒必要刻意去改。</p>
+</blockquote>
+<h3 id="擴充屬性在模式比對時的模式-Extended-property-patterns"><a href="#擴充屬性在模式比對時的模式-Extended-property-patterns" class="headerlink" title="擴充屬性在模式比對時的模式 (Extended property patterns)"></a>擴充屬性在模式比對時的模式 (Extended property patterns)</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// before</span></span><br><span class="line"><span class="keyword">if</span> (person <span class="keyword">is</span> &#123; Address: &#123; City: <span class="string">"Springfield"</span> &#125; &#125;)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// after</span></span><br><span class="line"><span class="keyword">if</span> (person <span class="keyword">is</span> &#123; Address.City: <span class="string">"Springfield"</span> &#125; &#125;)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Lambda-運算式改善-Lambda-expression-improvements"><a href="#Lambda-運算式改善-Lambda-expression-improvements" class="headerlink" title="Lambda 運算式改善 (Lambda expression improvements)"></a>Lambda 運算式改善 (Lambda expression improvements)</h3><ol>
+<li>編譯器可以從 Lambda 運算式或方法群組推斷委派類型，例如：<code>var add = (int x, int y) =&gt; x + y;</code> 可以使用推斷型別 <code>var</code>。</li>
+<li>如果無法推論型別則要自己定義。</li>
+<li>Attribute 可以加在 Lambda 運算式上。  </li>
+</ol>
+<p>這讓 Lambda 運算式更像一個方法。</p>
+<h3 id="常數差補字串-Constant-interpolated-strings"><a href="#常數差補字串-Constant-interpolated-strings" class="headerlink" title="常數差補字串 (Constant interpolated strings)"></a>常數差補字串 (Constant interpolated strings)</h3><p>如果字串插補的元素都是常數，則字串插補的結果可為常數，在編譯期確定字串內容來提升效能和安全性。  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">string</span> firstName = <span class="string">"John"</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">string</span> lastName = <span class="string">"Doe"</span>;</span><br><span class="line"><span class="comment">// Both firstName and lastName are constant, so fullName can be constant.</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">string</span> fullName = <span class="string">$"<span class="subst">&#123;firstName&#125;</span> <span class="subst">&#123;lastName&#125;</span>"</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="Record-的-ToString-方法可禁止繼承-Record-types-can-seal-ToString"><a href="#Record-的-ToString-方法可禁止繼承-Record-types-can-seal-ToString" class="headerlink" title="Record 的 ToString 方法可禁止繼承 (Record types can seal ToString)"></a>Record 的 <code>ToString</code> 方法可禁止繼承 (Record types can seal ToString)</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> record <span class="title">Person</span>(<span class="params"><span class="keyword">string</span> FirstName, <span class="keyword">string</span> LastName</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// Sealed ToString()</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">sealed</span> <span class="keyword">override</span> <span class="keyword">string</span> <span class="title">ToString</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">$"<span class="subst">&#123;FirstName&#125;</span> <span class="subst">&#123;LastName&#125;</span>"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Assignment-and-declaration-in-same-deconstruction"><a href="#Assignment-and-declaration-in-same-deconstruction" class="headerlink" title="Assignment and declaration in same deconstruction"></a>Assignment and declaration in same deconstruction</h3><p>就可以更靈活的使用解構子，如下<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// before 1</span></span><br><span class="line">(<span class="keyword">int</span> x, <span class="keyword">int</span> y) = point;</span><br><span class="line"></span><br><span class="line"><span class="comment">// before 2</span></span><br><span class="line"><span class="keyword">int</span> x1 = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> y1 = <span class="number">0</span>;</span><br><span class="line">(x1, y1) = point;</span><br><span class="line"></span><br><span class="line"><span class="comment">// after</span></span><br><span class="line"><span class="keyword">int</span> x = <span class="number">0</span>;</span><br><span class="line">(x, <span class="keyword">int</span> y) = point;</span><br></pre></td></tr></table></figure></p>
+<h3 id="改善明確指派-Improved-definite-assignment"><a href="#改善明確指派-Improved-definite-assignment" class="headerlink" title="改善明確指派 (Improved definite assignment)"></a>改善明確指派 (Improved definite assignment)</h3><p>此改進主要是針對編譯器在分析變數是否已被正確初始化時提供更準確的判斷，減少誤判的空值警告。</p>
+<h3 id="在方法上允許-AsyncMethodBuilder-特性-Allow-AsyncMethodBuilder-attribute-on-methods"><a href="#在方法上允許-AsyncMethodBuilder-特性-Allow-AsyncMethodBuilder-attribute-on-methods" class="headerlink" title="在方法上允許 AsyncMethodBuilder 特性 (Allow AsyncMethodBuilder attribute on methods)"></a>在方法上允許 AsyncMethodBuilder 特性 (Allow AsyncMethodBuilder attribute on methods)</h3><p>允許在方法上加 <code>AsyncMethodBuilderAttribute</code>。</p>
+<h3 id="CallerArgumentExpression-attribute-diagnostics"><a href="#CallerArgumentExpression-attribute-diagnostics" class="headerlink" title="CallerArgumentExpression attribute diagnostics"></a>CallerArgumentExpression attribute diagnostics</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Runtime.CompilerServices;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">Validator</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Ensure</span>(<span class="params"><span class="keyword">bool</span> condition, </span></span></span><br><span class="line"><span class="function"><span class="params">        [CallerArgumentExpression(<span class="keyword">nameof</span>(condition</span>))] <span class="keyword">string</span>? message </span>= <span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (!condition)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ArgumentException(<span class="string">$"Condition failed: <span class="subst">&#123;message&#125;</span>"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="keyword">string</span>[] args</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> x = <span class="number">5</span>;</span><br><span class="line">        <span class="keyword">int</span> y = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// This will not throw an exception</span></span><br><span class="line">        Validator.Ensure(x &lt; y);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// This will throw an exception with a detailed message</span></span><br><span class="line">        <span class="comment">// "Condition failed: x &gt; y"</span></span><br><span class="line">        Validator.Ensure(x &gt; y);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上範例，讓 <code>codition</code> 的參數內容 (x &gt; y) 做為 <code>message</code> 的值，方便除錯。  </p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>C# 10 大多是一些比較小的擴展，看起來輕鬆多了。</p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-10" target="_blank" rel="noopener">What’s new in C# 10</a>  </p>
+<p>ChatGPT</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/content/20240624-whats-new-in-csharp-9.html" rel="next" title="C# 語言特性更新 - C# 9">
+                <i class="fa fa-chevron-left"></i> C# 語言特性更新 - C# 9
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+        <div id="container" class="gitment_container"></div>
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+        <script>
+          const myTheme = {
+            render(state, instance) {
+              const container = document.createElement('div');
+              container.lang = "en-US";
+              container.className = 'gitment-container gitment-root-container';
+              container.appendChild(instance.renderHeader(state, instance));
+              container.appendChild(instance.renderEditor(state, instance));
+              container.appendChild(instance.renderComments(state, instance));
+              container.appendChild(instance.renderFooter(state, instance));
+              return container;
+            }
+          }
+          function showGitment() {
+            var gitment = new Gitment({
+              id: '1719671832000',
+              theme: myTheme,
+              owner: 'ronsun',
+              repo: 'ronsun.github.io.gitment',
+              oauth: {
+                client_id: '749fee720f2039efbbde',
+                client_secret: '3104dc228340ec2814ce1a11a7457d4f2d1effa6'
+              }
+            });
+            gitment.render('container');
+          }
+          showGitment();
+        </script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ron Sun" />
+          <p class="site-author-name" itemprop="name">Ron Sun</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">85</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ronsun" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.linkedin.com/in/ronsun/" target="_blank" title="Linkedin">
+                  
+                    <i class="fa fa-fw fa-linkedin"></i>
+                  
+                    
+                      Linkedin
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Resources
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://referencesource.microsoft.com/" title=".Net Source Code" target="_blank">.Net Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://source.dot.net/" title=".Net Core Source Code" target="_blank">.Net Core Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notfalse.net/" title="NotFalse 技術客" target="_blank">NotFalse 技術客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gist.github.com/ronsun" title="放零碎筆記的 Gist" target="_blank">放零碎筆記的 Gist</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#實值型別的-Record-Record-structs"><span class="nav-number">1.</span> <span class="nav-text">實值型別的 Record (Record structs)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#struct-型別的改善"><span class="nav-number">2.</span> <span class="nav-text">struct 型別的改善</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插補字串處理常式-Interpolated-string-handler"><span class="nav-number">3.</span> <span class="nav-text">插補字串處理常式 (Interpolated string handler)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#全域-using-指示詞-Global-using-directives"><span class="nav-number">4.</span> <span class="nav-text">全域 using 指示詞 (Global using directives)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#檔案範圍的命名空間宣告-File-scoped-namespace-declaration"><span class="nav-number">5.</span> <span class="nav-text">檔案範圍的命名空間宣告 (File-scoped namespace declaration)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#擴充屬性在模式比對時的模式-Extended-property-patterns"><span class="nav-number">6.</span> <span class="nav-text">擴充屬性在模式比對時的模式 (Extended property patterns)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lambda-運算式改善-Lambda-expression-improvements"><span class="nav-number">7.</span> <span class="nav-text">Lambda 運算式改善 (Lambda expression improvements)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常數差補字串-Constant-interpolated-strings"><span class="nav-number">8.</span> <span class="nav-text">常數差補字串 (Constant interpolated strings)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Record-的-ToString-方法可禁止繼承-Record-types-can-seal-ToString"><span class="nav-number">9.</span> <span class="nav-text">Record 的 ToString 方法可禁止繼承 (Record types can seal ToString)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Assignment-and-declaration-in-same-deconstruction"><span class="nav-number">10.</span> <span class="nav-text">Assignment and declaration in same deconstruction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改善明確指派-Improved-definite-assignment"><span class="nav-number">11.</span> <span class="nav-text">改善明確指派 (Improved definite assignment)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在方法上允許-AsyncMethodBuilder-特性-Allow-AsyncMethodBuilder-attribute-on-methods"><span class="nav-number">12.</span> <span class="nav-text">在方法上允許 AsyncMethodBuilder 特性 (Allow AsyncMethodBuilder attribute on methods)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CallerArgumentExpression-attribute-diagnostics"><span class="nav-number">13.</span> <span class="nav-text">CallerArgumentExpression attribute diagnostics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">14.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">15.</span> <span class="nav-text">參考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
