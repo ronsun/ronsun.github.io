@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://ronsun.github.io/content/20240708-whats-new-in-csharp-12.html</loc>
+    
+    <lastmod>2024-07-08T15:54:56.530Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://ronsun.github.io/content/20240630-whats-new-in-csharp-11.html</loc>
     
-    <lastmod>2024-07-07T16:30:30.103Z</lastmod>
+    <lastmod>2024-07-08T15:49:19.544Z</lastmod>
     
   </url>
   
@@ -254,14 +261,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20211031-netcore-inject-multiple-implementation.html</loc>
+    <loc>https://ronsun.github.io/content/20210606-use-friend-assembly.html</loc>
     
     <lastmod>2023-11-26T17:01:26.852Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20210606-use-friend-assembly.html</loc>
+    <loc>https://ronsun.github.io/content/20211031-netcore-inject-multiple-implementation.html</loc>
     
     <lastmod>2023-11-26T17:01:26.852Z</lastmod>
     

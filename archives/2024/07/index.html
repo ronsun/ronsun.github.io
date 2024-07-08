@@ -94,17 +94,16 @@
 
 
 
-<meta name="description" content="在 Web API 中, 例外處理是一定會遇到的問題, 以前常常見到一些專案為了怕出現 unhandled exception 就地毯式的將所有方法都加上 try-catch, 但是這樣使用 try-catch 會有很大的副作用, 一來無差別的吃掉所有例外會導致程式不易除錯, 二來到處散布的 try-catch 和相關的 log 在維護上的成本也很高, 尤其是大型專案更是明顯, 第三也會使得商務邏">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Web API 中的全域錯誤處理">
-<meta property="og:url" content="https://ronsun.github.io/content/20190308-global-exception-handle-in-webapi.html">
+<meta name="description" content="Simple Is Not Easy">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ron 2.0">
+<meta property="og:url" content="https://ronsun.github.io/archives/2024/07/index.html">
 <meta property="og:site_name" content="Ron 2.0">
-<meta property="og:description" content="在 Web API 中, 例外處理是一定會遇到的問題, 以前常常見到一些專案為了怕出現 unhandled exception 就地毯式的將所有方法都加上 try-catch, 但是這樣使用 try-catch 會有很大的副作用, 一來無差別的吃掉所有例外會導致程式不易除錯, 二來到處散布的 try-catch 和相關的 log 在維護上的成本也很高, 尤其是大型專案更是明顯, 第三也會使得商務邏">
+<meta property="og:description" content="Simple Is Not Easy">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2023-11-26T17:01:26.792Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Web API 中的全域錯誤處理">
-<meta name="twitter:description" content="在 Web API 中, 例外處理是一定會遇到的問題, 以前常常見到一些專案為了怕出現 unhandled exception 就地毯式的將所有方法都加上 try-catch, 但是這樣使用 try-catch 會有很大的副作用, 一來無差別的吃掉所有例外會導致程式不易除錯, 二來到處散布的 try-catch 和相關的 log 在維護上的成本也很高, 尤其是大型專案更是明顯, 第三也會使得商務邏">
+<meta name="twitter:title" content="Ron 2.0">
+<meta name="twitter:description" content="Simple Is Not Easy">
 
 
 
@@ -133,13 +132,13 @@
 
 
 
-  <link rel="canonical" href="https://ronsun.github.io/content/20190308-global-exception-handle-in-webapi.html"/>
+  <link rel="canonical" href="https://ronsun.github.io/archives/2024/07/"/>
 
 
 
 
 
-  <title>Web API 中的全域錯誤處理 | Ron 2.0</title>
+  <title>Archive | Ron 2.0</title>
   
 
 
@@ -158,7 +157,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail ">
+  <div class="container sidebar-position-left  page-archive  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -286,205 +285,73 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
-    
+  
+  
+  
+  <div class="post-block archive">
+    <div id="posts" class="posts-collapse">
+      <span class="archive-move-on"></span>
 
-  
+      <span class="archive-page-counter">
+        
+        
+         
+          
+        Good! 87 posts in total. Keep on posting.
+      </span>
 
-  
-  
-  
+      
+
+        
+        
+        
+
+        
+          
+          <div class="collection-title">
+            <h2 class="archive-year motion-element" id="archive-year-2024">2024</h2>
+          </div>
+        
+        
+
+        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20190308-global-exception-handle-in-webapi.html">
+    <header class="post-header">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ron Sun">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ron 2.0">
-    </span>
-
-    
-      <header class="post-header">
-
+      <h3 class="post-title">
         
+            <a class="post-title-link" href="/content/20240708-whats-new-in-csharp-12.html" itemprop="url">
+              
+                <span itemprop="name">C# 語言特性更新 - C# 12</span>
+              
+            </a>
         
-          <h2 class="post-title" itemprop="name headline">Web API 中的全域錯誤處理</h2>
-        
+      </h3>
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-08T21:27:34+08:00">
-                2019-03-08
-              </time>
-            
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2024-07-08T23:02:16+08:00"
+              content="2024-07-08" >
+          07-08
+        </time>
+      </div>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C#</span>
-                  </a>
-                </span>
-
-                
-                
-                  , 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/NET/" itemprop="url" rel="index">
-                    <span itemprop="name">.NET</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <p>在 Web API 中, 例外處理是一定會遇到的問題, 以前常常見到一些專案為了怕出現 unhandled exception 就地毯式的將所有方法都加上 try-catch, 但是這樣使用 try-catch 會有很大的副作用, 一來無差別的吃掉所有例外會導致程式不易除錯, 二來到處散布的 try-catch 和相關的 log 在維護上的成本也很高, 尤其是大型專案更是明顯, 第三也會使得商務邏輯跟這些例外處理混雜在一起 (try-catch 不是不能用, 但是他是有使用時機的).  </p>
-<p>而 ASP.NET Web API 2 中其實提供了很多種全域的例外處理方式, 例如: <code>ExceptionFilterAttribute</code>, <code>ExceptionLogger</code>, <code>ExceptionHandler</code>, 能將攔截未處理的例外的任務抽離出來, 讓我們開發時能更專注在重要的商務邏輯上, 這篇主要紀錄一下這三種全域例外處理的方式與差別.  </p>
-<a id="more"></a>
-<h3 id="ExceptionFilterAttribute"><a href="#ExceptionFilterAttribute" class="headerlink" title="ExceptionFilterAttribute"></a>ExceptionFilterAttribute</h3><p> 在 <a href="/content/20180923-filters-of-webapi2.html" title="WebApi 2 中的 FilterAttribute 介紹與應用">WebApi 2 中的 FilterAttribute 介紹與應用</a> 這篇文章中已經有提到 FilterAttribute 的用法, 但是 <code>ExceptionFilterAttribute</code> 他在整個 <a href="https://www.asp.net/media/4071077/aspnet-web-api-poster.pdf" target="_blank" rel="noopener">Web API 的生命週期</a>中是比較後面的, 所以某些階段所引發的例外他無法捕捉到, <a href="https://docs.microsoft.com/en-us/aspnet/web-api/overview/error-handling/web-api-global-error-handling" target="_blank" rel="noopener">官方也明確指出了這個特性</a>, 節錄如下:</p>
-<blockquote>
-<p>Some unhandled exceptions can be processed via exception filters, but there are<br>a number of cases that <a href="https://docs.microsoft.com/en-us/aspnet/web-api/overview/error-handling/exception-handling" target="_blank" rel="noopener">exception filters</a> can’t handle. For example:</p>
-<ol>
-<li>Exceptions thrown from controller constructors.</li>
-<li>Exceptions thrown from message handlers.</li>
-<li>Exceptions thrown during routing.</li>
-<li>Exceptions thrown during response content serialization.</li>
-<li>We want to provide a simple, consistent way to log and handle (where possible)<br>these exceptions.</li>
-</ol>
-</blockquote>
-<p><code>ExceptionFilterAttribute</code> 是個不錯的選項, 但受限於生命週期, 所以攔截的範圍沒那麼廣.  </p>
-<h3 id="ExceptionLogger-ExceptionHandler"><a href="#ExceptionLogger-ExceptionHandler" class="headerlink" title="ExceptionLogger / ExceptionHandler"></a>ExceptionLogger / ExceptionHandler</h3><p><code>ExceptionLogger</code> 和 <code>ExceptionHandler</code> 能攔截 <code>ExceptionFilterAttribute</code> 所攔截不到的例外, 下面分別是 <code>ExceptionLogger</code> 和 <code>ExceptionHandler</code> 的實作方式.   </p>
-<h4 id="實作方式"><a href="#實作方式" class="headerlink" title="實作方式"></a>實作方式</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoExceptionHandler</span> : <span class="title">ExceptionHandler</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Handle</span>(<span class="params">ExceptionHandlerContext context</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		Debug.WriteLine(<span class="string">"======== DemoExceptionHandler ======="</span>);</span><br><span class="line"></span><br><span class="line">		context.Result = <span class="keyword">new</span> InternalServerErrorResult(context.Request);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoExceptionLogger</span> : <span class="title">ExceptionLogger</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Log</span>(<span class="params">ExceptionLoggerContext context</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		Debug.WriteLine(<span class="string">"======== DemoExceptionLogger ======="</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>實作後要在 WebApiConfig.cs 中註冊.  </p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">WebApiConfig</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Register</span>(<span class="params">HttpConfiguration config</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="comment">// skip...</span></span><br><span class="line"></span><br><span class="line">		config.Services.Replace(<span class="keyword">typeof</span>(IExceptionHandler), <span class="keyword">new</span> DemoExceptionHandler()</span><br><span class="line">		config.Services.Add(<span class="keyword">typeof</span>(IExceptionLogger), <span class="keyword">new</span> DemoExceptionLogger()););</span><br><span class="line"></span><br><span class="line">		<span class="comment">// skip...</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>另外有幾個要注意的點:</p>
-<ul>
-<li><code>ExceptionHandler</code> 只能有一個, 所以呼叫 <code>config.Services.Replace()</code> </li>
-<li><code>ExceptionLogger</code> 可以有多個, 所以呼叫 <code>config.Services.Add()</code>, 存在多個 <code>ExceptionLogger</code> 時, 先加入的先執行  </li>
-<li><code>ExceptionLogger</code> 會比 <code>ExceptionHandler</code> 先執行</li>
-<li><code>ExceptionLogger</code> 也可以呼叫 <code>config.Services.Replace()</code>, 不管之前加了幾個 <code>ExceptionLogger</code>, <code>config.Services.Replace()</code> 會將全部都取代成一個, 所以他不是換掉某一個而已 </li>
-</ul>
-<h4 id="差異"><a href="#差異" class="headerlink" title="差異"></a>差異</h4><p><code>ExceptionLogger</code> 是用於紀錄攔截到的例外, <code>ExceptionHandler</code> 是用於攔截到錯誤後的處理, 所以 <code>ExceptionHandlerContext</code> 中多了一個 <code>public IHttpActionResult Result { get; set; }</code> 屬性, 讓我們可以決定攔截到錯誤後要回傳什麼給客戶端, 這在上面程式碼中也可以看出差異.  </p>
-<p>如果同時要紀錄攔截到的錯誤並回傳特定內容給客戶端, 目前我是只用 <code>ExceptionHandler</code> 處理, 沒有同時實作 <code>ExceptionLogger</code> 和 <code>ExceptionHandler</code>.  </p>
-<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>以前都只用 <code>ExceptionFilterAttribute</code> 來攔截錯誤, 也沒有特別去找其他做法, 剛好跟別人聊天時有提到全域例外處理跟生命週期的話題才被提醒有這個差別, 意外賺到一個之前都不知道的好東西.  </p>
-<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://docs.microsoft.com/en-us/aspnet/web-api/overview/error-handling/web-api-global-error-handling" target="_blank" rel="noopener">Global Error Handling in ASP.NET Web API 2</a><br><a href="https://docs.microsoft.com/en-us/aspnet/web-api/overview/error-handling/exception-handling" target="_blank" rel="noopener">Exception Handling in ASP.NET Web API</a>  </p>
-<hr>
-
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/content/20190124-docfx-with-visual-studio-on-github-pages.html" rel="next" title="整合 DocFx 和 Visual Studio 並佈署上 GitHub Pages">
-                <i class="fa fa-chevron-left"></i> 整合 DocFx 和 Visual Studio 並佈署上 GitHub Pages
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/content/20190317-webapi-response-data-format.html" rel="prev" title="Web API 回傳資料的方式">
-                Web API 回傳資料的方式 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
+    </header>
   </article>
 
 
 
-    <div class="post-spread">
       
+
     </div>
   </div>
+  
+  
+  
+
+  
+
 
 
           </div>
@@ -492,42 +359,6 @@
 
 
           
-  <div class="comments" id="comments">
-    
-        <div id="container" class="gitment_container"></div>
-        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
-        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
-        <script>
-          const myTheme = {
-            render(state, instance) {
-              const container = document.createElement('div');
-              container.lang = "en-US";
-              container.className = 'gitment-container gitment-root-container';
-              container.appendChild(instance.renderHeader(state, instance));
-              container.appendChild(instance.renderEditor(state, instance));
-              container.appendChild(instance.renderComments(state, instance));
-              container.appendChild(instance.renderFooter(state, instance));
-              return container;
-            }
-          }
-          function showGitment() {
-            var gitment = new Gitment({
-              id: '1552051654000',
-              theme: myTheme,
-              owner: 'ronsun',
-              repo: 'ronsun.github.io.gitment',
-              oauth: {
-                client_id: '749fee720f2039efbbde',
-                client_secret: '3104dc228340ec2814ce1a11a7457d4f2d1effa6'
-              }
-            });
-            gitment.render('container');
-          }
-          showGitment();
-        </script>
-  </div>
-
-
         </div>
         
           
@@ -547,17 +378,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            Overview
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -669,22 +491,6 @@
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ExceptionFilterAttribute"><span class="nav-number">1.</span> <span class="nav-text">ExceptionFilterAttribute</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ExceptionLogger-ExceptionHandler"><span class="nav-number">2.</span> <span class="nav-text">ExceptionLogger / ExceptionHandler</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#實作方式"><span class="nav-number">2.1.</span> <span class="nav-text">實作方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#差異"><span class="nav-number">2.2.</span> <span class="nav-text">差異</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">4.</span> <span class="nav-text">參考</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
@@ -811,9 +617,11 @@
 
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
-
+  
+    <script type="text/javascript" id="motion.page.archive">
+      $('.archive-year').velocity('transition.slideLeftIn');
+    </script>
+  
 
 
   

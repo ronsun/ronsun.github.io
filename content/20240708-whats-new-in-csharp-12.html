@@ -94,17 +94,17 @@
 
 
 
-<meta name="description" content="在 Web API 中, 例外處理是一定會遇到的問題, 以前常常見到一些專案為了怕出現 unhandled exception 就地毯式的將所有方法都加上 try-catch, 但是這樣使用 try-catch 會有很大的副作用, 一來無差別的吃掉所有例外會導致程式不易除錯, 二來到處散布的 try-catch 和相關的 log 在維護上的成本也很高, 尤其是大型專案更是明顯, 第三也會使得商務邏">
+<meta name="description" content="C# 各版本新特性摘要，包含自己的想法與實務上的偏好。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Web API 中的全域錯誤處理">
-<meta property="og:url" content="https://ronsun.github.io/content/20190308-global-exception-handle-in-webapi.html">
+<meta property="og:title" content="C# 語言特性更新 - C# 12">
+<meta property="og:url" content="https://ronsun.github.io/content/20240708-whats-new-in-csharp-12.html">
 <meta property="og:site_name" content="Ron 2.0">
-<meta property="og:description" content="在 Web API 中, 例外處理是一定會遇到的問題, 以前常常見到一些專案為了怕出現 unhandled exception 就地毯式的將所有方法都加上 try-catch, 但是這樣使用 try-catch 會有很大的副作用, 一來無差別的吃掉所有例外會導致程式不易除錯, 二來到處散布的 try-catch 和相關的 log 在維護上的成本也很高, 尤其是大型專案更是明顯, 第三也會使得商務邏">
+<meta property="og:description" content="C# 各版本新特性摘要，包含自己的想法與實務上的偏好。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2023-11-26T17:01:26.792Z">
+<meta property="og:updated_time" content="2024-07-08T15:54:56.530Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Web API 中的全域錯誤處理">
-<meta name="twitter:description" content="在 Web API 中, 例外處理是一定會遇到的問題, 以前常常見到一些專案為了怕出現 unhandled exception 就地毯式的將所有方法都加上 try-catch, 但是這樣使用 try-catch 會有很大的副作用, 一來無差別的吃掉所有例外會導致程式不易除錯, 二來到處散布的 try-catch 和相關的 log 在維護上的成本也很高, 尤其是大型專案更是明顯, 第三也會使得商務邏">
+<meta name="twitter:title" content="C# 語言特性更新 - C# 12">
+<meta name="twitter:description" content="C# 各版本新特性摘要，包含自己的想法與實務上的偏好。">
 
 
 
@@ -133,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="https://ronsun.github.io/content/20190308-global-exception-handle-in-webapi.html"/>
+  <link rel="canonical" href="https://ronsun.github.io/content/20240708-whats-new-in-csharp-12.html"/>
 
 
 
 
 
-  <title>Web API 中的全域錯誤處理 | Ron 2.0</title>
+  <title>C# 語言特性更新 - C# 12 | Ron 2.0</title>
   
 
 
@@ -300,7 +300,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20190308-global-exception-handle-in-webapi.html">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20240708-whats-new-in-csharp-12.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Ron Sun">
@@ -317,7 +317,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Web API 中的全域錯誤處理</h2>
+          <h2 class="post-title" itemprop="name headline">C# 語言特性更新 - C# 12</h2>
         
 
         <div class="post-meta">
@@ -329,8 +329,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-08T21:27:34+08:00">
-                2019-03-08
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-07-08T23:02:16+08:00">
+                2024-07-08
               </time>
             
 
@@ -363,8 +363,8 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/NET/" itemprop="url" rel="index">
-                    <span itemprop="name">.NET</span>
+                  <a href="/categories/C/Language-Spec/" itemprop="url" rel="index">
+                    <span itemprop="name">Language Spec</span>
                   </a>
                 </span>
 
@@ -397,37 +397,25 @@
       
 
       
-        <p>在 Web API 中, 例外處理是一定會遇到的問題, 以前常常見到一些專案為了怕出現 unhandled exception 就地毯式的將所有方法都加上 try-catch, 但是這樣使用 try-catch 會有很大的副作用, 一來無差別的吃掉所有例外會導致程式不易除錯, 二來到處散布的 try-catch 和相關的 log 在維護上的成本也很高, 尤其是大型專案更是明顯, 第三也會使得商務邏輯跟這些例外處理混雜在一起 (try-catch 不是不能用, 但是他是有使用時機的).  </p>
-<p>而 ASP.NET Web API 2 中其實提供了很多種全域的例外處理方式, 例如: <code>ExceptionFilterAttribute</code>, <code>ExceptionLogger</code>, <code>ExceptionHandler</code>, 能將攔截未處理的例外的任務抽離出來, 讓我們開發時能更專注在重要的商務邏輯上, 這篇主要紀錄一下這三種全域例外處理的方式與差別.  </p>
+        <p>C# 各版本新特性摘要，包含自己的想法與實務上的偏好。</p>
 <a id="more"></a>
-<h3 id="ExceptionFilterAttribute"><a href="#ExceptionFilterAttribute" class="headerlink" title="ExceptionFilterAttribute"></a>ExceptionFilterAttribute</h3><p> 在 <a href="/content/20180923-filters-of-webapi2.html" title="WebApi 2 中的 FilterAttribute 介紹與應用">WebApi 2 中的 FilterAttribute 介紹與應用</a> 這篇文章中已經有提到 FilterAttribute 的用法, 但是 <code>ExceptionFilterAttribute</code> 他在整個 <a href="https://www.asp.net/media/4071077/aspnet-web-api-poster.pdf" target="_blank" rel="noopener">Web API 的生命週期</a>中是比較後面的, 所以某些階段所引發的例外他無法捕捉到, <a href="https://docs.microsoft.com/en-us/aspnet/web-api/overview/error-handling/web-api-global-error-handling" target="_blank" rel="noopener">官方也明確指出了這個特性</a>, 節錄如下:</p>
+<h3 id="預設建構子-Primary-constructors"><a href="#預設建構子-Primary-constructors" class="headerlink" title="預設建構子 (Primary constructors)"></a>預設建構子 (Primary constructors)</h3><p>可套用到所有類別與結構。其他建構子可以選擇呼叫預設建構子。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> class <span class="title">Person</span>(<span class="params"><span class="keyword">string</span> name, <span class="keyword">int</span> age</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Name &#123; <span class="keyword">get</span>; &#125; = name;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> Age &#123; <span class="keyword">get</span>; &#125; = age;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Calling the primary constructor using `this(name, age)` is required.</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span>(<span class="params"><span class="keyword">string</span> name</span>) : <span class="title">this</span>(<span class="params">name, <span class="number">0</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="集合運算式-Collection-expressions"><a href="#集合運算式-Collection-expressions" class="headerlink" title="集合運算式 (Collection expressions)"></a>集合運算式 (Collection expressions)</h3><p>像 <code>List&lt;string&gt; b = [&quot;one&quot;, &quot;two&quot;, &quot;three&quot;];</code> 這樣的語法能套用到更多 “類集合” 型別，包含陣列、<code>Span&lt;T&gt;</code>、<code>ReadOnlySpan&lt;T&gt;</code>、和其他支援集合初始設定式的型別。  </p>
+<p>另外能像是下面範例這樣透過散佈運算子 (spread element) 來組合集合：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] row0 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">int</span>[] row1 = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>];</span><br><span class="line"><span class="keyword">int</span>[] row2 = [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>];</span><br><span class="line"><span class="keyword">int</span>[] single = [.. row0, .. row1, .. row2];</span><br></pre></td></tr></table></figure></p>
+<h3 id="ref-readonly-參數-ref-readonly-parameters"><a href="#ref-readonly-參數-ref-readonly-parameters" class="headerlink" title="ref readonly 參數 (ref readonly parameters)"></a><code>ref readonly</code> 參數 (<code>ref readonly</code> parameters)</h3><h3 id="Default-lambda-parameters"><a href="#Default-lambda-parameters" class="headerlink" title="Default lambda parameters"></a>Default lambda parameters</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Default increment to 1</span></span><br><span class="line"><span class="keyword">var</span> IncrementBy = (<span class="keyword">int</span> source, <span class="keyword">int</span> increment = <span class="number">1</span>) =&gt; source + increment;</span><br><span class="line"></span><br><span class="line">Console.WriteLine(IncrementBy(<span class="number">5</span>)); <span class="comment">// 6</span></span><br><span class="line">Console.WriteLine(IncrementBy(<span class="number">5</span>, <span class="number">2</span>)); <span class="comment">// 7</span></span><br></pre></td></tr></table></figure>
+<h3 id="設定任何類型的別名-Alias-any-type"><a href="#設定任何類型的別名-Alias-any-type" class="headerlink" title="設定任何類型的別名 (Alias any type)"></a>設定任何類型的別名 (Alias any type)</h3><p>可透過 <code>using</code> 關鍵字設定任何型別的別名。<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> IntArray = <span class="keyword">int</span>[];</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        IntArray numbers = <span class="keyword">new</span> <span class="keyword">int</span>[] &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span> &#125;;</span><br><span class="line">        Console.WriteLine(<span class="string">"Array elements:"</span>);</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">var</span> number <span class="keyword">in</span> numbers)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(number);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <blockquote>
-<p>Some unhandled exceptions can be processed via exception filters, but there are<br>a number of cases that <a href="https://docs.microsoft.com/en-us/aspnet/web-api/overview/error-handling/exception-handling" target="_blank" rel="noopener">exception filters</a> can’t handle. For example:</p>
-<ol>
-<li>Exceptions thrown from controller constructors.</li>
-<li>Exceptions thrown from message handlers.</li>
-<li>Exceptions thrown during routing.</li>
-<li>Exceptions thrown during response content serialization.</li>
-<li>We want to provide a simple, consistent way to log and handle (where possible)<br>these exceptions.</li>
-</ol>
+<p>又是個需要依賴強力的程式碼品質管理機制的特性。</p>
 </blockquote>
-<p><code>ExceptionFilterAttribute</code> 是個不錯的選項, 但受限於生命週期, 所以攔截的範圍沒那麼廣.  </p>
-<h3 id="ExceptionLogger-ExceptionHandler"><a href="#ExceptionLogger-ExceptionHandler" class="headerlink" title="ExceptionLogger / ExceptionHandler"></a>ExceptionLogger / ExceptionHandler</h3><p><code>ExceptionLogger</code> 和 <code>ExceptionHandler</code> 能攔截 <code>ExceptionFilterAttribute</code> 所攔截不到的例外, 下面分別是 <code>ExceptionLogger</code> 和 <code>ExceptionHandler</code> 的實作方式.   </p>
-<h4 id="實作方式"><a href="#實作方式" class="headerlink" title="實作方式"></a>實作方式</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoExceptionHandler</span> : <span class="title">ExceptionHandler</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Handle</span>(<span class="params">ExceptionHandlerContext context</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		Debug.WriteLine(<span class="string">"======== DemoExceptionHandler ======="</span>);</span><br><span class="line"></span><br><span class="line">		context.Result = <span class="keyword">new</span> InternalServerErrorResult(context.Request);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoExceptionLogger</span> : <span class="title">ExceptionLogger</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Log</span>(<span class="params">ExceptionLoggerContext context</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		Debug.WriteLine(<span class="string">"======== DemoExceptionLogger ======="</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>實作後要在 WebApiConfig.cs 中註冊.  </p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">WebApiConfig</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Register</span>(<span class="params">HttpConfiguration config</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="comment">// skip...</span></span><br><span class="line"></span><br><span class="line">		config.Services.Replace(<span class="keyword">typeof</span>(IExceptionHandler), <span class="keyword">new</span> DemoExceptionHandler()</span><br><span class="line">		config.Services.Add(<span class="keyword">typeof</span>(IExceptionLogger), <span class="keyword">new</span> DemoExceptionLogger()););</span><br><span class="line"></span><br><span class="line">		<span class="comment">// skip...</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>另外有幾個要注意的點:</p>
-<ul>
-<li><code>ExceptionHandler</code> 只能有一個, 所以呼叫 <code>config.Services.Replace()</code> </li>
-<li><code>ExceptionLogger</code> 可以有多個, 所以呼叫 <code>config.Services.Add()</code>, 存在多個 <code>ExceptionLogger</code> 時, 先加入的先執行  </li>
-<li><code>ExceptionLogger</code> 會比 <code>ExceptionHandler</code> 先執行</li>
-<li><code>ExceptionLogger</code> 也可以呼叫 <code>config.Services.Replace()</code>, 不管之前加了幾個 <code>ExceptionLogger</code>, <code>config.Services.Replace()</code> 會將全部都取代成一個, 所以他不是換掉某一個而已 </li>
-</ul>
-<h4 id="差異"><a href="#差異" class="headerlink" title="差異"></a>差異</h4><p><code>ExceptionLogger</code> 是用於紀錄攔截到的例外, <code>ExceptionHandler</code> 是用於攔截到錯誤後的處理, 所以 <code>ExceptionHandlerContext</code> 中多了一個 <code>public IHttpActionResult Result { get; set; }</code> 屬性, 讓我們可以決定攔截到錯誤後要回傳什麼給客戶端, 這在上面程式碼中也可以看出差異.  </p>
-<p>如果同時要紀錄攔截到的錯誤並回傳特定內容給客戶端, 目前我是只用 <code>ExceptionHandler</code> 處理, 沒有同時實作 <code>ExceptionLogger</code> 和 <code>ExceptionHandler</code>.  </p>
-<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>以前都只用 <code>ExceptionFilterAttribute</code> 來攔截錯誤, 也沒有特別去找其他做法, 剛好跟別人聊天時有提到全域例外處理跟生命週期的話題才被提醒有這個差別, 意外賺到一個之前都不知道的好東西.  </p>
-<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://docs.microsoft.com/en-us/aspnet/web-api/overview/error-handling/web-api-global-error-handling" target="_blank" rel="noopener">Global Error Handling in ASP.NET Web API 2</a><br><a href="https://docs.microsoft.com/en-us/aspnet/web-api/overview/error-handling/exception-handling" target="_blank" rel="noopener">Exception Handling in ASP.NET Web API</a>  </p>
-<hr>
+<h3 id="內嵌陣列-Inline-arrays"><a href="#內嵌陣列-Inline-arrays" class="headerlink" title="內嵌陣列 (Inline arrays)"></a>內嵌陣列 (Inline arrays)</h3><p>Runtime 或其他套件開發人員用以提升效能的機制，一般人通常不會用。</p>
+<h3 id="ExperimentalAttribute-Experimental-attribute"><a href="#ExperimentalAttribute-Experimental-attribute" class="headerlink" title="ExperimentalAttribute (Experimental attribute)"></a><code>ExperimentalAttribute</code> (Experimental attribute)</h3><p>用 <code>System.Diagnostics.CodeAnalysis.ExperimentalAttribute</code> 來標註實驗性功能，存取時編譯器會出現 warning。</p>
+<blockquote>
+<p>以前不得已只能用 <code>ObsoleteAttribute</code> 搭配描述來標記實驗性功能，現在有更適當工具可以用了。</p>
+</blockquote>
+<h3 id="Interceptors"><a href="#Interceptors" class="headerlink" title="Interceptors"></a>Interceptors</h3><p>這是個實驗性功能，以後可能會被移除或大改。</p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p>ChatGPT</p>
+<p><a href="https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-12" target="_blank" rel="noopener">What’s new in C# 12</a></p>
 
       
     </div>
@@ -452,8 +440,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/content/20190124-docfx-with-visual-studio-on-github-pages.html" rel="next" title="整合 DocFx 和 Visual Studio 並佈署上 GitHub Pages">
-                <i class="fa fa-chevron-left"></i> 整合 DocFx 和 Visual Studio 並佈署上 GitHub Pages
+              <a href="/content/20240630-whats-new-in-csharp-11.html" rel="next" title="C# 語言特性更新 - C# 11">
+                <i class="fa fa-chevron-left"></i> C# 語言特性更新 - C# 11
               </a>
             
           </div>
@@ -461,10 +449,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/content/20190317-webapi-response-data-format.html" rel="prev" title="Web API 回傳資料的方式">
-                Web API 回傳資料的方式 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -512,7 +496,7 @@
           }
           function showGitment() {
             var gitment = new Gitment({
-              id: '1552051654000',
+              id: '1720450936000',
               theme: myTheme,
               owner: 'ronsun',
               repo: 'ronsun.github.io.gitment',
@@ -679,7 +663,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ExceptionFilterAttribute"><span class="nav-number">1.</span> <span class="nav-text">ExceptionFilterAttribute</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ExceptionLogger-ExceptionHandler"><span class="nav-number">2.</span> <span class="nav-text">ExceptionLogger / ExceptionHandler</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#實作方式"><span class="nav-number">2.1.</span> <span class="nav-text">實作方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#差異"><span class="nav-number">2.2.</span> <span class="nav-text">差異</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">4.</span> <span class="nav-text">參考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#預設建構子-Primary-constructors"><span class="nav-number">1.</span> <span class="nav-text">預設建構子 (Primary constructors)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集合運算式-Collection-expressions"><span class="nav-number">2.</span> <span class="nav-text">集合運算式 (Collection expressions)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ref-readonly-參數-ref-readonly-parameters"><span class="nav-number">3.</span> <span class="nav-text">ref readonly 參數 (ref readonly parameters)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Default-lambda-parameters"><span class="nav-number">4.</span> <span class="nav-text">Default lambda parameters</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#設定任何類型的別名-Alias-any-type"><span class="nav-number">5.</span> <span class="nav-text">設定任何類型的別名 (Alias any type)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#內嵌陣列-Inline-arrays"><span class="nav-number">6.</span> <span class="nav-text">內嵌陣列 (Inline arrays)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ExperimentalAttribute-Experimental-attribute"><span class="nav-number">7.</span> <span class="nav-text">ExperimentalAttribute (Experimental attribute)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Interceptors"><span class="nav-number">8.</span> <span class="nav-text">Interceptors</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">9.</span> <span class="nav-text">參考</span></a></li></ol></div>
             
 
           </div>
