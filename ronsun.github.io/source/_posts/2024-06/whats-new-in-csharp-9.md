@@ -39,46 +39,7 @@ ron.Age = 100;
 > 整體看起來除了簡化語法外，另外也想用參考型別來模擬實值型別的特性，來得到兩者的優點。並且提供一些預設特性來達到方便使用的效果，但因為這些設計造成他和一般類別有種非常相似卻又有很多不同的情況，之後需要就 Record 這個主題另外深入探討。
 
 ### 僅供初始化的 Setter (Init only setters)
-精確來說是屬性只能在建構子中賦值，一旦離開建構子就不能再賦值了。  
-
-使用初始設定式可以賦值 (初始設定式編譯後是在建構子中賦值)：
-``` csharp
-public class Person
-{
-    public string FirstName { get; init; }
-    public string LastName { get; init; }
-    public int Age { get; init; }
-}
-
-var ron = new Person
-{
-   FirstName = "Ron",
-   LastName = "Sun",
-};
-```
-
-建構子中賦值，甚至修改都可以 (展示用，先不管邏輯是否合理)：  
-``` csharp
-public class Person
-{
-    public Person(string firstName, string lastName, int age)
-    {
-        FirstName = firstName;
-        LastName = lastName;
-        Age = age;
-        if(age > 17)
-        {
-            FirstName = firstName + lastName;
-            LastName = null;
-        }
-    }
-    public string FirstName { get; init; }
-    public string LastName { get; init; }
-    public int Age { get; init; }
-}
-```
-
-> 看起來也是為了 Immutable 所做，用在不想被偷改屬性值的情境還滿好用的。例如隨意修改傳入方法的參數中的屬性，再把該參數傳遞到其他方法中，最後難以追蹤參數值的現況。
+詳見 {% post_link init-only-setters %}。 
 
 ### 最上層陳述式 (Top-level statements)
 省略 `Prgram` 類別和 `Main` 方法的大部分程式碼。
