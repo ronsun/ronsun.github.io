@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://ronsun.github.io/content/20240711-init-only-setters.html</loc>
+    
+    <lastmod>2024-07-13T18:14:45.421Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20240624-whats-new-in-csharp-9.html</loc>
+    
+    <lastmod>2024-07-10T16:15:53.498Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://ronsun.github.io/content/20240708-whats-new-in-csharp-12.html</loc>
     
     <lastmod>2024-07-08T15:54:56.530Z</lastmod>
@@ -19,13 +33,6 @@
     <loc>https://ronsun.github.io/content/20240629-whats-new-in-csharp-10.html</loc>
     
     <lastmod>2024-06-29T17:05:15.204Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20240624-whats-new-in-csharp-9.html</loc>
-    
-    <lastmod>2024-06-29T17:05:15.165Z</lastmod>
     
   </url>
   
@@ -226,14 +233,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20220606-about-object-and-collection-initializers.html</loc>
+    <loc>https://ronsun.github.io/content/20220626-read-form-body-after-model-binding.html</loc>
     
     <lastmod>2023-11-26T17:01:26.856Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20220626-read-form-body-after-model-binding.html</loc>
+    <loc>https://ronsun.github.io/content/20220606-about-object-and-collection-initializers.html</loc>
     
     <lastmod>2023-11-26T17:01:26.856Z</lastmod>
     
@@ -261,14 +268,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20210606-use-friend-assembly.html</loc>
+    <loc>https://ronsun.github.io/content/20211031-netcore-inject-multiple-implementation.html</loc>
     
     <lastmod>2023-11-26T17:01:26.852Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20211031-netcore-inject-multiple-implementation.html</loc>
+    <loc>https://ronsun.github.io/content/20210606-use-friend-assembly.html</loc>
     
     <lastmod>2023-11-26T17:01:26.852Z</lastmod>
     
@@ -338,14 +345,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20191017-manually-use-sqlite-with-ef.html</loc>
+    <loc>https://ronsun.github.io/content/20191126-json-net-trailing-zero-number-problem.html</loc>
     
     <lastmod>2023-11-26T17:01:26.818Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20191126-json-net-trailing-zero-number-problem.html</loc>
+    <loc>https://ronsun.github.io/content/20191017-manually-use-sqlite-with-ef.html</loc>
     
     <lastmod>2023-11-26T17:01:26.818Z</lastmod>
     
@@ -422,14 +429,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20190105-bouncycastle-rsa-key-with-leading-zero-to-xml.html</loc>
+    <loc>https://ronsun.github.io/content/20190124-docfx-with-visual-studio-on-github-pages.html</loc>
     
     <lastmod>2023-11-26T17:01:26.774Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20190124-docfx-with-visual-studio-on-github-pages.html</loc>
+    <loc>https://ronsun.github.io/content/20190105-bouncycastle-rsa-key-with-leading-zero-to-xml.html</loc>
     
     <lastmod>2023-11-26T17:01:26.774Z</lastmod>
     
@@ -499,14 +506,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180909-auto-implemented-properties.html</loc>
+    <loc>https://ronsun.github.io/content/20180819-simplify-if-statement.html</loc>
     
     <lastmod>2023-11-26T17:01:26.728Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180819-simplify-if-statement.html</loc>
+    <loc>https://ronsun.github.io/content/20180909-auto-implemented-properties.html</loc>
     
     <lastmod>2023-11-26T17:01:26.728Z</lastmod>
     
@@ -527,13 +534,6 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180409-usage-of-partial-in-csharp.html</loc>
-    
-    <lastmod>2023-11-26T17:01:26.725Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://ronsun.github.io/content/20180519-const-vs-readonly.html</loc>
     
     <lastmod>2023-11-26T17:01:26.725Z</lastmod>
@@ -541,14 +541,21 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180412-anti-switch-case.html</loc>
+    <loc>https://ronsun.github.io/content/20180409-usage-of-partial-in-csharp.html</loc>
+    
+    <lastmod>2023-11-26T17:01:26.725Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20180304-random-in-csharp.html</loc>
     
     <lastmod>2023-11-26T17:01:26.724Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180304-random-in-csharp.html</loc>
+    <loc>https://ronsun.github.io/content/20180412-anti-switch-case.html</loc>
     
     <lastmod>2023-11-26T17:01:26.724Z</lastmod>
     

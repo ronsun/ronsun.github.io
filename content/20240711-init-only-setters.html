@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="partial," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -94,18 +94,17 @@
 
 
 
-<meta name="description" content="C# 的 partial 修飾詞是相對少用的特性, 但在某些時候能起到很關鍵的作用, 所以還是知道一下比較好.partial不是關鍵字但是他可以放在在class, struct, interface 以及 void method(…) 的前面作為修飾詞, 並將類型宣告或方法拆分成多個, 而編譯時會將所有區段結合起來, 所以對執行時期沒有影響.">
-<meta name="keywords" content="partial">
+<meta name="description" content="C# 提供許多編譯期的語法糖，但有些特性並不能完全歸類為語法糖，例如 Init Only Setters。本篇將快速介紹這個特性，並深入探討其運作原理。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="C# 修飾詞 - partial">
-<meta property="og:url" content="https://ronsun.github.io/content/20180409-usage-of-partial-in-csharp.html">
+<meta property="og:title" content="深入 Init Only Setters">
+<meta property="og:url" content="https://ronsun.github.io/content/20240711-init-only-setters.html">
 <meta property="og:site_name" content="Ron 2.0">
-<meta property="og:description" content="C# 的 partial 修飾詞是相對少用的特性, 但在某些時候能起到很關鍵的作用, 所以還是知道一下比較好.partial不是關鍵字但是他可以放在在class, struct, interface 以及 void method(…) 的前面作為修飾詞, 並將類型宣告或方法拆分成多個, 而編譯時會將所有區段結合起來, 所以對執行時期沒有影響.">
+<meta property="og:description" content="C# 提供許多編譯期的語法糖，但有些特性並不能完全歸類為語法糖，例如 Init Only Setters。本篇將快速介紹這個特性，並深入探討其運作原理。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2023-11-26T17:01:26.725Z">
+<meta property="og:updated_time" content="2024-07-13T18:14:45.421Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="C# 修飾詞 - partial">
-<meta name="twitter:description" content="C# 的 partial 修飾詞是相對少用的特性, 但在某些時候能起到很關鍵的作用, 所以還是知道一下比較好.partial不是關鍵字但是他可以放在在class, struct, interface 以及 void method(…) 的前面作為修飾詞, 並將類型宣告或方法拆分成多個, 而編譯時會將所有區段結合起來, 所以對執行時期沒有影響.">
+<meta name="twitter:title" content="深入 Init Only Setters">
+<meta name="twitter:description" content="C# 提供許多編譯期的語法糖，但有些特性並不能完全歸類為語法糖，例如 Init Only Setters。本篇將快速介紹這個特性，並深入探討其運作原理。">
 
 
 
@@ -134,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="https://ronsun.github.io/content/20180409-usage-of-partial-in-csharp.html"/>
+  <link rel="canonical" href="https://ronsun.github.io/content/20240711-init-only-setters.html"/>
 
 
 
 
 
-  <title>C# 修飾詞 - partial | Ron 2.0</title>
+  <title>深入 Init Only Setters | Ron 2.0</title>
   
 
 
@@ -301,7 +300,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20180409-usage-of-partial-in-csharp.html">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20240711-init-only-setters.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Ron Sun">
@@ -318,7 +317,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">C# 修飾詞 - partial</h2>
+          <h2 class="post-title" itemprop="name headline">深入 Init Only Setters</h2>
         
 
         <div class="post-meta">
@@ -330,8 +329,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-09T00:15:33+08:00">
-                2018-04-09
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-07-11T00:13:50+08:00">
+                2024-07-11
               </time>
             
 
@@ -398,65 +397,39 @@
       
 
       
-        <p>C# 的 partial 修飾詞是相對少用的特性, 但在某些時候能起到很關鍵的作用, 所以還是知道一下比較好.<br>partial不是關鍵字但是他可以放在在class, struct, interface 以及 void method(…) 的前面作為修飾詞, 並將類型宣告或方法拆分成多個, 而編譯時會將所有區段結合起來, 所以對執行時期沒有影響. </p>
+        <p>C# 提供許多編譯期的語法糖，但有些特性並不能完全歸類為語法糖，例如 Init Only Setters。本篇將快速介紹這個特性，並深入探討其運作原理。</p>
 <a id="more"></a>
-<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><h4 id="部分類別-partial-class"><a href="#部分類別-partial-class" class="headerlink" title="部分類別(partial class)"></a>部分類別(partial class)</h4><p>以部分類別為例, 我們可以將一個類別拆成多個部分類別並且分別放在不同的多個檔案中, 如下:</p>
-<p><strong>OrderService.cs</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public partial class OrderService</span><br><span class="line">&#123;</span><br><span class="line">    // something...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>OrderService2.cs</strong><br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">OrderService</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// something...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="特性說明"><a href="#特性說明" class="headerlink" title="特性說明"></a>特性說明</h3><p>這個特性精確來說是屬性<strong>只能在建構子中賦值</strong>，一旦離開建構子就不能再賦值了，而不是從字面解讀成 “只能賦值一次”。  </p>
+<p>使用初始設定式可以賦值 (初始設定式編譯後是在建構子中賦值)：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> FirstName &#123; <span class="keyword">get</span>; init; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> LastName &#123; <span class="keyword">get</span>; init; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> Age &#123; <span class="keyword">get</span>; init; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> ron = <span class="keyword">new</span> Person</span><br><span class="line">&#123;</span><br><span class="line">   FirstName = <span class="string">"Ron"</span>,</span><br><span class="line">   LastName = <span class="string">"Sun"</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>建構子中賦值，甚至可以修改 (所以嚴格來說不是真的 Init-Only)：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span>(<span class="params"><span class="keyword">string</span> firstName, <span class="keyword">string</span> lastName, <span class="keyword">int</span> age</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        FirstName = firstName;</span><br><span class="line">        LastName = lastName;</span><br><span class="line">        Age = age;</span><br><span class="line">        <span class="keyword">if</span>(age &gt; <span class="number">17</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            FirstName = firstName + lastName;</span><br><span class="line">            LastName = <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> FirstName &#123; <span class="keyword">get</span>; init; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> LastName &#123; <span class="keyword">get</span>; init; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> Age &#123; <span class="keyword">get</span>; init; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <blockquote>
-<p>以目前所知patial的用途對於 interface, struct 都相似於 class</p>
+<p>看起來也是為了 Immutable 所做，用在不想被偷改屬性值的情境還滿好用的。例如隨意修改傳入方法的參數中的屬性，再把該參數傳遞到其他方法中，最後難以追蹤參數值的變化。</p>
 </blockquote>
-<h4 id="部分方法-partial-method"><a href="#部分方法-partial-method" class="headerlink" title="部分方法(partial method)"></a>部分方法(partial method)</h4><p>方法宣告在其中一個部分類別中, 並在另外其中一個部分類別中實作已宣告的部分方法.</p>
-<p><strong>OrderService.cs</strong><br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">OrderService</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//宣告</span></span><br><span class="line">    <span class="function"><span class="keyword">partial</span> <span class="keyword">void</span> <span class="title">CreateOrder</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>OrderService2.cs</strong><br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">OrderService</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//實作</span></span><br><span class="line">    <span class="function"><span class="keyword">partial</span> <span class="keyword">void</span> <span class="title">CreateOrder</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<hr>
-<h3 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h3><p>那麼, 什麼情境需要特意將相同類別拆分到不同檔案中呢? 下面依然以部分類別為出發點說明.  </p>
+<h3 id="背後機制"><a href="#背後機制" class="headerlink" title="背後機制"></a>背後機制</h3><p>在 <a href="/content/20180909-auto-implemented-properties.html" title="C# 的自動實作屬性">C# 的自動實作屬性</a> 這篇有介紹到屬性其實是一個編譯時期的語法糖，而 <code>init</code> 做為 setter 的修飾詞，那他背後怎麼運作想必也值得研究。  </p>
+<p>要深入探討他背後的機制，第一步先從反組譯範例程式碼開始<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Demo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> InitOnlyNumber &#123; <span class="keyword">get</span>; init; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> GeneralNumber &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>反組譯到 C# 9 以前還未支援的版本，看看會變什麼樣子<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Untitled, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</span></span><br><span class="line"><span class="comment">// Program.Demo</span></span><br><span class="line"><span class="keyword">using</span> System.Diagnostics;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Demo</span></span><br><span class="line">&#123;</span><br><span class="line">	[<span class="meta">field: DebuggerBrowsable(/*Could not decode attribute arguments.*/)</span>]</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">int</span> InitOnlyNumber &#123; <span class="keyword">get</span>; <span class="keyword">set</span><span class="comment">/*init*/</span>; &#125;</span><br><span class="line"></span><br><span class="line">	[<span class="meta">field: DebuggerBrowsable(/*Could not decode attribute arguments.*/)</span>]</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">int</span> GeneralNumber &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>這個結果有點出乎意料，怎麼竟然只剩一個註解？既然從舊版 C# 看不出端倪，那乾脆轉成 IL 看看能不能看出差異好了，由於轉成 IL 之後非常冗長，這邊為了展示只擷取 setter 的部分來比較  </p>
+<p><strong>set_GeneralNumber 部分：</strong><br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">.method <span class="keyword">public</span> hidebysig specialname </span><br><span class="line">	<span class="function">instance <span class="keyword">void</span> <span class="title">set_GeneralNumber</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">		int32 <span class="string">'value'</span></span></span></span><br><span class="line"><span class="function"><span class="params">	</span>) cil managed </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	.custom instance void [System.Runtime]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() = (</span><br><span class="line">		<span class="number">01</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span></span><br><span class="line">	)</span><br><span class="line">	<span class="comment">// Method begins at RVA 0x20de</span></span><br><span class="line">	<span class="comment">// Header size: 1</span></span><br><span class="line">	<span class="comment">// Code size: 8 (0x8)</span></span><br><span class="line">	.maxstack <span class="number">8</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// &lt;GeneralNumber&gt;k__BackingField = value;</span></span><br><span class="line">	IL_0000: ldarg<span class="number">.0</span></span><br><span class="line">	IL_0001: ldarg<span class="number">.1</span></span><br><span class="line">	IL_0002: stfld int32 Program/Demo::'&lt;GeneralNumber&gt;k__BackingField'</span><br><span class="line">	<span class="comment">// &#125;</span></span><br><span class="line">	IL_0007: ret</span><br><span class="line">&#125; <span class="comment">// end of method Demo::set_GeneralNumber</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>set_InitOnlyNumber 部分：</strong><br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">.method <span class="keyword">public</span> hidebysig specialname </span><br><span class="line">	<span class="function">instance <span class="keyword">void</span> <span class="title">modreq</span>(<span class="params">[System.Runtime]System.Runtime.CompilerServices.IsExternalInit</span>) <span class="title">set_InitOnlyNumber</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">		int32 <span class="string">'value'</span></span></span></span><br><span class="line"><span class="function"><span class="params">	</span>) cil managed </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	.custom instance void [System.Runtime]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() = (</span><br><span class="line">		<span class="number">01</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span></span><br><span class="line">	)</span><br><span class="line">	<span class="comment">// Method begins at RVA 0x20cd</span></span><br><span class="line">	<span class="comment">// Header size: 1</span></span><br><span class="line">	<span class="comment">// Code size: 8 (0x8)</span></span><br><span class="line">	.maxstack <span class="number">8</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// &lt;InitOnlyNumber&gt;k__BackingField = value;</span></span><br><span class="line">	IL_0000: ldarg<span class="number">.0</span></span><br><span class="line">	IL_0001: ldarg<span class="number">.1</span></span><br><span class="line">	IL_0002: stfld int32 Program/Demo::'&lt;InitOnlyNumber&gt;k__BackingField'</span><br><span class="line">	<span class="comment">// &#125;</span></span><br><span class="line">	IL_0007: ret</span><br><span class="line">&#125; <span class="comment">// end of method Demo::set_InitOnlyNumber</span></span><br></pre></td></tr></table></figure></p>
+<p>從上面的比對可以看到，Init Only Setters 轉換成 IL 只多了一個 <code>modreq([System.Runtime]System.Runtime.CompilerServices.IsExternalInit)</code>，這很可能就是其中的關鍵。  </p>
+<p>接下來從 <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/proposals/csharp-9.0/init#modreqs-vs-attributes" target="_blank" rel="noopener">Init Only Setters 設計書</a> 中可以了解在編譯時期插入 <code>modreq</code> 的原因，可惜這篇設計書沒提到 <code>modreq([System.Runtime]System.Runtime.CompilerServices.IsExternalInit)</code> 在執行階段的運作機制，但這篇 <a href="https://stackoverflow.com/a/77111055" target="_blank" rel="noopener">StackOverflow</a> 的回應有引用到的 <a href="https://www.ecma-international.org/wp-content/uploads/ECMA-335_6th_edition_june_2012.pdf" target="_blank" rel="noopener">CLI 規格書</a> 中可能有提到。  </p>
 <blockquote>
-<p>部分方法的情境目前還沒遇過, 暫時想不到範例</p>
+<p>目前已知 Init Only Setter 背後是編譯時插入一些程式碼到 IL 中已經足夠，就沒特別去看 CLI 規格書 (而且他很厚我啃不動)。</p>
 </blockquote>
-<h4 id="擴充由工具產生的程式碼"><a href="#擴充由工具產生的程式碼" class="headerlink" title="擴充由工具產生的程式碼"></a>擴充由工具產生的程式碼</h4><p>工具產生的程式碼原則上是不允許人為去直接修改內容的, 因為當下次重新產生的時候, 會將修改的部分也覆蓋掉, 所以我們會透過 partial 將工具產生的程式碼與人為擴充的程式碼分開.<br>這方面的應用常見的是在擴充 EF(Entify Framework) 自動產生的 Models 上, EF產生的 Models 是基於資料庫的欄位的設計的, 有時候我們需要加上一些欄位方便使用時就能派上用場, 例如:  </p>
-<p>Member.cs (工具產生)<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">Member</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> FirstName &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> LasName &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>MemberExtend.cs (人為擴充)<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">Member</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> FullName</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">$"<span class="subst">&#123;FirstName&#125;</span> <span class="subst">&#123;LasName&#125;</span>"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上面的例子中, EF在更新Models時只會覆蓋 <code>Member.cs</code>, 對於擴充部分可以不用擔心被影響.  </p>
-<h4 id="類別過大且難以分割"><a href="#類別過大且難以分割" class="headerlink" title="類別過大且難以分割"></a>類別過大且難以分割</h4><p>有些類別本身包含大量的內容, 且因為種種因素難以拆分時, 就可以利用partial並將其拆分成不同檔案.  </p>
-<blockquote>
-<p>如果可以的話還是重構出更小的單元, 分成多個部分類型不是優先選項.</p>
-</blockquote>
-<h4 id="重構單一類別時"><a href="#重構單一類別時" class="headerlink" title="重構單一類別時"></a>重構單一類別時</h4><p>這是運用在之前公司的專案上的, 當時因為類別中的程式碼過多且複雜, 無法一次重構完, 又擔心當下只重構一部分會讓之後要繼續時需要重新花時間再看過一遍, 就將重構後的程式碼拆成另一個檔案, 等之後全部整理完再合併成一個.</p>
-<hr>
-<h3 id="限制"><a href="#限制" class="headerlink" title="限制"></a>限制</h3><p>由於部分類型編譯後會被視為一個類型, 其限制的大原則是不能與這個特性矛盾, 這邊大致列出一些.</p>
-<h4 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h4><ul>
-<li>回傳必須為 void, 且 partial 一定要放在 void 前面</li>
-<li>不可明確指定存取修飾詞, 隱含為 private</li>
-<li>一個方法最多只能在所有部分類別中宣告一次</li>
-<li>最多只能有一個以下的實作</li>
-<li>可以宣告後不實作, 但不能有實作沒宣告</li>
-<li>參數不可有 out 修飾詞</li>
-<li>無法明確實作介面方法</li>
-</ul>
-<blockquote>
-<p>其餘族繁不及備載, 更多細節參閱 C# 規格書或 MSDN</p>
-</blockquote>
-<h4 id="其他部分類型"><a href="#其他部分類型" class="headerlink" title="其他部分類型"></a>其他部分類型</h4><p>所有部分類型的</p>
-<ul>
-<li>存取修飾詞不可衝突(但可以只有一個部分類型明確指定修飾詞)</li>
-<li>泛型參數的數量、順序與名稱必須完全一致</li>
-<li>泛型參數的條件約束不可衝突(可以只有一個部分類型明確指定條件約束)</li>
-</ul>
-<blockquote>
-<p>更多細節參閱 C# 規格書或 MSDN</p>
-</blockquote>
-<hr>
-<h3 id="完整特性"><a href="#完整特性" class="headerlink" title="完整特性"></a>完整特性</h3><p>關於partial修飾詞的完整特性(非常多…), 參閱C#規格書, 相關目錄如下(主要在第10章的幾個小節中, 其他章就只是簡介然後說參考第10章).</p>
-<blockquote>
-<ol>
-<li>類別<br>10.1.2 Partial 修飾詞<br>10.2 部分類型<br>10.6.8. 部分方法  </li>
-<li>結構<br>11.1.2 partial 修飾詞  </li>
-<li>介面<br>13.1.2. partial 修飾詞  </li>
-</ol>
-</blockquote>
-<hr>
-<h3 id="參考與延伸"><a href="#參考與延伸" class="headerlink" title="參考與延伸"></a>參考與延伸</h3><p>C#語言規格書<br><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods" target="_blank" rel="noopener">MSDN</a><br><a href="https://www.codeproject.com/Articles/30101/Introduction-to-Partial-Methods" target="_blank" rel="noopener">Introduction to Partial Methods</a></p>
+<h3 id="漏洞"><a href="#漏洞" class="headerlink" title="漏洞"></a>漏洞</h3><p>從上一段我們知道了 Init Only Setter 的機制，也從設計書看到他的缺點。   </p>
+<h4 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h4><p>無法阻止透過反射修改屬性值。<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Demo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> InitOnlyNumber &#123; <span class="keyword">get</span>; init; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> x = <span class="keyword">new</span> Demo() &#123; InitOnlyNumber = <span class="number">100</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Reflection to change the value of init only property.</span></span><br><span class="line"><span class="keyword">typeof</span>(Demo).GetProperty(<span class="string">"InitOnlyNumber"</span>).SetValue(x, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Changed to 1.</span></span><br><span class="line">x.InitOnlyNumber.Dump();</span><br></pre></td></tr></table></figure></p>
+<h4 id="dynamic-無法重現"><a href="#dynamic-無法重現" class="headerlink" title="dynamic (無法重現)"></a><code>dynamic</code> (無法重現)</h4><p>可能在我的環境中用的是已經修好這個問題的編譯器或相關工具。  </p>
+<h4 id="不認識-modreqs-的編譯器"><a href="#不認識-modreqs-的編譯器" class="headerlink" title="不認識 modreqs 的編譯器**"></a>不認識 modreqs 的編譯器**</h4><p>就我的理解，modreqs 指的應該是被 <code>modreq</code> 所指定的 <code>IsExternalInit</code>，編譯器指的應該是將 IL 轉成 CPU 指令的編譯器 (例如: JIT) 而不是指 C# 編譯器。這部分我沒工具可以重現，但從他的機制看起來，會有這個漏洞是合理的。  </p>
+<h3 id="衍伸知識與關鍵字"><a href="#衍伸知識與關鍵字" class="headerlink" title="衍伸知識與關鍵字"></a>衍伸知識與關鍵字</h3><p>從參考資料中我們會另外看到一些衍伸的關鍵字，如果不懂這些關鍵字會很難理解設計書中的內容。  </p>
+<p><strong>binary signature</strong>： 根據 ChatGPT 說明，在 .NET 中每個方法或屬性都有一個二進位簽名（binary signature），用來唯一標識這個方法或屬性。這個簽名包括方法或屬性的名稱、參數類型、返回類型以及其他修飾符。  </p>
+<p><strong>binary compatbility</strong>： 編譯後的程式碼是否能與已經編譯好的其他程式碼相互合作。<br>如果一個方法或屬性的二進位簽名發生改變，現有的二進位相容性就會被破壞，因為其他程式碼可能依賴於這個特定的簽名。也就是說當一個屬性將 <code>set</code> 改成 <code>init</code> (反之亦然)時，即便修改前後所產生的 IL 中都有 setter 二進位簽名也會因為 <code>modreq</code> 而改變，這時候其它編譯好的程式碼對這個屬性的參考，就會因為二進位簽名改變而無法正確定位。</p>
+<p><strong>CLI、IL</strong>： 這個網路查查很多，但是比較不容易理解的是這些詞之間的關係，簡單說 IL 是 CLI 標準的一部份，<a href="https://www.cnblogs.com/cdaniu/p/15147320.html" target="_blank" rel="noopener">Ecma335、CLR、CLI、CTS、 IL、.net 以及他们之间的关系</a>有一些說明。</p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>其實主要就是編譯時期插入一些 IL 程式碼使得執行階段能辨識並如預期般運作。只是這些 IL 程式碼衍生出一些比較進階的內容要深入研究會沒完沒了。  </p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://miroox.github.io/blog/2021/05/Initonly-Setter-CSharp/" target="_blank" rel="noopener">关于C#9中仅初始化的属性设置器</a>  </p>
+<p><a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/proposals/csharp-9.0/init" target="_blank" rel="noopener">Init Only Setters</a>：尤其是 <strong>Modreqs vs. attributes</strong> 和 <strong>Metadata encoding</strong> 兩段。</p>
+<p><a href="https://stackoverflow.com/a/77111055" target="_blank" rel="noopener">Why is changing a property from “init” to “set” a binary breaking change? 的回應</a>  </p>
+<p><a href="https://www.ecma-international.org/wp-content/uploads/ECMA-335_6th_edition_june_2012.pdf" target="_blank" rel="noopener">CLI 規格書</a>  </p>
+<p><a href="https://www.cnblogs.com/cdaniu/p/15147320.html" target="_blank" rel="noopener">Ecma335、CLR、CLI、CTS、 IL、.net 以及他们之间的关系</a>  </p>
 
       
     </div>
@@ -472,12 +445,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/partial/" rel="tag"># partial</a>
-          
-        </div>
-      
 
       
       
@@ -487,8 +454,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/content/20180304-random-in-csharp.html" rel="next" title="C#中的隨機數">
-                <i class="fa fa-chevron-left"></i> C#中的隨機數
+              <a href="/content/20240708-whats-new-in-csharp-12.html" rel="next" title="C# 語言特性更新 - C# 12">
+                <i class="fa fa-chevron-left"></i> C# 語言特性更新 - C# 12
               </a>
             
           </div>
@@ -496,10 +463,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/content/20180412-anti-switch-case.html" rel="prev" title="消除switch-case">
-                消除switch-case <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -547,7 +510,7 @@
           }
           function showGitment() {
             var gitment = new Gitment({
-              id: '1523204133000',
+              id: '1720628030000',
               theme: myTheme,
               owner: 'ronsun',
               repo: 'ronsun.github.io.gitment',
@@ -714,7 +677,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#用法"><span class="nav-number">1.</span> <span class="nav-text">用法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#部分類別-partial-class"><span class="nav-number">1.1.</span> <span class="nav-text">部分類別(partial class)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#部分方法-partial-method"><span class="nav-number">1.2.</span> <span class="nav-text">部分方法(partial method)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用途"><span class="nav-number">2.</span> <span class="nav-text">用途</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#擴充由工具產生的程式碼"><span class="nav-number">2.1.</span> <span class="nav-text">擴充由工具產生的程式碼</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#類別過大且難以分割"><span class="nav-number">2.2.</span> <span class="nav-text">類別過大且難以分割</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重構單一類別時"><span class="nav-number">2.3.</span> <span class="nav-text">重構單一類別時</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#限制"><span class="nav-number">3.</span> <span class="nav-text">限制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#部分方法"><span class="nav-number">3.1.</span> <span class="nav-text">部分方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他部分類型"><span class="nav-number">3.2.</span> <span class="nav-text">其他部分類型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完整特性"><span class="nav-number">4.</span> <span class="nav-text">完整特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考與延伸"><span class="nav-number">5.</span> <span class="nav-text">參考與延伸</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#特性說明"><span class="nav-number">1.</span> <span class="nav-text">特性說明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#背後機制"><span class="nav-number">2.</span> <span class="nav-text">背後機制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞"><span class="nav-number">3.</span> <span class="nav-text">漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#反射"><span class="nav-number">3.1.</span> <span class="nav-text">反射</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dynamic-無法重現"><span class="nav-number">3.2.</span> <span class="nav-text">dynamic (無法重現)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不認識-modreqs-的編譯器"><span class="nav-number">3.3.</span> <span class="nav-text">不認識 modreqs 的編譯器**</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#衍伸知識與關鍵字"><span class="nav-number">4.</span> <span class="nav-text">衍伸知識與關鍵字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">5.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">6.</span> <span class="nav-text">參考</span></a></li></ol></div>
             
 
           </div>
