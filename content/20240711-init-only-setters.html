@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="Ron 2.0">
 <meta property="og:description" content="C# 提供許多編譯期的語法糖，但有些特性並不能完全歸類為語法糖，例如 Init Only Setters。本篇將快速介紹這個特性，並深入探討其運作原理。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2024-07-14T16:07:25.175Z">
+<meta property="og:updated_time" content="2024-07-14T16:20:56.274Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入 Init Only Setters">
 <meta name="twitter:description" content="C# 提供許多編譯期的語法糖，但有些特性並不能完全歸類為語法糖，例如 Init Only Setters。本篇將快速介紹這個特性，並深入探討其運作原理。">
@@ -421,12 +421,12 @@
 <h3 id="漏洞"><a href="#漏洞" class="headerlink" title="漏洞"></a>漏洞</h3><p>從上一段我們知道了 Init Only Setter 的機制，也從設計書看到他的缺點。   </p>
 <h4 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h4><p>無法阻止透過反射修改屬性值。<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Demo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> InitOnlyNumber &#123; <span class="keyword">get</span>; init; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> x = <span class="keyword">new</span> Demo() &#123; InitOnlyNumber = <span class="number">100</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Reflection to change the value of init only property.</span></span><br><span class="line"><span class="keyword">typeof</span>(Demo).GetProperty(<span class="string">"InitOnlyNumber"</span>).SetValue(x, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Changed to 1.</span></span><br><span class="line">x.InitOnlyNumber.Dump();</span><br></pre></td></tr></table></figure></p>
 <h4 id="dynamic-無法重現"><a href="#dynamic-無法重現" class="headerlink" title="dynamic (無法重現)"></a><code>dynamic</code> (無法重現)</h4><p>可能在我的環境中用的是已經修好這個問題的編譯器或相關工具。  </p>
-<h4 id="不認識-modreqs-的編譯器"><a href="#不認識-modreqs-的編譯器" class="headerlink" title="不認識 modreqs 的編譯器"></a>不認識 modreqs 的編譯器</h4><p>這部分我沒工具可以重現，但從他的機制看起來，會有這個漏洞是合理的。  </p>
+<h4 id="不認識-modreqs-的編譯器"><a href="#不認識-modreqs-的編譯器" class="headerlink" title="不認識 modreqs 的編譯器"></a>不認識 modreqs 的編譯器</h4><p>在套件開發上要注意，如果套件中使用 <code>init</code> 後編譯成 dll 被其它專案引用，而這個專案使用不支援 C# 9 的編譯器，就會因為無法辨識 Init Only Setter 而使得套件中的相關功能無法使用。  </p>
 <h3 id="衍伸知識與關鍵字"><a href="#衍伸知識與關鍵字" class="headerlink" title="衍伸知識與關鍵字"></a>衍伸知識與關鍵字</h3><p>從參考資料中我們會另外看到一些衍伸的關鍵字，如果不懂這些關鍵字會很難理解設計書中的內容。  </p>
 <p><strong>binary signature</strong>： 根據 ChatGPT 說明，在 .NET 中每個方法或屬性都有一個二進位簽名（binary signature），用來唯一標識這個方法或屬性。這個簽名包括方法或屬性的名稱、參數類型、返回類型以及其他修飾符。  </p>
 <p><strong>binary compatbility</strong>： 編譯後的程式碼是否能與已經編譯好的其他程式碼相互合作。<br>如果一個方法或屬性的二進位簽名發生改變，現有的二進位相容性就會被破壞，因為其他程式碼可能依賴於這個特定的簽名。也就是說當一個屬性將 <code>set</code> 改成 <code>init</code> (反之亦然)時，即便修改前後所產生的 IL 中都有 setter 二進位簽名也會因為 <code>modreq</code> 而改變，這時候其它編譯好的程式碼對這個屬性的參考，就會因為二進位簽名改變而無法正確定位。</p>
 <p><strong>CLI、IL</strong>： 這個網路查查很多，但是比較不容易理解的是這些詞之間的關係，簡單說 IL 是 CLI 標準的一部份，<a href="https://www.cnblogs.com/cdaniu/p/15147320.html" target="_blank" rel="noopener">Ecma335、CLR、CLI、CTS、 IL、.net 以及他们之间的关系</a>有一些說明。</p>
-<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>其實主要就是編譯時期插入一些 IL 程式碼使得執行階段能辨識並如預期般運作。只是這些 IL 程式碼衍生出一些比較進階的內容要深入研究會沒完沒了。  </p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>其實主要就是編譯時期插入一些 IL 程式碼使得執行階段能辨識並如預期般運作。比較要注意的是套件開發者現在除了考慮框架版本的支援度外，也要考慮語言版本支援度的問題了。  </p>
 <h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://miroox.github.io/blog/2021/05/Initonly-Setter-CSharp/" target="_blank" rel="noopener">关于C#9中仅初始化的属性设置器</a>  </p>
 <p><a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/proposals/csharp-9.0/init" target="_blank" rel="noopener">Init Only Setters</a>：尤其是 <strong>Modreqs vs. attributes</strong> 和 <strong>Metadata encoding</strong> 兩段。</p>
 <p><a href="https://stackoverflow.com/a/77111055" target="_blank" rel="noopener">Why is changing a property from “init” to “set” a binary breaking change? 的回應</a>  </p>
