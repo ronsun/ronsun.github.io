@@ -94,16 +94,17 @@
 
 
 
-<meta name="description" content="Simple Is Not Easy">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Ron 2.0">
-<meta property="og:url" content="https://ronsun.github.io/archives/2024/07/index.html">
+<meta name="description" content="Nullable&amp;lt;T&amp;gt; 是一個很方便的結構，但看似簡單的特性背後卻隱藏一些小陷阱，這些陷阱平時難以發現，但一旦遇到卻很容易讓人感到困惑，這篇文章將解析我遇過的相關情境。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="可空的實質型別與其陷阱">
+<meta property="og:url" content="https://ronsun.github.io/content/20240716-pitfall-of-nullable-value-type.html">
 <meta property="og:site_name" content="Ron 2.0">
-<meta property="og:description" content="Simple Is Not Easy">
+<meta property="og:description" content="Nullable&amp;lt;T&amp;gt; 是一個很方便的結構，但看似簡單的特性背後卻隱藏一些小陷阱，這些陷阱平時難以發現，但一旦遇到卻很容易讓人感到困惑，這篇文章將解析我遇過的相關情境。">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2024-07-21T16:28:00.269Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ron 2.0">
-<meta name="twitter:description" content="Simple Is Not Easy">
+<meta name="twitter:title" content="可空的實質型別與其陷阱">
+<meta name="twitter:description" content="Nullable&amp;lt;T&amp;gt; 是一個很方便的結構，但看似簡單的特性背後卻隱藏一些小陷阱，這些陷阱平時難以發現，但一旦遇到卻很容易讓人感到困惑，這篇文章將解析我遇過的相關情境。">
 
 
 
@@ -132,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="https://ronsun.github.io/archives/2024/07/"/>
+  <link rel="canonical" href="https://ronsun.github.io/content/20240716-pitfall-of-nullable-value-type.html"/>
 
 
 
 
 
-  <title>Archive | Ron 2.0</title>
+  <title>可空的實質型別與其陷阱 | Ron 2.0</title>
   
 
 
@@ -157,7 +158,7 @@
     
   
 
-  <div class="container sidebar-position-left  page-archive  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -285,147 +286,195 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20240716-pitfall-of-nullable-value-type.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ron Sun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
-         
+          <h2 class="post-title" itemprop="name headline">可空的實質型別與其陷阱</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-07-16T23:50:00+08:00">
+                2024-07-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        Good! 89 posts in total. Keep on posting.
-      </span>
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C#</span>
+                  </a>
+                </span>
 
-      
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/Language-Spec/" itemprop="url" rel="index">
+                    <span itemprop="name">Language Spec</span>
+                  </a>
+                </span>
 
-        
-        
-        
-
-        
+                
+                
+              
+            </span>
           
-          <div class="collection-title">
-            <h2 class="archive-year motion-element" id="archive-year-2024">2024</h2>
-          </div>
-        
-        
 
-        
+          
+            
+          
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
 
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/content/20240716-pitfall-of-nullable-value-type.html" itemprop="url">
-              
-                <span itemprop="name">可空的實質型別與其陷阱</span>
-              
-            </a>
-        
-      </h3>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2024-07-16T23:50:00+08:00"
-              content="2024-07-16" >
-          07-16
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+        </div>
+      </header>
+    
 
-
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/content/20240711-init-only-setters.html" itemprop="url">
-              
-                <span itemprop="name">深入 Init Only Setters</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2024-07-11T00:13:50+08:00"
-              content="2024-07-11" >
-          07-11
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/content/20240708-whats-new-in-csharp-12.html" itemprop="url">
-              
-                <span itemprop="name">C# 語言特性更新 - C# 12</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2024-07-08T23:02:16+08:00"
-              content="2024-07-08" >
-          07-08
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <p><code>Nullable&lt;T&gt;</code> 是一個很方便的結構，但看似簡單的特性背後卻隱藏一些小陷阱，這些陷阱平時難以發現，但一旦遇到卻很容易讓人感到困惑，這篇文章將解析我遇過的相關情境。</p>
+<a id="more"></a>
+<h3 id="裝箱與-GetType-時型別不如預期"><a href="#裝箱與-GetType-時型別不如預期" class="headerlink" title="裝箱與 GetType() 時型別不如預期"></a>裝箱與 <code>GetType()</code> 時型別不如預期</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">decimal</span>? d = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">decimal</span>? d2 = <span class="number">1</span>m;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Type dType = d.GetType(); // Exception</span></span><br><span class="line">Type d2Type = d2.GetType();</span><br><span class="line">d2Type.FullName.Dump(); <span class="comment">// System.Decimal</span></span><br><span class="line"><span class="keyword">typeof</span>(<span class="keyword">decimal</span>?).FullName.Dump(); <span class="comment">// System.Nullable`1[[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]</span></span><br></pre></td></tr></table></figure>
+<p>從上面範例可以看到，兩個變數都是 <code>Nullable&lt;Decimal&gt;</code> 型別，但神奇的是 <code>dType</code> 那一行會拋錯而 <code>d2.GetType()</code> 那一行卻會回傳 <code>Decimal</code> 這個型別；而另一方面直接使用 <code>typeof(decimal?)</code> 卻如預期的回傳 <code>Nullable&lt;Decimal&gt;</code>。  </p>
+<p>根據<a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types#how-to-identify-a-nullable-value-type" target="_blank" rel="noopener">官方文件 How to identify a nullable value type</a> 一節，這件事得從裝箱 (Boxing) 說起。首先，<code>d2.GetType()</code> 這一行會先轉型成 <code>Object</code> 並引發裝箱，而有值的 <code>Nullable&lt;Decimal&gt;</code> 裝箱的行為實際上是將內部的基礎型別 (<code>Decimal</code>) 的值裝箱，以至於 <code>d2Type</code> 的內容其實是 <code>Decimal</code>。由於本質上是因為裝箱引發的結果，這件事不只會發生在呼叫 <code>GetType()</code> 時，也會在把 <code>Nullable&lt;T&gt;</code> 轉型成 <code>object</code> 而引發裝箱時產生一樣的現象。  </p>
+<p>另外根據 CLR via C# 這本書第19章 Nullable Value Types 中 The CLR Has Special Support for Nullable Value Types 一節的說法，CLR 有針對 <code>Nullable&lt;T&gt;</code> 做特殊處理，因此我們無法透過模仿 <code>Nullable&lt;T&gt;</code> 的設計而寫出一個客製化的型別來達到一樣的特性。  </p>
+<p>更甚至在型別判斷上也會出現類似的誤判：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">decimal</span>? d2 = <span class="number">1</span>m;</span><br><span class="line">(d2 <span class="keyword">is</span> <span class="keyword">decimal</span>?).Dump(); <span class="comment">// True</span></span><br><span class="line">(d2 <span class="keyword">is</span> <span class="keyword">decimal</span>).Dump(); <span class="comment">// True</span></span><br></pre></td></tr></table></figure></p>
+<p>因此如果要偵測一個物件是不是 <code>Nullable&lt;T&gt;</code>，就只能靠下面的輔助方法來達成：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">bool</span> IsNullableType&lt;T&gt;(T instance)</span><br><span class="line">&#123;</span><br><span class="line">    Type type = <span class="keyword">typeof</span>(T);</span><br><span class="line">    <span class="keyword">return</span> Nullable.GetUnderlyingType(type) != <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">decimal</span>? d2 = <span class="number">1</span>m;</span><br><span class="line">IsNullableType(d2).Dump(); <span class="comment">// True</span></span><br><span class="line">IsNullableType(<span class="number">1</span>m).Dump(); <span class="comment">// False</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="預期外的推論型別結果"><a href="#預期外的推論型別結果" class="headerlink" title="預期外的推論型別結果"></a>預期外的推論型別結果</h3><p>搭配三元運算子 (Ternary Operator) 和 Null 聯合運算子 (null-coalescing operators) 使用時， <code>var</code> 的推論型別可能和預期的不一樣。  </p>
+<p>以下面的範例為例：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">decimal</span>? d = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">var</span> x = d.HasValue ? d : <span class="number">1</span>m; <span class="comment">// Nullable&lt;Decimal&gt;</span></span><br><span class="line"><span class="keyword">var</span> x2 = d ?? <span class="number">1</span>m; <span class="comment">// Decimal</span></span><br></pre></td></tr></table></figure></p>
+<p>首先三元運算子的部分 <code>var x = d.HasValue ? d : 1m;</code> 其實不太意外畢竟 <code>d</code> 是 <code>Nullable&lt;Decimal&gt;</code> 型別而 <code>1m</code> 的部分是 <code>Decimal</code>，將 <code>x</code> 推論成支援範圍比較廣的 <code>Nullable&lt;Decimal&gt;</code> 很合理。  </p>
+<p>但 Null 聯合運算子部分就令人意外了。 下面提供兩種不同的工具反組譯出來的結果，雖然細節不大一樣，但關鍵點都一樣是因為 <code>Nullable&lt;T&gt;.GetValueOrDefault()</code> 回傳的型別是 <code>T</code>，以至於推論型別只會是 <code>Decimal</code>。<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// From ILSpy</span></span><br><span class="line">Nullable&lt;<span class="keyword">decimal</span>&gt; d = <span class="literal">null</span>;</span><br><span class="line">Nullable&lt;<span class="keyword">decimal</span>&gt; num = d;</span><br><span class="line"><span class="keyword">decimal</span> x2 = (num.HasValue ? num.GetValueOrDefault() : <span class="number">1</span>m);</span><br><span class="line"></span><br><span class="line"><span class="comment">// From LINQPad 8</span></span><br><span class="line">Nullable&lt;<span class="keyword">decimal</span>&gt; d = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">decimal</span> x2 = d.GetValueOrDefault (<span class="number">1</span>m);</span><br></pre></td></tr></table></figure></p>
+<p>這邊另外補充一下 ChatGPT 的解釋與參考資料：</p>
+<blockquote>
+<ol>
+<li>C# 編譯器在推斷三元運算子結果型別時，會考慮兩個操作數的最小共同超類型 (common type) 。如果操作數之一是 <code>Nullable&lt;T&gt;</code> 而另一個是 <code>T</code>，則結果會被推斷為 <code>Nullable&lt;T&gt;</code>，因為 <code>Nullable&lt;T&gt;</code> 可以包含所有 <code>T</code> 的值和一個額外的 <code>null</code>。參考 <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/conditional-operator" target="_blank" rel="noopener">?: operator - the ternary conditional operator</a>  </li>
+<li><code>??</code> 運算子用於在其左操作數為 <code>null</code> 時返回其右操作數。由於 <code>Nullable&lt;T&gt;</code> 可以被看作兩種狀態(有值和無值)，在運行 <code>??</code> 時，如果左操作數是 <code>null</code>，則直接返回右操作數的值類型。參考 <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-coalescing-operator" target="_blank" rel="noopener">?? and ??= operators - the null-coalescing operators</a></li>
+</ol>
+</blockquote>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>C# 很多由編譯器處理的語法糖，如果不了解編譯後的結果，有時候會對一些細節產生誤判。</p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p>ChatGPT  </p>
+<p>CLR via C# 一書</p>
+<p><a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types#how-to-identify-a-nullable-value-type" target="_blank" rel="noopener">How to identify a nullable value type</a>  </p>
+<p><a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/conditional-operator" target="_blank" rel="noopener">?: operator - the ternary conditional operator</a>  </p>
+<p><a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-coalescing-operator" target="_blank" rel="noopener">?? and ??= operators - the null-coalescing operators</a>  </p>
 
       
-
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/content/20240711-init-only-setters.html" rel="next" title="深入 Init Only Setters">
+                <i class="fa fa-chevron-left"></i> 深入 Init Only Setters
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -433,6 +482,42 @@
 
 
           
+  <div class="comments" id="comments">
+    
+        <div id="container" class="gitment_container"></div>
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+        <script>
+          const myTheme = {
+            render(state, instance) {
+              const container = document.createElement('div');
+              container.lang = "en-US";
+              container.className = 'gitment-container gitment-root-container';
+              container.appendChild(instance.renderHeader(state, instance));
+              container.appendChild(instance.renderEditor(state, instance));
+              container.appendChild(instance.renderComments(state, instance));
+              container.appendChild(instance.renderFooter(state, instance));
+              return container;
+            }
+          }
+          function showGitment() {
+            var gitment = new Gitment({
+              id: '1721145000000',
+              theme: myTheme,
+              owner: 'ronsun',
+              repo: 'ronsun.github.io.gitment',
+              oauth: {
+                client_id: '749fee720f2039efbbde',
+                client_secret: '3104dc228340ec2814ce1a11a7457d4f2d1effa6'
+              }
+            });
+            gitment.render('container');
+          }
+          showGitment();
+        </script>
+  </div>
+
+
         </div>
         
           
@@ -452,8 +537,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -565,6 +659,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#裝箱與-GetType-時型別不如預期"><span class="nav-number">1.</span> <span class="nav-text">裝箱與 GetType() 時型別不如預期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#預期外的推論型別結果"><span class="nav-number">2.</span> <span class="nav-text">預期外的推論型別結果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">4.</span> <span class="nav-text">參考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -691,11 +801,9 @@
 
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
 
 
   
