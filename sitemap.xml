@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://ronsun.github.io/content/20240725-scenarios-for-string-interpolation.html</loc>
+    
+    <lastmod>2024-07-27T16:26:51.359Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://ronsun.github.io/content/20190322-csharp-language-specification-6.html</loc>
     
     <lastmod>2024-07-21T17:07:24.829Z</lastmod>
