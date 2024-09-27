@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA" />
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://github.com/identicons/ronsun.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="C# 的非同步程式設計是一個相當龐大且複雜的主題，甚至可以寫成整本專書。由於這也是面試中的常見題目，本文將嘗試從面試的角度整理非同步開發的要點。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="從面試角度看 async">
+<meta property="og:url" content="https://ronsun.github.io/content/20240910-async-for-interview.html">
+<meta property="og:site_name" content="Ron 2.0">
+<meta property="og:description" content="C# 的非同步程式設計是一個相當龐大且複雜的主題，甚至可以寫成整本專書。由於這也是面試中的常見題目，本文將嘗試從面試的角度整理非同步開發的要點。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2024-09-27T18:12:58.444Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="從面試角度看 async">
+<meta name="twitter:description" content="C# 的非同步程式設計是一個相當龐大且複雜的主題，甚至可以寫成整本專書。由於這也是面試中的常見題目，本文將嘗試從面試的角度整理非同步開發的要點。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://ronsun.github.io/content/20240910-async-for-interview.html"/>
+
+
+
+
+
+  <title>從面試角度看 async | Ron 2.0</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ron 2.0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">Simple Is Not Easy</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Searching..." spellcheck="false"
+             type="text" id="local-search-input" />
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20240910-async-for-interview.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ron Sun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">從面試角度看 async</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-09-10T23:38:38+08:00">
+                2024-09-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C#</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/Language-Spec/" itemprop="url" rel="index">
+                    <span itemprop="name">Language Spec</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>C# 的非同步程式設計是一個相當龐大且複雜的主題，甚至可以寫成整本專書。由於這也是面試中的常見題目，本文將嘗試從面試的角度整理非同步開發的要點。</p>
+<a id="more"></a>
+<h3 id="非同步程式設計的特點"><a href="#非同步程式設計的特點" class="headerlink" title="非同步程式設計的特點"></a>非同步程式設計的特點</h3><p>在同步程式設計中，任務依序執行，程式必須等待當前操作完成後才能繼續下一個操作。例如，當程式需要讀取檔案或從網路取得資料時，必須等這些 I/O 操作完成後才能繼續執行其他操作。因此，若遇到高耗時的操作(如 I/O 或長時間的計算)，主執行緒將會被阻塞，導致程式在等待期間無法進行其他操作。  </p>
+<p>相對地，在非同步程式設計中，當執行耗時較長的 I/O 操作時，非同步程式可以啟動該操作並立即返回，允許其他任務繼續執行。這讓 CPU 在等待 I/O 操作完成的同時處理其他操作，使系統資源得以更有效率地運用。這種特性在處理網路請求、檔案 I/O 或資料庫存取等需要等待結果的操作時特別有用。  </p>
+<h3 id="async-與-await-關鍵字如何用於非同步程式"><a href="#async-與-await-關鍵字如何用於非同步程式" class="headerlink" title="async 與 await 關鍵字如何用於非同步程式"></a><code>async</code> 與 <code>await</code> 關鍵字如何用於非同步程式</h3><p>讓我們從一個範例開始：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Linq;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">async</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="keyword">string</span>[] args</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// * Step 1</span></span><br><span class="line">    <span class="keyword">var</span> demo = <span class="keyword">new</span> AsyncDemo();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// * Step 2</span></span><br><span class="line">    <span class="keyword">var</span> finalResult = <span class="keyword">await</span> demo.Service();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Step 15</span></span><br><span class="line">    Console.WriteLine(finalResult);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AsyncDemo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;<span class="keyword">string</span>&gt; <span class="title">Service</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// * Step 3</span></span><br><span class="line">        <span class="keyword">var</span> readerTask = ReadFromFile();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// * Step 5</span></span><br><span class="line">        <span class="keyword">var</span> aggregated = Calculate()</span><br><span class="line">            .Select(r =&gt;</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// Story I:</span></span><br><span class="line">                <span class="comment">// * Step 6</span></span><br><span class="line">                <span class="comment">// * Step 7</span></span><br><span class="line">                <span class="comment">// * Step A with another thread (T2) because Step 4 completed.</span></span><br><span class="line">                <span class="comment">// * Step 8 with current thread (T1).</span></span><br><span class="line">                <span class="comment">// * Step 9</span></span><br><span class="line">                <span class="comment">// * Step 10</span></span><br><span class="line">                <span class="comment">// ==================</span></span><br><span class="line">                <span class="comment">// Story II:</span></span><br><span class="line">                <span class="comment">// * Step 6</span></span><br><span class="line">                <span class="comment">// * Step 7</span></span><br><span class="line">                <span class="comment">// * Step 8</span></span><br><span class="line">                <span class="comment">// * Step 9</span></span><br><span class="line">                <span class="comment">// * Step 10</span></span><br><span class="line">                Console.WriteLine(<span class="string">$"[T<span class="subst">&#123;Environment.CurrentManagedThreadId&#125;</span>] Calculated answer: <span class="subst">&#123;r&#125;</span>"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="string">$"<span class="subst">&#123;r&#125;</span>"</span>;</span><br><span class="line">            &#125;)</span><br><span class="line">            .Aggregate((l, r) =&gt; <span class="string">$"<span class="subst">&#123;l&#125;</span>, <span class="subst">&#123;r&#125;</span>"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// * Step 11</span></span><br><span class="line">        Console.WriteLine(<span class="string">$"[T<span class="subst">&#123;Environment.CurrentManagedThreadId&#125;</span>] Aggregated of calculated answer: <span class="subst">&#123;aggregated&#125;</span>"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Story I:</span></span><br><span class="line">        <span class="comment">// * Step 12</span></span><br><span class="line">        <span class="comment">// ==================</span></span><br><span class="line">        <span class="comment">// Story II:</span></span><br><span class="line">        <span class="comment">// * Step 4 took too much time.</span></span><br><span class="line">        <span class="comment">// * Wait at Step 12 util Step 4 completed.</span></span><br><span class="line">        <span class="comment">// * Step A with another thread (T2) once Step 4 completed.</span></span><br><span class="line">        <span class="comment">// * Step 12 from another sequence.</span></span><br><span class="line">        <span class="keyword">var</span> fileData = <span class="keyword">await</span> readerTask;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// * Step 13</span></span><br><span class="line">        Console.WriteLine(<span class="string">$"[T<span class="subst">&#123;Environment.CurrentManagedThreadId&#125;</span>] File data returned."</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Step 14</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">$"[T<span class="subst">&#123;Environment.CurrentManagedThreadId&#125;</span>] FileData: <span class="subst">&#123;fileData&#125;</span>; Calcualted: <span class="subst">&#123;aggregated&#125;</span>"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">async</span> Task&lt;<span class="keyword">string</span>&gt; <span class="title">ReadFromFile</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// Step 4</span></span><br><span class="line">        <span class="keyword">await</span> Task.Delay(<span class="number">500</span>);</span><br><span class="line">        <span class="keyword">var</span> result = <span class="string">"File Content: Data from file."</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Step A</span></span><br><span class="line">        Console.WriteLine(<span class="string">$"[T<span class="subst">&#123;Environment.CurrentManagedThreadId&#125;</span>] <span class="subst">&#123;result&#125;</span>."</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> ans = Calculate()</span><br><span class="line">            .Select(r =&gt;</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// Step B</span></span><br><span class="line">                <span class="comment">// Step C</span></span><br><span class="line">                <span class="comment">// Step D</span></span><br><span class="line">                <span class="comment">// Step E</span></span><br><span class="line">                <span class="comment">// Step F</span></span><br><span class="line">                Console.WriteLine(<span class="string">$"[T<span class="subst">&#123;Environment.CurrentManagedThreadId&#125;</span>] Calculated answer in <span class="subst">&#123;<span class="keyword">nameof</span>(ReadFromFile)&#125;</span>: <span class="subst">&#123;r&#125;</span>"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="string">$"<span class="subst">&#123;r&#125;</span>"</span>;</span><br><span class="line">            &#125;)</span><br><span class="line">            .Aggregate((l, r) =&gt; <span class="string">$"<span class="subst">&#123;l&#125;</span>, <span class="subst">&#123;r&#125;</span>"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Step G</span></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> IEnumerable&lt;<span class="keyword">int</span>&gt; <span class="title">Calculate</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> limit = <span class="number">100000000</span>;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (i++ &lt; limit)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (i % (limit / <span class="number">5</span>) == <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">yield</span> <span class="keyword">return</span> i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>這個範例看起來較為複雜，但只要掌握幾個基本概念，我們就可以逐步理解：</p>
+<ol>
+<li><code>async</code> 有傳染性，所有非同步方法的呼叫端都必須是非同步方法(設計上必須，否則就要使用同步等待，這會造成很大的風險後面會說明)。</li>
+<li>當一個方法呼叫非同步方法時，非同步方法會返回一個 <code>Task</code> 或 <code>Task&lt;T&gt;</code>。如果呼叫方使用了 <code>await</code>，它會暫停該方法的執行，並將控制權返回給更上層的呼叫端。如果更上層的呼叫端也使用了 <code>await</code>，這個過程會繼續向上傳遞，直到找到一個不再使用 <code>await</code> 的呼叫端。此時，程式才會從那個不使用 <code>await</code> 的呼叫端繼續執行，並等到非同步操作完成後再依序往下執行。<blockquote>
+<p>換句話說，當某個方法 <code>M3</code> 呼叫非同步方法 <code>M4</code> 時，<code>M4</code> 會回傳一個 <code>Task</code> 或 <code>Task&lt;T&gt;</code>。如果 <code>M3</code> 使用了 <code>await</code> 來等待 <code>M4</code> 的完成，<code>M3</code> 的執行會暫時中斷，並將控制權返回給更上層的呼叫端 <code>M2</code>。如果 <code>M2</code> 也使用了 <code>await</code>，這個過程會持續向上傳遞，直到找到一個不再使用 <code>await</code> 的呼叫端(例如 <code>M1</code>)。此時，控制權會停留在這個不使用 <code>await</code> 的呼叫端(例如 <code>M1</code>)，直到非同步操作完成，然後程式流程再依序從等待點繼續執行。</p>
+</blockquote>
+</li>
+</ol>
+<p>接下來我們逐步說明上面範例的執行順序：</p>
+<ol>
+<li>從 Step 1 開始。</li>
+<li>Step 2 呼叫非同步方法 <code>Service()</code>，並使用 <code>await</code> 等待結果。</li>
+<li>進入後 Step 3 接著呼叫下一層的非同步方法。</li>
+<li>Step 4 <code>await Task.Delay(...);</code> 模擬一個耗時的 I/O 操作，因為有使用 <code>await</code> 所以在操作完成前將<strong>控制權返回給上一層的呼叫端</strong>。</li>
+<li>回到上一層看到 Step 3 的部分沒有使用 <code>await</code>，由此繼續往下到 Step 5。</li>
+<li>Step 5 ~ 10 執行了一連串 CPU Bound 的操作，視 Step 4 的 I/O 操作與這一連串 CPU Bound 操作誰先完成，會產生出兩種不同的執行順序。<ol>
+<li>第一種順序是，上一步的 CPU Bound 操作未完成但 Step 4 的 I/O 操作已完成，控制權回到 Step 4 結束後繼續往下，於此同時，Step 5 ~ 10 仍然由另外由不同的執行緒服務，Step A ~ G 會和 Step 5 ~ 11 中未完成部分交錯完成。</li>
+<li>第二種順序是，上一步的 CPU Bound 操作先完成並往下到 Step 11。</li>
+</ol>
+</li>
+<li>從 Step 12 開始，由於這邊有使用 <code>await</code>，<strong>控制權返回給更上一層的呼叫端</strong>來到 Step 2，而 Step 2 也有使用 <code>await</code>，理應將<strong>控制權返回給更上一層的呼叫端</strong>，但由於已經到達程式入口點，所以這邊無法繼續追蹤。<ol>
+<li>等到 Step G 完成回傳後，Step 12 等待結束繼續往下。</li>
+<li>接著 Step 4 完成，等待結束依序往下執行 Step A ~ G 後回傳到 Step 12，接著 Step 12 等待結束繼續往下。</li>
+</ol>
+</li>
+<li>接著是 Step 13 ~ 14 完成後回傳。</li>
+<li>Step 2 等待結束繼續往下執行 Step 15 後結束。</li>
+</ol>
+<p>接著附上兩種不同執行順序的實際 Log 協助讀者理解。<br>首先是第一種順序，I/O 操作結束後的程式，會和呼叫端在 I/O 操作未完成時可以同時執行的操作交錯由不同執行緒服務。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[T1] Calculated answer: 20000000</span><br><span class="line">[T1] Calculated answer: 40000000</span><br><span class="line">[T17] File Content: Data from file..</span><br><span class="line">[T1] Calculated answer: 60000000</span><br><span class="line">[T17] Calculated answer in ReadFromFile: 20000000</span><br><span class="line">[T1] Calculated answer: 80000000</span><br><span class="line">[T17] Calculated answer in ReadFromFile: 40000000</span><br><span class="line">[T1] Calculated answer: 100000000</span><br><span class="line">[T1] Aggregated of calculated answer: 20000000, 40000000, 60000000, 80000000, 100000000</span><br><span class="line">[T17] Calculated answer in ReadFromFile: 60000000</span><br><span class="line">[T17] Calculated answer in ReadFromFile: 80000000</span><br><span class="line">[T17] Calculated answer in ReadFromFile: 100000000</span><br><span class="line">[T17] File data returned.</span><br><span class="line">[T17] FileData: File Content: Data from file.; Calcualted: 20000000, 40000000, 60000000, 80000000, 100000000</span><br></pre></td></tr></table></figure></p>
+<p>接著是第二種順序，I/O 操作結束前，能同時執行的操作早已全部完成。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[T1] Calculated answer: 20000000</span><br><span class="line">[T1] Calculated answer: 40000000</span><br><span class="line">[T1] Calculated answer: 60000000</span><br><span class="line">[T1] Calculated answer: 80000000</span><br><span class="line">[T1] Calculated answer: 100000000</span><br><span class="line">[T1] Aggregated of calculated answer: 20000000, 40000000, 60000000, 80000000, 100000000</span><br><span class="line">[T7] File Content: Data from file..</span><br><span class="line">[T7] Calculated answer in ReadFromFile: 20000000</span><br><span class="line">[T7] Calculated answer in ReadFromFile: 40000000</span><br><span class="line">[T7] Calculated answer in ReadFromFile: 60000000</span><br><span class="line">[T7] Calculated answer in ReadFromFile: 80000000</span><br><span class="line">[T7] Calculated answer in ReadFromFile: 100000000</span><br><span class="line">[T7] File data returned.</span><br><span class="line">[T7] FileData: File Content: Data from file.; Calcualted: 20000000, 40000000, 60000000, 80000000, 100000000</span><br></pre></td></tr></table></figure></p>
+<h3 id="非同步開發的死鎖-DeadLock-如何產生與避免"><a href="#非同步開發的死鎖-DeadLock-如何產生與避免" class="headerlink" title="非同步開發的死鎖 (DeadLock) 如何產生與避免"></a>非同步開發的死鎖 (DeadLock) 如何產生與避免</h3><h4 id="產生原因"><a href="#產生原因" class="headerlink" title="產生原因"></a>產生原因</h4><p>在非同步開發中，死鎖通常源於同步等待非同步操作的結果。當使用 <code>await</code> 等待某個非同步呼叫時，會先將當下的執行緒上下文 (Context) 記起來，等之後非同步操作完成後再載入原先記起來的執行緒上下文繼續進行後續操作。而這個執行緒上下文指的是 <code>SynchronizationContext</code> 的物件 (Instance)，在傳統的 ASP.NET 環境中是 <code>AspNetSynchronizationContext</code> 這個子類別的物件。  </p>
+<blockquote>
+<p>如果當下沒有 <code>SynchronizationContext</code> 可以拿，則會以 <code>TaskScheduler</code> 來決定後續的執行緒上下文。<br>在 ASP.NET Core 之後，預設沒有 <code>SynchronizationContext</code>，因此不容易發生此類死鎖。</p>
+</blockquote>
+<p>當呼叫端直接使用 <code>.Result</code> 或 <code>.Wait()</code> 來同步等待非同步操作時，這會阻塞目前的 <code>SynchronizationContext</code> 所關聯的執行緒，等待非同步操作完成。當非同步操作完成後，接著會想取得先前被記住的 <code>SynchronizationContext</code> 物件來繼續進行後續操作，但當時的這個物件已經被阻塞了。最終造成呼叫端阻塞 <code>SynchronizationContext</code> 物件來等待非同步操作完成，而非同步操作完成後又需要取用已經被呼叫端阻塞的 <code>SynchronizationContext</code> 物件進而造成死鎖。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DeadlockExample</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">MainMethod</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// 使用 .Result 進行同步等待，可能導致死鎖</span></span><br><span class="line">        <span class="keyword">var</span> result = AsyncMethod().Result;  </span><br><span class="line">        Console.WriteLine(result);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;<span class="keyword">string</span>&gt; <span class="title">AsyncMethod</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">await</span> Task.Delay(<span class="number">1000</span>);  <span class="comment">// 模擬一個非同步操作</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Completed"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上範例在 ASP.NET 環境中運作時：</p>
+<ul>
+<li><code>MainMethod</code> 使用 <code>.Result</code> 同步等待 <code>AsyncMethod</code> 的結果，這會阻塞當下的<code>SynchronizationContext</code> 物件。</li>
+<li><code>AsyncMethod</code> 的 <code>await Task.Delay(1000)</code> 會暫停目前方法的執行將控制權交回呼叫端，此時的呼叫端因為是同步等待所以就這樣等著。</li>
+<li>當 1 秒結束後，<code>await</code> 試圖取用先前記住的 <code>SynchronizationContext</code> 物件，來讓呼叫端能繼續後續操作。</li>
+<li>但此時這個物件以被阻塞，導致雙方陷入相互等待的死鎖狀態。</li>
+</ul>
+<h4 id="避免方式"><a href="#避免方式" class="headerlink" title="避免方式"></a>避免方式</h4><h5 id="使用-await-避免同步-Result-和-Wait-等待非同步操作"><a href="#使用-await-避免同步-Result-和-Wait-等待非同步操作" class="headerlink" title="使用 await 避免同步 (.Result 和 .Wait()) 等待非同步操作"></a>使用 <code>await</code> 避免同步 (<code>.Result</code> 和 <code>.Wait()</code>) 等待非同步操作</h5><p>非同步操作應該使用 <code>await</code> 來進行等待，而不是使用 <code>.Result</code> 或 <code>.Wait()</code>。</p>
+<h5 id="使用-ConfigureAwait-false"><a href="#使用-ConfigureAwait-false" class="headerlink" title="使用 ConfigureAwait(false)"></a>使用 <code>ConfigureAwait(false)</code></h5><p>在某些情況下，我們並不需要回到原本的執行緒上下文繼續執行後續操作。這時可以使用 <code>ConfigureAwait(false)</code> 來讓這個非同步操作不要取用先前記住的執行緒上下文，進而避免死鎖風險。</p>
+<blockquote>
+<p>從官方文件可以看到，第一個參數名字是 <code>continueOnCapturedContext</code> ，加上文件說明也可以看出端倪。  </p>
+</blockquote>
+<p>這個解法的缺點是，因為 <code>async</code> 的傳染性，所有的呼叫端都是非同步方法，他們都要加上 <code>ConfigureAwait(false)</code>，所以通常不是優先選項，但換個角度來看，當在開發套件時反而成為必要的機制，因為我們要假設使用者不一定會乖乖的使用 <code>await</code>，因此必須加上 <code>ConfigureAwait(false)</code> 來預防。</p>
+<h4 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h4><p>了解死鎖發生的原因主要是因為了解背後的主因能讓我們在寫非同步程式時更有自信，而避免方式分兩種情境：</p>
+<ol>
+<li>多數情境下，做為呼叫端永遠使用 <code>await</code>。  </li>
+<li>開發套件或給外部開發人員使用的程式時，使用 <code>ConfigureAwait(false)</code> 來預防呼叫端誤用。</li>
+</ol>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>非同步程式是個很難完整表達的特性，只好借助 AI 來梳理並記錄，這樣之後需要說明的時候會更能有條理的表達。</p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p>ChatGPT<br><a href="https://play.google.com/store/books/details/NET_%E6%9C%AC%E4%BA%8B_%E9%9D%9E%E5%90%8C%E6%AD%A5%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88_Alpha_%E7%89%88?id=AwS1DAAAQBAJ" target="_blank" rel="noopener">.NET 本事：非同步程式設計</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/content/20240725-scenarios-for-string-interpolation.html" rel="next" title="各種字串插補的花式用法">
+                <i class="fa fa-chevron-left"></i> 各種字串插補的花式用法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+        <div id="container" class="gitment_container"></div>
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+        <script>
+          const myTheme = {
+            render(state, instance) {
+              const container = document.createElement('div');
+              container.lang = "en-US";
+              container.className = 'gitment-container gitment-root-container';
+              container.appendChild(instance.renderHeader(state, instance));
+              container.appendChild(instance.renderEditor(state, instance));
+              container.appendChild(instance.renderComments(state, instance));
+              container.appendChild(instance.renderFooter(state, instance));
+              return container;
+            }
+          }
+          function showGitment() {
+            var gitment = new Gitment({
+              id: '1725982718000',
+              theme: myTheme,
+              owner: 'ronsun',
+              repo: 'ronsun.github.io.gitment',
+              oauth: {
+                client_id: '749fee720f2039efbbde',
+                client_secret: '3104dc228340ec2814ce1a11a7457d4f2d1effa6'
+              }
+            });
+            gitment.render('container');
+          }
+          showGitment();
+        </script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ron Sun" />
+          <p class="site-author-name" itemprop="name">Ron Sun</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">91</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ronsun" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.linkedin.com/in/ronsun/" target="_blank" title="Linkedin">
+                  
+                    <i class="fa fa-fw fa-linkedin"></i>
+                  
+                    
+                      Linkedin
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Resources
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://referencesource.microsoft.com/" title=".Net Source Code" target="_blank">.Net Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://source.dot.net/" title=".Net Core Source Code" target="_blank">.Net Core Source Code</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notfalse.net/" title="NotFalse 技術客" target="_blank">NotFalse 技術客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gist.github.com/ronsun" title="放零碎筆記的 Gist" target="_blank">放零碎筆記的 Gist</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#非同步程式設計的特點"><span class="nav-number">1.</span> <span class="nav-text">非同步程式設計的特點</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#async-與-await-關鍵字如何用於非同步程式"><span class="nav-number">2.</span> <span class="nav-text">async 與 await 關鍵字如何用於非同步程式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非同步開發的死鎖-DeadLock-如何產生與避免"><span class="nav-number">3.</span> <span class="nav-text">非同步開發的死鎖 (DeadLock) 如何產生與避免</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#產生原因"><span class="nav-number">3.1.</span> <span class="nav-text">產生原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#避免方式"><span class="nav-number">3.2.</span> <span class="nav-text">避免方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#使用-await-避免同步-Result-和-Wait-等待非同步操作"><span class="nav-number">3.2.1.</span> <span class="nav-text">使用 await 避免同步 (.Result 和 .Wait()) 等待非同步操作</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用-ConfigureAwait-false"><span class="nav-number">3.2.2.</span> <span class="nav-text">使用 ConfigureAwait(false)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小結"><span class="nav-number">3.3.</span> <span class="nav-text">小結</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">4.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">5.</span> <span class="nav-text">參考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ron Sun</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
