@@ -94,17 +94,17 @@
 
 
 
-<meta name="description" content="最近在寫一個比較方便使用的工具方法來做 XML 的序列化的時候, 發生了一個神奇的問題, XmlWriterSettings.Encoding 預設應該是 UTF-8, 但是轉出來的 XML 卻是 UTF-16, 這就奇了怪了…">
+<meta name="description" content="LINQ (Language Integrated Query)  的延遲執行機制 (Deferred Execution)  是其一大特色，讓查詢表達式在實際迭代前都不會執行。然而，如果不加注意，可能會因誤用而引發難以察覺的效能問題。本文將探討 LINQ 的延遲執行機制及其潛在的誤用風險，並提供實際程式碼範例說明。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="XmlWriterSettings.Encoding 設定無效">
-<meta property="og:url" content="https://ronsun.github.io/content/20181101-xmlwritersettings-encoding-not-working.html">
+<meta property="og:title" content="LINQ 的延遲執行與誤用風險">
+<meta property="og:url" content="https://ronsun.github.io/content/20241003-linq-deferred-execution-and-pitfalls.html">
 <meta property="og:site_name" content="Ron 2.0">
-<meta property="og:description" content="最近在寫一個比較方便使用的工具方法來做 XML 的序列化的時候, 發生了一個神奇的問題, XmlWriterSettings.Encoding 預設應該是 UTF-8, 但是轉出來的 XML 卻是 UTF-16, 這就奇了怪了…">
+<meta property="og:description" content="LINQ (Language Integrated Query)  的延遲執行機制 (Deferred Execution)  是其一大特色，讓查詢表達式在實際迭代前都不會執行。然而，如果不加注意，可能會因誤用而引發難以察覺的效能問題。本文將探討 LINQ 的延遲執行機制及其潛在的誤用風險，並提供實際程式碼範例說明。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2023-11-26T17:01:26.732Z">
+<meta property="og:updated_time" content="2024-10-02T18:01:24.707Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="XmlWriterSettings.Encoding 設定無效">
-<meta name="twitter:description" content="最近在寫一個比較方便使用的工具方法來做 XML 的序列化的時候, 發生了一個神奇的問題, XmlWriterSettings.Encoding 預設應該是 UTF-8, 但是轉出來的 XML 卻是 UTF-16, 這就奇了怪了…">
+<meta name="twitter:title" content="LINQ 的延遲執行與誤用風險">
+<meta name="twitter:description" content="LINQ (Language Integrated Query)  的延遲執行機制 (Deferred Execution)  是其一大特色，讓查詢表達式在實際迭代前都不會執行。然而，如果不加注意，可能會因誤用而引發難以察覺的效能問題。本文將探討 LINQ 的延遲執行機制及其潛在的誤用風險，並提供實際程式碼範例說明。">
 
 
 
@@ -133,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="https://ronsun.github.io/content/20181101-xmlwritersettings-encoding-not-working.html"/>
+  <link rel="canonical" href="https://ronsun.github.io/content/20241003-linq-deferred-execution-and-pitfalls.html"/>
 
 
 
 
 
-  <title>XmlWriterSettings.Encoding 設定無效 | Ron 2.0</title>
+  <title>LINQ 的延遲執行與誤用風險 | Ron 2.0</title>
   
 
 
@@ -300,7 +300,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20181101-xmlwritersettings-encoding-not-working.html">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20241003-linq-deferred-execution-and-pitfalls.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Ron Sun">
@@ -317,7 +317,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">XmlWriterSettings.Encoding 設定無效</h2>
+          <h2 class="post-title" itemprop="name headline">LINQ 的延遲執行與誤用風險</h2>
         
 
         <div class="post-meta">
@@ -329,8 +329,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-01T20:21:45+08:00">
-                2018-11-01
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-03T00:14:37+08:00">
+                2024-10-03
               </time>
             
 
@@ -397,16 +397,35 @@
       
 
       
-        <p>最近在寫一個比較方便使用的工具方法來做 XML 的序列化的時候, 發生了一個神奇的問題, <code>XmlWriterSettings.Encoding</code> 預設應該是 UTF-8, 但是轉出來的 XML 卻是 UTF-16, 這就奇了怪了…</p>
+        <p>LINQ (Language Integrated Query)  的延遲執行機制 (Deferred Execution)  是其一大特色，讓查詢表達式在實際迭代前都不會執行。然而，如果不加注意，可能會因誤用而引發難以察覺的效能問題。本文將探討 LINQ 的延遲執行機制及其潛在的誤用風險，並提供實際程式碼範例說明。</p>
 <a id="more"></a>
-<h3 id="XmlWriterSettings-Encoding-設定無效"><a href="#XmlWriterSettings-Encoding-設定無效" class="headerlink" title="XmlWriterSettings.Encoding 設定無效"></a>XmlWriterSettings.Encoding 設定無效</h3><p>先來看下面這段 Demo<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">string</span> <span class="title">DemoForFailure</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> xmlWriterSettings = <span class="keyword">new</span> XmlWriterSettings();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">using</span> (<span class="keyword">var</span> xmlWriter = XmlWriter.Create(sb, xmlWriterSettings))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(<span class="keyword">string</span>)).Serialize(xmlWriter, <span class="keyword">string</span>.Empty);</span><br><span class="line">        <span class="keyword">return</span> sb.ToString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>程式碼就是很簡單的把一個空字串拿去序列化, 但是輸出的字串卻是 <code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&lt;string /&gt;</code>, 即使特別再手動設定 Encoding 也是一樣, 如: <code>var xmlWriterSettings = new XmlWriterSettings() { Encoding = Encoding.UTF8 };</code></p>
-<p>稍微推敲一下程式碼, 猜測應該是 <code>StringBulider</code> 的問題, 可能是因為 <code>StringBulider</code> 操作字串有自己的 Encoding, 所以就往這方面去找.</p>
-<h3 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h3><p>因為<del>今天比較懶</del>不想自己往底部去鑽, 所以先問問 google 大神先, 也是運氣好還真的有找到<a href="https://blogs.msdn.microsoft.com/kaevans/2008/08/11/xmlwritersettings-encoding-being-ignored/" target="_blank" rel="noopener">一篇分析文</a>, 大意上就是 <code>StringBuilder</code> 設計上是直接操作字元而不是 bytes, 而字串在 .NET 裡面都是 UTF-16 編碼的.</p>
-<h3 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h3><p>所以這邊改用存取 Stream 的方式來操作, 如下<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">string</span> <span class="title">DemoForSuccess</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> xmlWriterSettings = <span class="keyword">new</span> XmlWriterSettings() &#123; Encoding = Encoding.UTF8 &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">using</span> (<span class="keyword">var</span> ms = <span class="keyword">new</span> MemoryStream())</span><br><span class="line">    <span class="keyword">using</span> (<span class="keyword">var</span> sr = <span class="keyword">new</span> StreamReader(ms))</span><br><span class="line">    <span class="keyword">using</span> (<span class="keyword">var</span> xmlWriter = XmlWriter.Create(ms, xmlWriterSettings))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(<span class="keyword">string</span>)).Serialize(xmlWriter, <span class="keyword">string</span>.Empty);</span><br><span class="line">        ms.Position = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> sr.ReadToEnd();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>也沒什麼特別的技巧好結論, 特別寫出來只是怕之後忘記, 再遇到還要再踩一次.</p>
-<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://blogs.msdn.microsoft.com/kaevans/2008/08/11/xmlwritersettings-encoding-being-ignored/" target="_blank" rel="noopener">XmlWriterSettings Encoding Being Ignored?</a></p>
-<hr>
+<h3 id="介紹延遲執行-Deferred-Execution"><a href="#介紹延遲執行-Deferred-Execution" class="headerlink" title="介紹延遲執行 (Deferred Execution)"></a>介紹延遲執行 (Deferred Execution)</h3><p>LINQ 的延遲執行意指查詢表達式不會立即執行，只有在真正需要取出資料時才進行計算。</p>
+<h4 id="快速判斷是否會真正取出資料"><a href="#快速判斷是否會真正取出資料" class="headerlink" title="快速判斷是否會真正取出資料"></a>快速判斷是否會真正取出資料</h4><p>許多人知道延遲執行的概念，也能列出一些延遲執行的運算子 (Deferred Execution Operators)  和會立即執行的運算子 (Immediate Execution Operators)  。但很少人能說明「如何分辨延遲執行運算子與立即執行運算子」。以下提供一些快速分辨方式，讓我們在看到陌生的 LINQ 方法時，能大概猜出其執行方式。</p>
+<h5 id="延遲執行運算子-Deferred-Execution-Operators"><a href="#延遲執行運算子-Deferred-Execution-Operators" class="headerlink" title="延遲執行運算子 (Deferred Execution Operators)"></a>延遲執行運算子 (Deferred Execution Operators)</h5><p>幾乎所有的延遲執行運算子都會回傳 <code>IEnumerable&lt;T&gt;</code> 或 <code>IOrderedEnumerable&lt;TElement&gt;</code>，基本概念就是「Enumerable」，包含 <code>foreach</code> 搭配 <code>yield</code> 並回傳 <code>IEnumerable&lt;T&gt;</code> 的方法。</p>
+<blockquote>
+<p>之所以說「幾乎」，是因為我們可以透過擴充方法實作回傳這些型別的 LINQ 方法，但如果內部實作觸及立即執行運算，那麼單從方法簽章判斷可能會誤判。<br>但擴充會回傳 <code>IEnumerable&lt;T&gt;</code> 或 <code>IOrderedEnumerable&lt;TElement&gt;</code> 的 LINQ 方法卻觸及立即執行運算，我認為這是設計上的錯誤。</p>
+</blockquote>
+<h5 id="立即執行運算子-Immediate-Execution-Operators"><a href="#立即執行運算子-Immediate-Execution-Operators" class="headerlink" title="立即執行運算子 (Immediate Execution Operators)"></a>立即執行運算子 (Immediate Execution Operators)</h5><p>與延遲執行運算子不同，立即執行運算子的判定相對容易。只要是回傳具體的值或集合等非「Enumerable」型別的方法都是立即執行運算子，包括透過 <code>foreach</code> 直接取得運算結果的方式。</p>
+<h5 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h5><p>上述兩種 LINQ 運算子的分類只是初步判定。實際上，還有串流 (Streaming) 或非串流 (Nonstreaming) 兩種方式，區分內部是可能提前返回還是必須走訪所有元素，詳見 <a href="https://learn.microsoft.com/en-us/dotnet/csharp/linq/get-started/introduction-to-linq-queries#classification-of-standard-query-operators-by-manner-of-execution" target="_blank" rel="noopener">Classification of standard query operators by manner of execution</a>。</p>
+<h3 id="誤用情境"><a href="#誤用情境" class="headerlink" title="誤用情境"></a>誤用情境</h3><p>用於展示誤用情境，所有範例都會使用下面的類別與資料示範。<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> Age &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> source = <span class="keyword">new</span> List&lt;Person&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Alice"</span>, Age = <span class="number">25</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Bob"</span>, Age = <span class="number">32</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Charlie"</span>, Age = <span class="number">45</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Diana"</span>, Age = <span class="number">38</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Eve"</span>, Age = <span class="number">29</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Frank"</span>, Age = <span class="number">40</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Grace"</span>, Age = <span class="number">54</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Henry"</span>, Age = <span class="number">3</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Ivy"</span>, Age = <span class="number">30</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Jack"</span>, Age = <span class="number">27</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Karen"</span>, Age = <span class="number">35</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Leo"</span>, Age = <span class="number">48</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Mia"</span>, Age = <span class="number">22</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Nina"</span>, Age = <span class="number">37</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Oscar"</span>, Age = <span class="number">55</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Paul"</span>, Age = <span class="number">15</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Quincy"</span>, Age = <span class="number">42</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Rita"</span>, Age = <span class="number">36</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Steve"</span>, Age = <span class="number">25</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> Person &#123; Name = <span class="string">"Tina"</span>, Age = <span class="number">41</span> &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h4 id="重複運算-LINQ"><a href="#重複運算-LINQ" class="headerlink" title="重複運算 - LINQ"></a>重複運算 - LINQ</h4><p>以下面範例為例：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> enmerable = source.Where(r =&gt; r.Age &gt;= <span class="number">18</span>) ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> oldestAdult = enmerable.MaxBy(r =&gt; r.Age) ;</span><br><span class="line"><span class="keyword">var</span> youngestAdult = enmerable.MinBy(r =&gt; r.Age) ;</span><br></pre></td></tr></table></figure></p>
+<p>由於 <code>Where()</code> 是延遲執行運算子，因此在執行 <code>MaxBy()</code> 和 <code>MinBy()</code> 時，<code>source</code> 會被篩選兩次，造成不必要的運算浪費。改進方式如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> adults = source.Where(r =&gt; r.Age &gt;= <span class="number">18</span>) .ToList() ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> oldestAdult = adults.MaxBy(r =&gt; r.Age) ;</span><br><span class="line"><span class="keyword">var</span> youngestAdult = adults.MinBy(r =&gt; r.Age) ;</span><br></pre></td></tr></table></figure>
+<p>透過先使用 <code>ToList()</code> 方法將符合條件的成人資料篩選出來，後續的 <code>MaxBy()</code> 和 <code>MinBy()</code> 就不會重複篩選。  </p>
+<h4 id="重複運算-foreach"><a href="#重複運算-foreach" class="headerlink" title="重複運算 - foreach"></a>重複運算 - <code>foreach</code></h4><p>以下面範例為例：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> enmerable = source.Where(r =&gt; r.Age &gt;= <span class="number">18</span>) ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> enmerable) </span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Do something.</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> enmerable) </span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Do something else.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>類似於上一個情境，不同之處在於這裡由 <code>foreach</code> 觸發。修正方式同樣是提前呼叫立即執行運算，避免後續的兩個 <code>foreach</code> 造成重複的<code>Where()</code> 運算。</p>
+<h4 id="重複運算-子查詢"><a href="#重複運算-子查詢" class="headerlink" title="重複運算 - 子查詢"></a>重複運算 - 子查詢</h4><p>子查詢是容易被忽略的情境，以下範例：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> enumerable = source.Where(r =&gt; r.Age &gt;= <span class="number">18</span>) ;</span><br><span class="line"><span class="keyword">var</span> targetAges = <span class="keyword">new</span> List&lt;<span class="keyword">int</span>&gt; &#123; <span class="number">40</span>, <span class="number">54</span>, <span class="number">23</span> &#125;;</span><br><span class="line"><span class="keyword">var</span> result = targetAges</span><br><span class="line">    .Where(age =&gt;</span><br><span class="line">        enumerable.Any(s =&gt; s.Age == age) </span><br><span class="line">        &amp;&amp; enumerable.Any(s =&gt; (s.Age / <span class="number">10</span>)  &gt; <span class="number">3</span>) ) </span><br><span class="line">    .ToList() ;</span><br></pre></td></tr></table></figure></p>
+<p>由於兩次立即執行運算 <code>Any()</code> 被包含在子查詢中，容易忽略重複運算。解決方式如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> list = source.Where(r =&gt; r.Age &gt;= <span class="number">18</span>) .ToList() ;</span><br><span class="line"><span class="keyword">var</span> targetAges = <span class="keyword">new</span> List&lt;<span class="keyword">int</span>&gt; &#123; <span class="number">40</span>, <span class="number">54</span>, <span class="number">23</span> &#125;;</span><br><span class="line"><span class="keyword">var</span> result = targetAges</span><br><span class="line">    .Where(age =&gt;</span><br><span class="line">        list.Any(s =&gt; s.Age == age) </span><br><span class="line">        &amp;&amp; list.Any(s =&gt; (s.Age / <span class="number">10</span>)  &gt; <span class="number">3</span>) ) </span><br><span class="line">    .ToList() ;</span><br></pre></td></tr></table></figure>
+<h4 id="重複運算-不洽當的客製方法"><a href="#重複運算-不洽當的客製方法" class="headerlink" title="重複運算 - 不洽當的客製方法"></a>重複運算 - 不洽當的客製方法</h4><p>參考以下客製方法：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> IEnumerable&lt;T&gt; Duplicate&lt;T&gt;(<span class="keyword">this</span> IEnumerable&lt;T&gt; source) </span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> source) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="keyword">return</span> item;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> source) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="keyword">return</span> item;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>呼叫端如下：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> enmerable = src</span><br><span class="line">    .Where(r =&gt; r.Age &gt;= <span class="number">18</span>) </span><br><span class="line">    .Duplicate() </span><br><span class="line">    .ToList() ;</span><br></pre></td></tr></table></figure></p>
+<p>問題在於 <code>Duplicate()</code> 方法中包含了兩個 <code>foreach</code>。即使搭配了 <code>yield return</code> 使其為延遲執行運算，但當呼叫端執行時，<code>Where()</code> 方法會在 <code>Duplicate()</code> 中執行兩次。</p>
+<p>以這個範例來說，根本原因是 <code>Duplicate()</code> 方法的設計錯誤，應該改寫這個方法來解決問題，但如果無法修改 <code>Duplicate()</code> 方法，臨時解決方式如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> enmerable = src</span><br><span class="line">    .Where(r =&gt; r.Age &gt;= <span class="number">18</span>) </span><br><span class="line">    <span class="comment">// Workaround if we have no chance to correct Duplicate() </span></span><br><span class="line">    .ToList() </span><br><span class="line">    .Duplicate() </span><br><span class="line">    .ToList() ;</span><br></pre></td></tr></table></figure>
+<h4 id="小結-1"><a href="#小結-1" class="headerlink" title="小結"></a>小結</h4><p>其實誤用情境主要是重複迭代。但由於 LINQ 方法的組合與類似子查詢的語法結構，很多時候我們未察覺其中的重複迭代，進而無意間犯錯。</p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>理解 LINQ 的延遲執行機制有助於我們撰寫更高效的程式碼。透過注意可能的重複迭代情境，並適時使用立即執行運算子，可以避免不必要的效能損耗。</p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p><a href="https://learn.microsoft.com/en-us/dotnet/csharp/linq/get-started/introduction-to-linq-queries#classification-of-standard-query-operators-by-manner-of-execution" target="_blank" rel="noopener">Classification of standard query operators by manner of execution</a>   </p>
+<p>ChatGPT</p>
 
       
     </div>
@@ -431,8 +450,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/content/20180923-filters-of-webapi2.html" rel="next" title="WebApi 2 中的 FilterAttribute 介紹與應用">
-                <i class="fa fa-chevron-left"></i> WebApi 2 中的 FilterAttribute 介紹與應用
+              <a href="/content/20240910-async-for-interview.html" rel="next" title="從面試角度看 async">
+                <i class="fa fa-chevron-left"></i> 從面試角度看 async
               </a>
             
           </div>
@@ -440,10 +459,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/content/20181118-webapi-get-request-body-safety.html" rel="prev" title="WebAPI 安全的取得 Request Body">
-                WebAPI 安全的取得 Request Body <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -491,7 +506,7 @@
           }
           function showGitment() {
             var gitment = new Gitment({
-              id: '1541074905000',
+              id: '1727885677000',
               theme: myTheme,
               owner: 'ronsun',
               repo: 'ronsun.github.io.gitment',
@@ -658,7 +673,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#XmlWriterSettings-Encoding-設定無效"><span class="nav-number">1.</span> <span class="nav-text">XmlWriterSettings.Encoding 設定無效</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原因"><span class="nav-number">2.</span> <span class="nav-text">原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解法"><span class="nav-number">3.</span> <span class="nav-text">解法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">4.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">5.</span> <span class="nav-text">參考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#介紹延遲執行-Deferred-Execution"><span class="nav-number">1.</span> <span class="nav-text">介紹延遲執行 (Deferred Execution)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#快速判斷是否會真正取出資料"><span class="nav-number">1.1.</span> <span class="nav-text">快速判斷是否會真正取出資料</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#延遲執行運算子-Deferred-Execution-Operators"><span class="nav-number">1.1.1.</span> <span class="nav-text">延遲執行運算子 (Deferred Execution Operators)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#立即執行運算子-Immediate-Execution-Operators"><span class="nav-number">1.1.2.</span> <span class="nav-text">立即執行運算子 (Immediate Execution Operators)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#小結"><span class="nav-number">1.1.3.</span> <span class="nav-text">小結</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#誤用情境"><span class="nav-number">2.</span> <span class="nav-text">誤用情境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#重複運算-LINQ"><span class="nav-number">2.1.</span> <span class="nav-text">重複運算 - LINQ</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重複運算-foreach"><span class="nav-number">2.2.</span> <span class="nav-text">重複運算 - foreach</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重複運算-子查詢"><span class="nav-number">2.3.</span> <span class="nav-text">重複運算 - 子查詢</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重複運算-不洽當的客製方法"><span class="nav-number">2.4.</span> <span class="nav-text">重複運算 - 不洽當的客製方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小結-1"><span class="nav-number">2.5.</span> <span class="nav-text">小結</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">4.</span> <span class="nav-text">參考</span></a></li></ol></div>
             
 
           </div>

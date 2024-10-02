@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="Ron 2.0">
 <meta property="og:description" content="C# 的非同步程式設計是一個相當龐大且複雜的主題，甚至可以寫成整本專書。由於這也是面試中的常見題目，本文將嘗試從面試的角度整理非同步開發的要點。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2024-09-27T18:12:58.444Z">
+<meta property="og:updated_time" content="2024-09-27T18:20:34.537Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="從面試角度看 async">
 <meta name="twitter:description" content="C# 的非同步程式設計是一個相當龐大且複雜的主題，甚至可以寫成整本專書。由於這也是面試中的常見題目，本文將嘗試從面試的角度整理非同步開發的要點。">
@@ -436,7 +436,7 @@
 <blockquote>
 <p>如果當下沒有 <code>SynchronizationContext</code> 可以拿，則會以 <code>TaskScheduler</code> 來決定後續的執行緒上下文。<br>在 ASP.NET Core 之後，預設沒有 <code>SynchronizationContext</code>，因此不容易發生此類死鎖。</p>
 </blockquote>
-<p>當呼叫端直接使用 <code>.Result</code> 或 <code>.Wait()</code> 來同步等待非同步操作時，這會阻塞目前的 <code>SynchronizationContext</code> 所關聯的執行緒，等待非同步操作完成。當非同步操作完成後，接著會想取得先前被記住的 <code>SynchronizationContext</code> 物件來繼續進行後續操作，但當時的這個物件已經被阻塞了。最終造成呼叫端阻塞 <code>SynchronizationContext</code> 物件來等待非同步操作完成，而非同步操作完成後又需要取用已經被呼叫端阻塞的 <code>SynchronizationContext</code> 物件進而造成死鎖。</p>
+<p>當呼叫端直接使用 <code>.Result</code> 或 <code>.Wait()</code> 來同步等待非同步操作時，這會阻塞目前的 <code>SynchronizationContext</code> 所關聯的執行緒，等待非同步操作完成。當非同步操作完成後，接著會想取得先前被記住的 <code>SynchronizationContext</code> 物件來繼續進行後續操作，但當時的這個物件已經被阻塞了。最終造成呼叫端阻塞的 <code>SynchronizationContext</code> 物件來等待非同步操作完成，而非同步操作完成後又需要取用已經被呼叫端阻塞的 <code>SynchronizationContext</code> 物件進而造成死鎖。</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DeadlockExample</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">MainMethod</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// 使用 .Result 進行同步等待，可能導致死鎖</span></span><br><span class="line">        <span class="keyword">var</span> result = AsyncMethod().Result;  </span><br><span class="line">        Console.WriteLine(result);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;<span class="keyword">string</span>&gt; <span class="title">AsyncMethod</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">await</span> Task.Delay(<span class="number">1000</span>);  <span class="comment">// 模擬一個非同步操作</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Completed"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>以上範例在 ASP.NET 環境中運作時：</p>
 <ul>
@@ -491,6 +491,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/content/20241003-linq-deferred-execution-and-pitfalls.html" rel="prev" title="LINQ 的延遲執行與誤用風險">
+                LINQ 的延遲執行與誤用風險 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -598,7 +602,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">91</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -609,7 +613,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">categories</span>
               </a>
             </div>

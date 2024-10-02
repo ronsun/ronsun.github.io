@@ -301,6 +301,157 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20231216-consistent-webapi-returns.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ron Sun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/content/20231216-consistent-webapi-returns.html" itemprop="url">設計 WebAPI 通用回傳模板</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2023-12-16T23:31:15+08:00">
+                2023-12-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C#</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>在我以往的工作經驗中，處理過不少 WebAPI 的維護工作，普遍面臨的一個問題是回傳資料的不一致性。舉例來說，常見的幾種回傳格式包括：</p>
+<ol>
+<li>純值： <code>true</code>、<code>100</code> 等，會出現在回傳單一值的 API 中。</li>
+<li>物件： <code>{&quot;name&quot;: &quot;Ron&quot;, &quot;gender&quot;: &quot;Male&quot;}</code>，會出現在回傳物件的 API 中。</li>
+<li>物件含狀態： <code>{&quot;status&quot;: &quot;1001&quot;, &quot;name&quot;: &quot;Ron&quot;, &quot;gender&quot;: &quot;Male&quot;}</code>，會出現在呼叫端需要知道更多狀態細節時。</li>
+<li>其他變種：除了資料外還有各種狀態、錯誤、訊息等欄位，但格式與名稱不統一。</li>
+</ol>
+<p>這個現象造成的問題就是明明是同一個站台對外提供服務，回傳的狀態訊息卻每個 API 都不一樣，不僅對使用者不友善，也會讓接手維護的人無所適從。</p>
+<p>本篇文章會介紹並分析的幾種解決方案，所有方案都有高一致性與關注點分離的共同優點，但也有些不同的缺點。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/content/20231216-consistent-webapi-returns.html#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20230812-write-roslyn-analyzer-and-code-fix.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1618,152 +1769,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20221115-do-not-let-extension-methods-of-generic-ienumerable-work-with-efcore.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ron Sun">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ron 2.0">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/content/20221115-do-not-let-extension-methods-of-generic-ienumerable-work-with-efcore.html" itemprop="url">避免在需要使用 EF Core 的環境擴充 IEnumerable< T ></a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-11-15T23:32:38+08:00">
-                2022-11-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C#</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>擴充方法是很常用的技巧, 之前在使用 Entity Framework Core 的時候, 擴充了一個 <code>IQueryable&lt;T&gt;</code> 的擴充方法 <code>WhereIf()</code>, 後來想說這個方法也適用於其他衍生自 <code>IEnumerable&lt;T&gt;</code> 的型別, 且 <code>IQueryable&lt;T&gt;</code> 繼承了 <code>IEnumerable&lt;T&gt;</code>, 所以把 <code>WhereIf()</code> 方法改成 <code>IEnumerable&lt;T&gt;</code> 的擴充方法以求更廣的適用範圍, 沒想到一切都不一樣了, 要是當時沒及時發現就引爆了一個效能核彈了.  </p>
-<blockquote>
-<p>雖然標題是寫 Entity Framework Core, 但 <code>IQueryable&lt;T&gt;</code> 本來就是設計給”資料查詢”的情境來說, 其他 ORM 八九不離十會遇到一樣的現象.  </p>
-</blockquote>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/content/20221115-do-not-let-extension-methods-of-generic-ienumerable-work-with-efcore.html#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1813,7 +1818,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">91</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -1824,7 +1829,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">categories</span>
               </a>
             </div>

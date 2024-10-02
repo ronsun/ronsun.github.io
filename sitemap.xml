@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://ronsun.github.io/content/20241003-linq-deferred-execution-and-pitfalls.html</loc>
+    
+    <lastmod>2024-10-02T18:01:24.707Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://ronsun.github.io/content/20240910-async-for-interview.html</loc>
     
-    <lastmod>2024-09-27T18:12:58.444Z</lastmod>
+    <lastmod>2024-09-27T18:20:34.537Z</lastmod>
     
   </url>
   
