@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="Ron 2.0">
 <meta property="og:description" content="C# 的實值型別與參考型別雖然是入門主題，但實際上可以深入探討，涉及的範疇也相當廣泛。本文將從面試的角度切入，逐步深入說明相關差異與應用情境。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2025-04-05T15:59:12.288Z">
+<meta property="og:updated_time" content="2025-04-05T16:09:46.491Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="從面試角度看 C# 的實值型別與參考型別">
 <meta name="twitter:description" content="C# 的實值型別與參考型別雖然是入門主題，但實際上可以深入探討，涉及的範疇也相當廣泛。本文將從面試的角度切入，逐步深入說明相關差異與應用情境。">
@@ -427,11 +427,6 @@
 <h3 id="如何分辨實值型別和參考型別"><a href="#如何分辨實值型別和參考型別" class="headerlink" title="如何分辨實值型別和參考型別"></a>如何分辨實值型別和參考型別</h3><ul>
 <li>列舉 (enum) 和結構 (struct) 都是實值型別，除此之外的所有型別都是參考型別。</li>
 </ul>
-<p>了解！保留原本簡潔的說法同時補充技術細節和引用來源，是很好的寫作策略。以下是依你的需求整理好的 <strong>附註區塊</strong>，你可以直接加在該段落下方：</p>
-<hr>
-<h3 id="如何分辨實值型別和參考型別-1"><a href="#如何分辨實值型別和參考型別-1" class="headerlink" title="如何分辨實值型別和參考型別"></a>如何分辨實值型別和參考型別</h3><ul>
-<li>列舉 (enum) 和結構 (struct) 都是實值型別，除此之外的所有型別都是參考型別。</li>
-</ul>
 <blockquote>
 <p>參考 <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/types#832-the-systemvaluetype-type" target="_blank" rel="noopener">The System.ValueType type</a> 更嚴格深入來說：<br>在 C# 中，所有使用 <code>struct</code> 或 <code>enum</code> 宣告的型別，背後在 IL 層級都會繼承自 <code>System.ValueType</code>，而 <code>System.ValueType</code> 是 .NET 中判斷某型別是否為實值型別的依據。雖然在 C# 原始碼中不需要手動繼承 <code>ValueType</code>，但這個繼承關係會由編譯器自動加上。</p>
 <p>舉例來說，<code>System.Int32</code> 結構反組譯後可看到：<br><code>.class public sequential ansi sealed serializable beforefieldinit System.Int32 extends [System.Runtime]System.ValueType</code></p>
@@ -448,6 +443,7 @@
 <p>總結來說，實值型別適合頻繁操作的小型資料、臨時資料以及對效能/記憶體要求極高的情境；而參考型別適合較複雜的大型資料結構、需要共享或長期存在的物件。</p>
 <h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>C# 中實值型別與參考型別的差異，是面試常見題目。雖然許多人可以簡略回答出基本差異，但深入理解記憶體配置、生命週期與效能影響，有助於在實務與面試中展現更紮實的底層知識。</p>
 <h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p>ChatGPT</p>
+<p><a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/types#832-the-systemvaluetype-type" target="_blank" rel="noopener">The System.ValueType type</a></p>
 
       
     </div>
@@ -695,7 +691,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#實值型別與參考型別的差異"><span class="nav-number">1.</span> <span class="nav-text">實值型別與參考型別的差異</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#賦值-assignment-與比較-equality-時的差異"><span class="nav-number">1.1.</span> <span class="nav-text">賦值 (assignment) 與比較 (equality) 時的差異</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#記憶體配置的差異"><span class="nav-number">1.2.</span> <span class="nav-text">記憶體配置的差異</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生命週期的差異"><span class="nav-number">1.3.</span> <span class="nav-text">生命週期的差異</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#堆疊與堆積的效能差異"><span class="nav-number">1.4.</span> <span class="nav-text">堆疊與堆積的效能差異</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何分辨實值型別和參考型別"><span class="nav-number">2.</span> <span class="nav-text">如何分辨實值型別和參考型別</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何分辨實值型別和參考型別-1"><span class="nav-number">3.</span> <span class="nav-text">如何分辨實值型別和參考型別</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#設計型別時如何決定設計成實值型別或參考型別"><span class="nav-number">4.</span> <span class="nav-text">設計型別時如何決定設計成實值型別或參考型別</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">5.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">6.</span> <span class="nav-text">參考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#實值型別與參考型別的差異"><span class="nav-number">1.</span> <span class="nav-text">實值型別與參考型別的差異</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#賦值-assignment-與比較-equality-時的差異"><span class="nav-number">1.1.</span> <span class="nav-text">賦值 (assignment) 與比較 (equality) 時的差異</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#記憶體配置的差異"><span class="nav-number">1.2.</span> <span class="nav-text">記憶體配置的差異</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生命週期的差異"><span class="nav-number">1.3.</span> <span class="nav-text">生命週期的差異</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#堆疊與堆積的效能差異"><span class="nav-number">1.4.</span> <span class="nav-text">堆疊與堆積的效能差異</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何分辨實值型別和參考型別"><span class="nav-number">2.</span> <span class="nav-text">如何分辨實值型別和參考型別</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#設計型別時如何決定設計成實值型別或參考型別"><span class="nav-number">3.</span> <span class="nav-text">設計型別時如何決定設計成實值型別或參考型別</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">4.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">5.</span> <span class="nav-text">參考</span></a></li></ol></div>
             
 
           </div>
