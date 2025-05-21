@@ -94,16 +94,17 @@
 
 
 
-<meta name="description" content="Simple Is Not Easy">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Ron 2.0">
-<meta property="og:url" content="https://ronsun.github.io/categories/MSSQL/index.html">
+<meta name="description" content="NLog 是一個在 .NET 開發領域相當受歡迎的 log 管理工具，因為操作簡單、功能齊全，且具備完善的歸檔與壓縮機制。然而，前陣子我們團隊因為 NLog 的檔案管理策略設定不當，導致線上服務在歸檔過程中完全卡住，無法處理任何請求。以這個實際問題為契機，我想紀錄一下使用 NLog 管理 log 時的正確策略、可能的風險，以及設定時的考量，以避免日後再度踩坑。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NLog 的檔案管理策略">
+<meta property="og:url" content="https://ronsun.github.io/content/20250521-manage-log-files-with-nlog.html">
 <meta property="og:site_name" content="Ron 2.0">
-<meta property="og:description" content="Simple Is Not Easy">
+<meta property="og:description" content="NLog 是一個在 .NET 開發領域相當受歡迎的 log 管理工具，因為操作簡單、功能齊全，且具備完善的歸檔與壓縮機制。然而，前陣子我們團隊因為 NLog 的檔案管理策略設定不當，導致線上服務在歸檔過程中完全卡住，無法處理任何請求。以這個實際問題為契機，我想紀錄一下使用 NLog 管理 log 時的正確策略、可能的風險，以及設定時的考量，以避免日後再度踩坑。">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2025-05-21T17:37:37.645Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ron 2.0">
-<meta name="twitter:description" content="Simple Is Not Easy">
+<meta name="twitter:title" content="NLog 的檔案管理策略">
+<meta name="twitter:description" content="NLog 是一個在 .NET 開發領域相當受歡迎的 log 管理工具，因為操作簡單、功能齊全，且具備完善的歸檔與壓縮機制。然而，前陣子我們團隊因為 NLog 的檔案管理策略設定不當，導致線上服務在歸檔過程中完全卡住，無法處理任何請求。以這個實際問題為契機，我想紀錄一下使用 NLog 管理 log 時的正確策略、可能的風險，以及設定時的考量，以避免日後再度踩坑。">
 
 
 
@@ -132,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="https://ronsun.github.io/categories/MSSQL/"/>
+  <link rel="canonical" href="https://ronsun.github.io/content/20250521-manage-log-files-with-nlog.html"/>
 
 
 
 
 
-  <title>Category: MSSQL | Ron 2.0</title>
+  <title>NLog 的檔案管理策略 | Ron 2.0</title>
   
 
 
@@ -157,7 +158,7 @@
     
   
 
-  <div class="container sidebar-position-left  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -285,55 +286,189 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block category">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h2>MSSQL<small>Category</small>
-        </h2>
-      </div>
+  
 
-      
-        
+  
+  
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20250521-manage-log-files-with-nlog.html">
 
-      <h3 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ron Sun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ron 2.0">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/content/20170820-mssql-random-string.html" itemprop="url">
-              
-                <span itemprop="name">新增一個使用者定義函數提供亂數字串</span>
-              
-            </a>
         
-      </h3>
+          <h2 class="post-title" itemprop="name headline">NLog 的檔案管理策略</h2>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-20T20:41:01+08:00"
-              content="2017-08-20" >
-          08-20
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2025-05-21T00:03:57+08:00">
+                2025-05-21
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C#</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/Packages/" itemprop="url" rel="index">
+                    <span itemprop="name">Packages</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>NLog 是一個在 .NET 開發領域相當受歡迎的 log 管理工具，因為操作簡單、功能齊全，且具備完善的歸檔與壓縮機制。然而，前陣子我們團隊因為 NLog 的檔案管理策略設定不當，導致線上服務在歸檔過程中完全卡住，無法處理任何請求。以這個實際問題為契機，我想紀錄一下使用 NLog 管理 log 時的正確策略、可能的風險，以及設定時的考量，以避免日後再度踩坑。  </p>
+<a id="more"></a>
+<h3 id="設定單檔大小上限的重要性"><a href="#設定單檔大小上限的重要性" class="headerlink" title="設定單檔大小上限的重要性"></a>設定單檔大小上限的重要性</h3><p>當應用程式進入正式環境後，log 會持續地被寫入並逐漸增大。有時為了進行問題排查，我們會設定比較詳細的 log 等級（如 Debug），這會使 log 檔案快速膨脹，甚至達到幾百 MB 以上。這麼大的 log 檔案，許多編輯工具或 log 檢視工具（例如 Notepad++、VS Code、甚至特製的 log 分析工具）開啟時可能會變慢，甚至完全無法開啟。</p>
+<p>為了避免這個問題，建議根據團隊常用的 log 檢視工具性能，設定單一 log 檔案的大小上限。一旦 log 檔案大小超過設定的上限，NLog 就會自動拆分成新的檔案，例如：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">target</span> <span class="attr">xsi:type</span>=<span class="string">"File"</span> <span class="attr">name</span>=<span class="string">"logfile"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">fileName</span>=<span class="string">"logs/logfile.log"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">archiveFileName</span>=<span class="string">"logs/archives/log.&#123;#&#125;.log"</span></span></span><br><span class="line">        archiveAboveSize="52428800"  &lt;!-- 50MB --&gt;</span><br><span class="line">        archiveNumbering="Rolling"</span><br><span class="line">        maxArchiveFiles="30" /&gt;</span><br></pre></td></tr></table></figure>
+<p>上述設定代表單一 log 檔案超過 50MB 時，自動歸檔並建立新的 log 檔案，最多保留最近的 30 個檔案。  </p>
+<h3 id="歸檔後壓縮造成的潛在風險"><a href="#歸檔後壓縮造成的潛在風險" class="headerlink" title="歸檔後壓縮造成的潛在風險"></a>歸檔後壓縮造成的潛在風險</h3><p>NLog 提供了方便的歸檔與壓縮功能，但在實務上我們發現這個功能可能會導致非預期的副作用。  </p>
+<p>NLog 在進行歸檔壓縮時，會將檔案鎖定，這時 log 的寫入會暫停。如果檔案較小，這個鎖檔的過程可能很短，使用者幾乎不會察覺；但若 log 檔案過大，或是伺服器正處於高負載狀態，則可能造成明顯的服務停頓或延遲。特別是在高流量環境下，這種「短暫」的鎖檔動作可能會引發一連串問題，例如：</p>
+<ul>
+<li>Thread starvation：<br>因為 log 的寫入請求會持續排隊等待，進而佔用越來越多執行緒，最終導致系統無法處理新進的使用者請求。  </li>
+<li>記憶體用量暴增：<br>無法寫入 log 的服務可能會暫存資料在記憶體中，逐漸佔據過多記憶體資源，最終導致系統資源耗盡。</li>
+</ul>
+<p>為了避免上述問題，可以考慮以下幾個策略：</p>
+<ul>
+<li>減少單檔大小，縮短壓縮時間<br>單檔大小設定得越小，單次壓縮的時間自然越短。但這終究只是降低鎖檔時間，並沒有從根本上解決問題。  </li>
+<li>避免壓縮，換取系統穩定性<br>若磁碟空間足夠，乾脆不要使用壓縮功能，直接歸檔即可。以較大的硬碟空間成本來換取服務的穩定運行。</li>
+<li>使用外部排程工具進行壓縮<br>有一種替代方案是使用外部的排程工具（如 Windows Task Scheduler 或 Linux cron job）定期將已歸檔的 log 檔案進行壓縮，避免 NLog 本身在壓縮時的鎖檔問題。但這種方式容易造成額外的維護成本與交接困難，經常會出現設定未同步、有些同事不知道這些機制、任務執行失敗未被察覺等問題，因此我個人不建議採用這個做法。</li>
+</ul>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p>ChatGPT</p>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/content/20250302-ref-value-for-interview.html" rel="next" title="從面試角度看 C# 的實值型別與參考型別">
+                <i class="fa fa-chevron-left"></i> 從面試角度看 C# 的實值型別與參考型別
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -341,6 +476,42 @@
 
 
           
+  <div class="comments" id="comments">
+    
+        <div id="container" class="gitment_container"></div>
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+        <script>
+          const myTheme = {
+            render(state, instance) {
+              const container = document.createElement('div');
+              container.lang = "en-US";
+              container.className = 'gitment-container gitment-root-container';
+              container.appendChild(instance.renderHeader(state, instance));
+              container.appendChild(instance.renderEditor(state, instance));
+              container.appendChild(instance.renderComments(state, instance));
+              container.appendChild(instance.renderFooter(state, instance));
+              return container;
+            }
+          }
+          function showGitment() {
+            var gitment = new Gitment({
+              id: '1747757037000',
+              theme: myTheme,
+              owner: 'ronsun',
+              repo: 'ronsun.github.io.gitment',
+              oauth: {
+                client_id: '749fee720f2039efbbde',
+                client_secret: '3104dc228340ec2814ce1a11a7457d4f2d1effa6'
+              }
+            });
+            gitment.render('container');
+          }
+          showGitment();
+        </script>
+  </div>
+
+
         </div>
         
           
@@ -360,8 +531,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -473,6 +653,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#設定單檔大小上限的重要性"><span class="nav-number">1.</span> <span class="nav-text">設定單檔大小上限的重要性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#歸檔後壓縮造成的潛在風險"><span class="nav-number">2.</span> <span class="nav-text">歸檔後壓縮造成的潛在風險</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">3.</span> <span class="nav-text">參考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -599,10 +795,10 @@
 
 
   
-    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
 
-  
+
 
   
 
