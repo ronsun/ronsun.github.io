@@ -94,17 +94,17 @@
 
 
 
-<meta name="description" content="在處理非同步操作時，當多個非同步任務同時操作共享資源時，可能會導致資料不一致。這篇文章將聚焦於如何在非同步情境下使用 ConcurrentDictionary 取代 Dictionary 來解決這些問題。">
+<meta name="description" content="在 .NET Core 做 DI 時，大多習慣用建構子注入（Constructor Injection）。但如果依賴的 implementation factory 裡面藏著高成本的初始化，就可能在注入服務時初始化非必要的高成本依賴，進而造成效能問題。這篇整理問題成因與幾個可行的解法。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="在非同步情境下使用 ConcurrentDictionary">
-<meta property="og:url" content="https://ronsun.github.io/content/20240622-concurrent-dictionary.html">
+<meta property="og:title" content="建構子注入的潛在效能風險">
+<meta property="og:url" content="https://ronsun.github.io/content/20260125-ctor-injection-risk.html">
 <meta property="og:site_name" content="Ron 2.0">
-<meta property="og:description" content="在處理非同步操作時，當多個非同步任務同時操作共享資源時，可能會導致資料不一致。這篇文章將聚焦於如何在非同步情境下使用 ConcurrentDictionary 取代 Dictionary 來解決這些問題。">
+<meta property="og:description" content="在 .NET Core 做 DI 時，大多習慣用建構子注入（Constructor Injection）。但如果依賴的 implementation factory 裡面藏著高成本的初始化，就可能在注入服務時初始化非必要的高成本依賴，進而造成效能問題。這篇整理問題成因與幾個可行的解法。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2024-07-27T16:26:50.839Z">
+<meta property="og:updated_time" content="2026-01-24T18:04:16.981Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="在非同步情境下使用 ConcurrentDictionary">
-<meta name="twitter:description" content="在處理非同步操作時，當多個非同步任務同時操作共享資源時，可能會導致資料不一致。這篇文章將聚焦於如何在非同步情境下使用 ConcurrentDictionary 取代 Dictionary 來解決這些問題。">
+<meta name="twitter:title" content="建構子注入的潛在效能風險">
+<meta name="twitter:description" content="在 .NET Core 做 DI 時，大多習慣用建構子注入（Constructor Injection）。但如果依賴的 implementation factory 裡面藏著高成本的初始化，就可能在注入服務時初始化非必要的高成本依賴，進而造成效能問題。這篇整理問題成因與幾個可行的解法。">
 
 
 
@@ -133,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="https://ronsun.github.io/content/20240622-concurrent-dictionary.html"/>
+  <link rel="canonical" href="https://ronsun.github.io/content/20260125-ctor-injection-risk.html"/>
 
 
 
 
 
-  <title>在非同步情境下使用 ConcurrentDictionary | Ron 2.0</title>
+  <title>建構子注入的潛在效能風險 | Ron 2.0</title>
   
 
 
@@ -300,7 +300,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20240622-concurrent-dictionary.html">
+    <link itemprop="mainEntityOfPage" href="https://ronsun.github.io/content/20260125-ctor-injection-risk.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Ron Sun">
@@ -317,7 +317,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">在非同步情境下使用 ConcurrentDictionary</h2>
+          <h2 class="post-title" itemprop="name headline">建構子注入的潛在效能風險</h2>
         
 
         <div class="post-meta">
@@ -329,8 +329,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-06-22T23:53:14+08:00">
-                2024-06-22
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2026-01-25T01:15:46+08:00">
+                2026-01-25
               </time>
             
 
@@ -363,8 +363,8 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/NET/" itemprop="url" rel="index">
-                    <span itemprop="name">.NET</span>
+                  <a href="/categories/C/NET-Core/" itemprop="url" rel="index">
+                    <span itemprop="name">.NET Core</span>
                   </a>
                 </span>
 
@@ -397,16 +397,46 @@
       
 
       
-        <p>在處理非同步操作時，當多個非同步任務同時操作共享資源時，可能會導致資料不一致。這篇文章將聚焦於如何在非同步情境下使用 <code>ConcurrentDictionary</code> 取代 <code>Dictionary</code> 來解決這些問題。</p>
+        <p>在 .NET Core 做 DI 時，大多習慣用建構子注入（Constructor Injection）。但如果依賴的 implementation factory 裡面藏著高成本的初始化，就可能在注入服務時初始化非必要的高成本依賴，進而造成效能問題。這篇整理問題成因與幾個可行的解法。</p>
 <a id="more"></a>
-<h3 id="問題程式碼"><a href="#問題程式碼" class="headerlink" title="問題程式碼"></a>問題程式碼</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">HttpGet</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;IActionResult&gt; <span class="title">Foo</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> dic = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">long</span>, <span class="keyword">long</span>&gt;();</span><br><span class="line">    <span class="keyword">var</span> tasks = <span class="keyword">new</span> List&lt;Task&gt;();</span><br><span class="line">    <span class="keyword">var</span> rdm = <span class="keyword">new</span> Random();</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i++ &lt; <span class="number">10</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Do NOT await here.</span></span><br><span class="line">        <span class="keyword">var</span> t = HttpRequest(dic, rdm.Next());</span><br><span class="line">        tasks.Add(t);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> Task.WhenAll(tasks);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> Ok();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">async</span> Task <span class="title">HttpRequest</span>(<span class="params">Dictionary&lt;<span class="keyword">long</span>, <span class="keyword">long</span>&gt; dic, <span class="keyword">int</span> num</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">await</span> Task.Delay(<span class="number">500</span>);</span><br><span class="line">        dic[num] = num;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在這段程式碼中，我們模擬同時發送多個 Http Request 的操作，由於多個請求不需互相等待，因此每次呼叫 HttpRequest 方法時並不會加上 <code>await</code> 關鍵字，而是在所有請求都發出後再等待所有結果完成，以達到效能目標。</p>
-<p>但每個 Http Request 完成後都會操作一個共享的 <code>Dictionary&lt;long, long&gt;</code> 物件，這在非同步情境下引發多執行緒操作時，會有非常小的機率導致資料不一致。</p>
-<h3 id="解決方案：使用-ConcurrentDictionary"><a href="#解決方案：使用-ConcurrentDictionary" class="headerlink" title="解決方案：使用 ConcurrentDictionary"></a>解決方案：使用 <code>ConcurrentDictionary</code></h3><p>為了解決上述問題，我們可以將 <code>Dictionary</code> 換成 <code>ConcurrentDictionary</code> 這個執行序安全的類別，允許多個執行緒安全地操作其中的資料。  </p>
-<p>以下是修改後的程式碼：</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">HttpGet</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;IActionResult&gt; <span class="title">Foo</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> dic = <span class="keyword">new</span> ConcurrentDictionary&lt;<span class="keyword">long</span>, <span class="keyword">long</span>&gt;();</span><br><span class="line">    <span class="keyword">var</span> tasks = <span class="keyword">new</span> List&lt;Task&gt;();</span><br><span class="line">    <span class="keyword">var</span> rdm = <span class="keyword">new</span> Random();</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i++ &lt; <span class="number">10</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Do NOT await here.</span></span><br><span class="line">        <span class="keyword">var</span> t = HttpRequest(dic, rdm.Next());</span><br><span class="line">        tasks.Add(t);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> Task.WhenAll(tasks);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> Ok();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">async</span> Task <span class="title">HttpRequest</span>(<span class="params">ConcurrentDictionary&lt;<span class="keyword">long</span>, <span class="keyword">long</span>&gt; dic, <span class="keyword">int</span> num</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">await</span> Task.Delay(<span class="number">500</span>);</span><br><span class="line">        dic[num] = num;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>其實當初開發時有閃過一點疑慮，但因為這只是一個賦值的極簡單操作，一時輕率以為不會出錯，導致在上線後發生資料不一致的問題，且因為這個問題一個月只發生一兩次所以多花了很多時間蒐集資訊和追查原因，真的划不來。除了 <code>ConcurrentDictionary</code> 外，從它的命名空間可以發現還有其他針對執行緒安全所設計的類別，也應善加利用。  </p>
-<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p>ChatGPT</p>
+<h3 id="問題描述"><a href="#問題描述" class="headerlink" title="問題描述"></a>問題描述</h3><p>假設有個 <code>MyService</code> 依賴資料庫套件 <code>IDbClient</code>，而 <code>IDbClient</code> 的初始化非常耗能（例如建立連線）。而 <code>MyService</code> 有兩個方法，一個是依賴 IDbClient 但不常觸發的方法，另一個是無依賴但頻繁觸發的方法：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Startup</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ConfigureServices</span>(<span class="params">IServiceCollection services</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        services.AddScoped&lt;IDbClient&gt;(sp =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> client = <span class="keyword">new</span> ActualDbClient(<span class="string">"connection string"</span>);</span><br><span class="line">            <span class="comment">// High-cost operation</span></span><br><span class="line">            client.OpenConnection();</span><br><span class="line">            <span class="keyword">return</span> client;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        services.AddScoped&lt;MyService&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyService</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> IDbClient _dbClient;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyService</span>(<span class="params">IDbClient dbClient</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        _dbClient = dbClient;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Low frequency; depends on IDbClient</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">GetDataFromDb</span>(<span class="params"></span>) </span>=&gt; _dbClient.Query(<span class="string">"SELECT * FROM Table"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// High frequency; no dependency on IDbClient</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">Calculate</span>(<span class="params"><span class="keyword">int</span> a, <span class="keyword">int</span> b</span>) </span>=&gt; a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>當 <code>MyService</code> 是 Transient 或 Scoped，每次解析 <code>MyService</code> 都會觸發 <code>IDbClient</code> 初始化。若平常多半只會叫到低成本的 <code>Calculate()</code>，卻也被迫初始化高成本的 <code>IDbClient</code>，就會白白浪費效能。  </p>
+<h3 id="解決方案"><a href="#解決方案" class="headerlink" title="解決方案"></a>解決方案</h3><h4 id="方案一：注入IServiceProvider-隨需取用（依賴不透明）"><a href="#方案一：注入IServiceProvider-隨需取用（依賴不透明）" class="headerlink" title="方案一：注入IServiceProvider 隨需取用（依賴不透明）"></a>方案一：注入<code>IServiceProvider</code> 隨需取用（依賴不透明）</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyService</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> IServiceProvider _serviceProvider;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyService</span>(<span class="params">IServiceProvider serviceProvider</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        _serviceProvider = serviceProvider;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">GetDataFromDb</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> dbClient = _serviceProvider.GetRequiredService&lt;IDbClient&gt;();</span><br><span class="line">        <span class="keyword">return</span> dbClient.Query(<span class="string">"SELECT * FROM Table"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">Calculate</span>(<span class="params"><span class="keyword">int</span> a, <span class="keyword">int</span> b</span>) </span>=&gt; a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>這做法類似 Service Locator Pattern，雖然這常被視為 Anti-Pattern，但 .NET 把它封裝成 <code>IServiceProvider</code> 介面，顧慮少了不少。但由於不在建構子明列依賴，會導致專案風格不一致，以及依賴不透明。</p>
+<h4 id="方案二：根據依賴拆分-Service（分類混亂風險）"><a href="#方案二：根據依賴拆分-Service（分類混亂風險）" class="headerlink" title="方案二：根據依賴拆分 Service（分類混亂風險）"></a>方案二：根據依賴拆分 Service（分類混亂風險）</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyCalculationService</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">Calculate</span>(<span class="params"><span class="keyword">int</span> a, <span class="keyword">int</span> b</span>) </span>=&gt; a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyDbService</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> IDbClient _dbClient;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyDbService</span>(<span class="params">IDbClient dbClient</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        _dbClient = dbClient;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">GetDataFromDb</span>(<span class="params"></span>) </span>=&gt; _dbClient.Query(<span class="string">"SELECT * FROM Table"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>這是把原本的 <code>MyService</code> 根據依賴拆成兩支獨立 Service。雖然可行但久了可能分類標準愈分愈亂（有時看功能、有時看依賴），對長期維護不好。</p>
+<h4 id="方案三：輕量化-Implementation-Factory-最推薦）"><a href="#方案三：輕量化-Implementation-Factory-最推薦）" class="headerlink" title="方案三：輕量化 Implementation Factory (最推薦）"></a>方案三：輕量化 Implementation Factory (最推薦）</h4><p>核心思路是讓 implementation factory 保持輕量，把耗能的初始化延後到真的要用時才做。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Startup</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ConfigureServices</span>(<span class="params">IServiceCollection services</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        services.AddScoped&lt;IDbClient&gt;(sp =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> client = <span class="keyword">new</span> ActualDbClient(<span class="string">"connection string"</span>);</span><br><span class="line">            <span class="comment">// Avoid expensive initialization here</span></span><br><span class="line">            <span class="comment">// client.OpenConnection();</span></span><br><span class="line">            <span class="keyword">return</span> client;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        services.AddScoped&lt;MyService&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>這個方案從根本上解決問題，讓 Implementation Factory 的執行保持輕量，真正耗能的初始化延遲到實際需要時才進行。這樣即使 <code>MyService</code> 被頻繁建立，也不會觸發高成本的初始化操作。</p>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>建構子注入是 .NET Core DI 的慣例做法，但當依賴的初始化成本較高時，需要特別注意是否會造成不必要的效能浪費。三種解決方案各有優缺：</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>優點</th>
+<th>缺點</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>注入 <code>IServiceProvider</code></td>
+<td>實作簡單</td>
+<td>依賴不透明，風格不一致</td>
+</tr>
+<tr>
+<td>拆分 Service</td>
+<td>職責明確</td>
+<td>分類標準混亂，維護困難</td>
+</tr>
+<tr>
+<td>輕量 Implementation Factory</td>
+<td>從根本解決，維持慣例</td>
+<td>如果套件不支援，就要換套件或另外設計來避開問題</td>
+</tr>
+</tbody>
+</table>
+<p>建議優先採用方案三，從根本上確保 Implementation Factory 是輕量的操作。若真的無法達成，再考慮方案一或方案二作為特殊場景下的替代方案。</p>
+<h3 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h3><p>實務經驗。</p>
 
       
     </div>
@@ -431,8 +461,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/content/20240526-identify-and-solve-slow-data-queries.html" rel="next" title="資料查詢很慢的原因與因應方式">
-                <i class="fa fa-chevron-left"></i> 資料查詢很慢的原因與因應方式
+              <a href="/content/20260101-decouple-using-rx-net.html" rel="next" title="使用 Rx.NET 解耦服務之間的依賴">
+                <i class="fa fa-chevron-left"></i> 使用 Rx.NET 解耦服務之間的依賴
               </a>
             
           </div>
@@ -440,10 +470,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/content/20240623-async-batch-timedout.html" rel="prev" title="在 C# 中控制非同步操作的總超時時間">
-                在 C# 中控制非同步操作的總超時時間 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -491,7 +517,7 @@
           }
           function showGitment() {
             var gitment = new Gitment({
-              id: '1719071594000',
+              id: '1769274946000',
               theme: myTheme,
               owner: 'ronsun',
               repo: 'ronsun.github.io.gitment',
@@ -658,7 +684,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#問題程式碼"><span class="nav-number">1.</span> <span class="nav-text">問題程式碼</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解決方案：使用-ConcurrentDictionary"><span class="nav-number">2.</span> <span class="nav-text">解決方案：使用 ConcurrentDictionary</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">4.</span> <span class="nav-text">參考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#問題描述"><span class="nav-number">1.</span> <span class="nav-text">問題描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解決方案"><span class="nav-number">2.</span> <span class="nav-text">解決方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#方案一：注入IServiceProvider-隨需取用（依賴不透明）"><span class="nav-number">2.1.</span> <span class="nav-text">方案一：注入IServiceProvider 隨需取用（依賴不透明）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方案二：根據依賴拆分-Service（分類混亂風險）"><span class="nav-number">2.2.</span> <span class="nav-text">方案二：根據依賴拆分 Service（分類混亂風險）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方案三：輕量化-Implementation-Factory-最推薦）"><span class="nav-number">2.3.</span> <span class="nav-text">方案三：輕量化 Implementation Factory (最推薦）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#結論"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#參考"><span class="nav-number">4.</span> <span class="nav-text">參考</span></a></li></ol></div>
             
 
           </div>
