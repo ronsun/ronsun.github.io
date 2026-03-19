@@ -75,6 +75,7 @@ namespace ronsun.github.io.lab
 運行後可以看到堆疊追蹤最後是停在 `ExceptionHere()` 裡面(41行), 也就是真正引發例外的地方  
 
 > 這邊有另外一個要注意的地方, 堆疊追蹤的第二行是停在 `throw` 的地方(35行), 本例看不出大的影響是因為有下一層呼叫可以追蹤, 下一小節會用另一段程式碼展示這個問題. 
+> 這個問題在 .NET Framework 下重現, 無法在 .NET Core 2.1 以上重現.
 
 ```
 ======= ThrowException() =============
@@ -92,7 +93,7 @@ System.Exception: This is exception message.
    at ronsun.github.io.lab.Program.Main(String[] args) in C:\Users\Ron\Desktop\MyProjects\ronsun.github.io\ronsun.github.io.lab\Program.cs:line 17
 ```
 
-#### throw 也會影響堆疊追蹤的內容
+#### throw 也會影響堆疊追蹤的內容 (< .NET Core 2.1)
 
 以下面的程式碼片段為例, 這次不另外呼叫一個引發例外的方法, 而是直接拋出一個例外
 ``` csharp
@@ -124,6 +125,9 @@ static void ThrowException()
 ```
 
 而此時的堆疊追蹤最後其實是停在 `throw` 那一行, 也就是說如果例外是發生在 `ThrowException` 方法中而不是下一層的呼叫, 且 `try` 區塊中有很多程式碼的時候, 還是會有難以除錯的困擾.  
+
+> [官方相關 Issue](https://github.com/dotnet/runtime/issues/9518) 顯示這個問題的確存在過也在 [Pull Request #16464](https://github.com/dotnet/coreclr/pull/16464) 修正了.
+> 追蹤 Merge 的時間和版本 Tag 交叉比對推測這個問題從 .NET Core 2.1 就被修正了, 可以安心使用 `throw;`.
 
 ### Inner Exception
 基於前面的說明, 我們知道重拋例外會破壞堆疊追蹤, 所以另外一種做法是在重拋前將原始的例外放進 Inner Exception 中, 如下片段:
@@ -174,4 +178,8 @@ catch (Exception ex)
 
 [‘throw e;’ vs. ‘throw;’](https://blogs.msdn.microsoft.com/jmstall/2007/02/15/throw-e-vs-throw/)  
 
-[How to rethrow exception correctly in .Net](https://berserkerdotnet.github.io/blog/rethrow-exception-correctly-in-dotnet/)
+[How to rethrow exception correctly in .Net](https://berserkerdotnet.github.io/blog/rethrow-exception-correctly-in-dotnet/)  
+
+[dotnet runtime issues #9518](https://github.com/dotnet/runtime/issues/9518)
+
+[dotnet CLR Pull Request #16464](https://github.com/dotnet/coreclr/pull/16464)
