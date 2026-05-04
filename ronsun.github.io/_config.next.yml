@@ -1,0 +1,147 @@
+# NexT Configuration
+# Docs: https://theme-next.js.org/docs/getting-started/configuration
+
+cache:
+  enable: true
+
+minify: false
+
+scheme: Pisces
+darkmode: false
+
+favicon:
+  small: https://github.com/identicons/ronsun.png
+  medium: https://github.com/identicons/ronsun.png
+  apple_touch_icon: https://github.com/identicons/ronsun.png
+
+keywords: "Hexo, NexT"
+
+index_with_subtitle: true
+
+menu:
+  home: / || fa fa-home
+  archives: /archives/ || fa fa-archive
+  tags: /tags/ || fa fa-tags
+  sitemap: /sitemap.xml || fa fa-sitemap
+
+menu_settings:
+  icons: true
+  badges: false
+
+social:
+  GitHub: https://github.com/ronsun || fab fa-github
+  Linkedin: https://www.linkedin.com/in/ronsun/ || fab fa-linkedin
+
+social_icons:
+  enable: true
+  icons_only: false
+  transition: false
+
+links_settings:
+  icon: fa fa-globe
+  layout: block
+
+links:
+  ".Net Source Code": https://referencesource.microsoft.com/
+  ".Net Core Source Code": https://source.dot.net/
+  "NotFalse 技術客": https://notfalse.net/
+  "放零碎筆記的 Gist": https://gist.github.com/ronsun
+
+sidebar:
+  position: left
+  display: post
+  offset: 12
+
+toc:
+  enable: true
+  number: true
+  wrap: false
+  expand_all: false
+  max_depth: 6
+
+footer:
+  since: 2017
+  icon:
+    name: fa fa-heart
+    animated: false
+  powered: true
+
+excerpt_description: true
+
+post_meta:
+  item_text: true
+  created_at: true
+  updated_at:
+    enable: false
+    another_day: true
+  categories: true
+
+text_align:
+  desktop: justify
+  mobile: justify
+
+mobile_layout_economy: false
+
+theme_color:
+  light: "#222"
+  dark: "#222"
+
+codeblock:
+  theme:
+    light: default
+    dark: stackoverflow-dark
+
+font:
+  enable: true
+  global:
+    external: true
+    family: Lato
+  headings:
+    external: true
+    family:
+  posts:
+    external: true
+    family:
+  codes:
+    external: true
+    family:
+
+math:
+  every_page: false
+  mathjax:
+    enable: false
+
+fancybox: true
+pace:
+  enable: false
+  theme: minimal
+
+canvas_ribbon:
+  enable: false
+
+# leancloud_visitors was removed in NexT 8; busuanzi_count is the replacement.
+busuanzi_count:
+  enable: true
+
+local_search:
+  enable: true
+  top_n_per_article: 1
+  unescape: false
+  preload: false
+
+comments:
+  active: utterances
+
+utterances:
+  enable: true
+  repo: ronsun/ronsun.github.io.utterances
+  issue_term: pathname
+  theme: github-light
+
+# Google Webmaster tools verification (replaces old head.swig template hack)
+google_site_verification: CfwsCYyPkpWXM5t0R84FKsp4GgKRZcQZwjDU_N7ixoA
+
+vendors:
+  internal: local
+  plugins: cdnjs
+

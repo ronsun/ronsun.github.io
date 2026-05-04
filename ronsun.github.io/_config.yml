@@ -34,7 +34,10 @@ new_post_name: :year-:month/:title.md # File name of new posts
 ## draft -> source/_drafts
 default_layout: post
 titlecase: false # Transform title into titlecase
-external_link: true # Open external links in new tab
+external_link:
+  enable: true
+  field: site
+  exclude: ''
 filename_case: 0
 render_drafts: false
 post_asset_folder: true
@@ -44,7 +47,7 @@ highlight:
   enable: true
   line_number: true
   auto_detect: false
-  tab_replace:
+  tab_replace: ''
   
 # Home page setting
 # path: Root path for your blogs index page. (default = '')
@@ -75,7 +78,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: hexo-theme-next
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
@@ -83,8 +86,7 @@ deploy:
   type: git
   repo: https://github.com/ronsun/ronsun.github.io.git
   
-# Local search for hexo-theme-next dependent on hexo-generator-search
-## Resource: https://github.com/PaicHyperionDev/hexo-generator-search
+# Local search for NexT dependent on hexo-generator-searchdb.
 search:
   path: search.xml
   field: all
