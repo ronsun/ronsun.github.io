@@ -20,7 +20,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20260125-ctor-injection-risk.html</loc>
+    <loc>https://ronsun.github.io/content/20260101-decouple-using-rx-net.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -38,7 +38,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20260101-decouple-using-rx-net.html</loc>
+    <loc>https://ronsun.github.io/content/20260125-ctor-injection-risk.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -56,7 +56,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20250302-ref-value-for-interview.html</loc>
+    <loc>https://ronsun.github.io/content/20241130-iterator-and-enumerator-in-csharp.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -65,7 +65,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20241130-iterator-and-enumerator-in-csharp.html</loc>
+    <loc>https://ronsun.github.io/content/20250302-ref-value-for-interview.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -110,15 +110,6 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20240708-whats-new-in-csharp-12.html</loc>
-    
-    <lastmod>2026-05-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://ronsun.github.io/content/20240725-scenarios-for-string-interpolation.html</loc>
     
     <lastmod>2026-05-04</lastmod>
@@ -128,7 +119,16 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20240624-whats-new-in-csharp-9.html</loc>
+    <loc>https://ronsun.github.io/content/20240708-whats-new-in-csharp-12.html</loc>
+    
+    <lastmod>2026-05-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20240711-init-only-setters.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -146,7 +146,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20240711-init-only-setters.html</loc>
+    <loc>https://ronsun.github.io/content/20240624-whats-new-in-csharp-9.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -182,7 +182,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20240623-async-batch-timedout.html</loc>
+    <loc>https://ronsun.github.io/content/20240622-concurrent-dictionary.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -191,7 +191,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20240622-concurrent-dictionary.html</loc>
+    <loc>https://ronsun.github.io/content/20240623-async-batch-timedout.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -218,7 +218,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20240203-whats-new-in-csharp-7.html</loc>
+    <loc>https://ronsun.github.io/content/20240324-whats-new-in-csharp-8.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -227,7 +227,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20240324-whats-new-in-csharp-8.html</loc>
+    <loc>https://ronsun.github.io/content/20240203-whats-new-in-csharp-7.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -245,15 +245,6 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20231217-switch-case-variable-scoping.html</loc>
-    
-    <lastmod>2026-05-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://ronsun.github.io/content/20240122-reuseable-xml-documentation-comments.html</loc>
     
     <lastmod>2026-05-04</lastmod>
@@ -263,7 +254,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20231225-efcore-customize-valueconverter.html</loc>
+    <loc>https://ronsun.github.io/content/20231217-switch-case-variable-scoping.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -281,7 +272,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20230812-write-roslyn-analyzer-and-code-fix.html</loc>
+    <loc>https://ronsun.github.io/content/20231225-efcore-customize-valueconverter.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -291,6 +282,24 @@
   
   <url>
     <loc>https://ronsun.github.io/content/20230709-using-partial-class.html</loc>
+    
+    <lastmod>2026-05-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20230812-write-roslyn-analyzer-and-code-fix.html</loc>
+    
+    <lastmod>2026-05-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20230720-reference-type-as-dictionary-key.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -317,7 +326,16 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20230720-reference-type-as-dictionary-key.html</loc>
+    <loc>https://ronsun.github.io/content/20230114-resolve-url-too-long-exception.html</loc>
+    
+    <lastmod>2026-05-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20230311-problem-about-exception-from-finally-block-of-using.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -335,7 +353,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20230311-problem-about-exception-from-finally-block-of-using.html</loc>
+    <loc>https://ronsun.github.io/content/20220925-use-some-of-monitors-for-remote.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -362,25 +380,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20230114-resolve-url-too-long-exception.html</loc>
-    
-    <lastmod>2026-05-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20220925-use-some-of-monitors-for-remote.html</loc>
-    
-    <lastmod>2026-05-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20220924-local-nuget-package-repository.html</loc>
+    <loc>https://ronsun.github.io/content/20220818-use-measureit-in-roslynpad-for-benchmarking.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -398,7 +398,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20220818-use-measureit-in-roslynpad-for-benchmarking.html</loc>
+    <loc>https://ronsun.github.io/content/20220924-local-nuget-package-repository.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -425,15 +425,6 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20220530-xml-serialization-conditional-ignore.html</loc>
-    
-    <lastmod>2026-05-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://ronsun.github.io/content/20211114-flatten-json.html</loc>
     
     <lastmod>2026-05-04</lastmod>
@@ -444,6 +435,15 @@
   
   <url>
     <loc>https://ronsun.github.io/content/20220528-grapheme-cluster-string.html</loc>
+    
+    <lastmod>2026-05-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20220530-xml-serialization-conditional-ignore.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -479,7 +479,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20210510-encoding-utf8-vs-new-utf8encoding-about-preamble.html</loc>
+    <loc>https://ronsun.github.io/content/20200802-cross-assembly-reflection.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -497,7 +497,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20200403-dependency-injection-aggregate-services.html</loc>
+    <loc>https://ronsun.github.io/content/20210510-encoding-utf8-vs-new-utf8encoding-about-preamble.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -515,24 +515,6 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20200802-cross-assembly-reflection.html</loc>
-    
-    <lastmod>2026-05-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20200120-dotnet-command-by-jenkins.html</loc>
-    
-    <lastmod>2026-05-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://ronsun.github.io/content/20200301-dependent-assembly-issue.html</loc>
     
     <lastmod>2026-05-04</lastmod>
@@ -542,7 +524,16 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20191126-json-net-trailing-zero-number-problem.html</loc>
+    <loc>https://ronsun.github.io/content/20200403-dependency-injection-aggregate-services.html</loc>
+    
+    <lastmod>2026-05-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20200120-dotnet-command-by-jenkins.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -569,25 +560,16 @@
   </url>
   
   <url>
+    <loc>https://ronsun.github.io/content/20191126-json-net-trailing-zero-number-problem.html</loc>
+    
+    <lastmod>2026-05-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://ronsun.github.io/content/20190907-use-sqlite-with-ef-and-vs2017.html</loc>
-    
-    <lastmod>2026-05-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20190622-dotnetcore-testproject-cs1705.html</loc>
-    
-    <lastmod>2026-05-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20190518-rsa-by-dotnet.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -605,7 +587,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20190317-webapi-response-data-format.html</loc>
+    <loc>https://ronsun.github.io/content/20190526-get-request-in-constructor-of-derived-ApiController.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -614,7 +596,16 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20190526-get-request-in-constructor-of-derived-ApiController.html</loc>
+    <loc>https://ronsun.github.io/content/20190518-rsa-by-dotnet.html</loc>
+    
+    <lastmod>2026-05-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20190622-dotnetcore-testproject-cs1705.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -632,7 +623,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20190322-csharp-language-specification-6.html</loc>
+    <loc>https://ronsun.github.io/content/20190317-webapi-response-data-format.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -642,6 +633,15 @@
   
   <url>
     <loc>https://ronsun.github.io/content/20190112-stopwatch-util.html</loc>
+    
+    <lastmod>2026-05-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20190322-csharp-language-specification-6.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -713,15 +713,6 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20181118-webapi-get-request-body-safety.html</loc>
-    
-    <lastmod>2026-05-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://ronsun.github.io/content/20181101-xmlwritersettings-encoding-not-working.html</loc>
     
     <lastmod>2026-05-04</lastmod>
@@ -740,7 +731,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180915-use-recursive-safety.html</loc>
+    <loc>https://ronsun.github.io/content/20181118-webapi-get-request-body-safety.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -758,7 +749,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180819-simplify-if-statement.html</loc>
+    <loc>https://ronsun.github.io/content/20180915-use-recursive-safety.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -768,6 +759,33 @@
   
   <url>
     <loc>https://ronsun.github.io/content/20180909-auto-implemented-properties.html</loc>
+    
+    <lastmod>2026-05-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20180608-handle-querystring-in-csharp.html</loc>
+    
+    <lastmod>2026-05-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20180819-simplify-if-statement.html</loc>
+    
+    <lastmod>2026-05-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/content/20180409-usage-of-partial-in-csharp.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -794,16 +812,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180608-handle-querystring-in-csharp.html</loc>
-    
-    <lastmod>2026-05-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20180409-usage-of-partial-in-csharp.html</loc>
+    <loc>https://ronsun.github.io/content/20180304-random-in-csharp.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -821,15 +830,6 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180131-correctly-re-throw-exception.html</loc>
-    
-    <lastmod>2026-05-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://ronsun.github.io/content/20171202-httpHelper-with-builder-like.html</loc>
     
     <lastmod>2026-05-04</lastmod>
@@ -839,7 +839,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/content/20180304-random-in-csharp.html</loc>
+    <loc>https://ronsun.github.io/content/20180131-correctly-re-throw-exception.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -884,6 +884,15 @@
   </url>
   
   <url>
+    <loc>https://ronsun.github.io/content/20170924-explicit-implicit-keywords.html</loc>
+    
+    <lastmod>2026-05-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://ronsun.github.io/content/20170813-HhttpRequest.QueryString-auto-urlDecode.html</loc>
     
     <lastmod>2026-05-04</lastmod>
@@ -894,15 +903,6 @@
   
   <url>
     <loc>https://ronsun.github.io/content/20170820-mssql-random-string.html</loc>
-    
-    <lastmod>2026-05-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/content/20170924-explicit-implicit-keywords.html</loc>
     
     <lastmod>2026-05-04</lastmod>
     
@@ -959,14 +959,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/categories/C/</loc>
-    <lastmod>2026-05-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/categories/MSSQL/</loc>
+    <loc>https://ronsun.github.io/categories/Hexo/</loc>
     <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -987,14 +980,21 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/categories/C/NET/</loc>
+    <loc>https://ronsun.github.io/categories/DesignPatterns/</loc>
     <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/categories/DesignPatterns/</loc>
+    <loc>https://ronsun.github.io/categories/C/</loc>
+    <lastmod>2026-05-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/categories/MSSQL/</loc>
     <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1008,7 +1008,7 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/categories/Hexo/</loc>
+    <loc>https://ronsun.github.io/categories/C/NET/</loc>
     <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1022,21 +1022,14 @@
   </url>
   
   <url>
-    <loc>https://ronsun.github.io/categories/XML/</loc>
-    <lastmod>2026-05-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://ronsun.github.io/categories/XML/XSD/</loc>
-    <lastmod>2026-05-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://ronsun.github.io/categories/C/Packages/</loc>
+    <lastmod>2026-05-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/categories/XML/</loc>
     <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1051,6 +1044,13 @@
   
   <url>
     <loc>https://ronsun.github.io/categories/Others/</loc>
+    <lastmod>2026-05-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://ronsun.github.io/categories/XML/XSD/</loc>
     <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
