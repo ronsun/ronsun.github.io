@@ -561,7 +561,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>NLog 是一個在 .NET 開發領域相當受歡迎的 log 管理工具，因為操作簡單、功能齊全，且具備完善的歸檔與壓縮機制。然而，前陣子我們團隊因為 NLog 的檔案管理策略設定不當，導致線上服務在歸檔過程中完全卡住，無法處理任何請求。以這個實際問題為契機，我想紀錄一下使用 NLog 管理 log 時的正確策略、可能的風險，以及設定時的考量，以避免日後再度踩坑。  </p>
+          <p>NLog 是 .NET 開發領域常用的 log 管理工具，操作簡單、功能齊全，內建歸檔與壓縮機制。然而前陣子我們團隊因為 NLog 的檔案管理策略設定不當，線上服務在每天歸檔的期間有機會出現幾秒到十幾秒的明顯異常。本篇以這個事故為契機，先完整復盤問題本身，再整理使用 NLog 管理 log 時的設定原則與風險，避免日後再度踩坑。  </p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/content/20250521-manage-log-files-with-nlog.html#more" rel="contents">
